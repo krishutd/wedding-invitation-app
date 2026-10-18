@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
+const MUSIC_FADE_SECONDS = 1.5;
+const MUSIC_MAX_VOLUME = 0.6;
 
 const WEDDING = {
   groom: "Krishnanand",
@@ -17,14 +19,14 @@ const WEDDING = {
   groomParents: "Mr. V K Pradeep Kumar & Mrs. Hena Pradeep",
   groomAddress: [
     "Vallomparambath Kuttiparambil (H),",
-    "Ala, Kodungallur, Thrissur",
+    "Kodungallur, Thrissur",
   ],
   brideParents: "Mr. Dileep Balan & Mrs. Manju Dileep",
   brideAddress: [
     "Dilland (Munduthoppil),",
-    "Kadakkavoor P.O, Thiruvananthapuram",
+    "Kadakkavoor, Thiruvananthapuram",
   ],
-  muhurthamTime: "11:00 AM – 11:30 AM",
+  muhurthamTime: ["12:10 PM", "12:30 PM"],
   muhurthamVenue: "AL SAJ Convention Centre, Kizhakkottam, Trivandrum",
   receptionTime: "From 6:00 PM onwards",
   receptionVenue: "ARV Convention Centre, Kodungallur",
@@ -127,7 +129,18 @@ function App() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = 1;
+    audio.volume = MUSIC_MAX_VOLUME;
+
+    const fadeTimer = window.setInterval(() => {
+      if (audio.paused || !Number.isFinite(audio.duration)) return;
+
+      const fadeIn = Math.min(1, audio.currentTime / MUSIC_FADE_SECONDS);
+      const secondsRemaining = audio.duration - audio.currentTime;
+      const fadeOut = Math.min(1, secondsRemaining / MUSIC_FADE_SECONDS);
+      audio.volume = MUSIC_MAX_VOLUME * Math.max(0, Math.min(fadeIn, fadeOut));
+    }, 50);
+
+    return () => window.clearInterval(fadeTimer);
   }, []);
 
   const openInvitation = () => {
@@ -299,7 +312,9 @@ function App() {
                     </span>
                   </div>
                   <span className="event-time-label">TIME</span>
-                  <p className="event-time">11:00 AM <span>to</span> 11:30 AM</p>
+                  <p className="event-time">
+                    {WEDDING.muhurthamTime[0]} <span>to</span> {WEDDING.muhurthamTime[1]}
+                  </p>
                   <span className="family-label venue-label">VENUE</span>
                   <p className="venue-name">{WEDDING.muhurthamVenue}</p>
                   <a

@@ -86,10 +86,10 @@ button { font: inherit; }
 .address-line { display: block; }
 .art-reveal-trigger { width: 0; height: 0; }
 .couple-names { margin: 20px 0 15px; }
-.couple-names h2 { font-size: clamp(46px, 13vw, 82px); color: #8b631f; background: linear-gradient(108deg, #886323 0%, #96702b 35%, #b18d50 50%, #96702b 65%, #886323 100%); background-size: 240% 100%; background-position: 100% 50%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: couple-name-shimmer 9s ease-in-out infinite; font-weight: 400; letter-spacing: -.045em; line-height: .93; margin: 12px 0; overflow-wrap: anywhere; }
+.couple-names h2 { font-size: clamp(46px, 13vw, 82px); color: #8b631f; background: linear-gradient(108deg, #886323 0%, #96702b 35%, #b18d50 50%, #96702b 65%, #886323 100%); background-size: 240% 100%; background-position: 100% 50%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: couple-name-shimmer 5.4s ease-in-out infinite; font-weight: 400; letter-spacing: -.045em; line-height: .93; margin: 12px 0; overflow-wrap: anywhere; }
 @keyframes couple-name-shimmer {
   0% { background-position: 100% 50%; }
-  38%, 100% { background-position: 0% 50%; }
+  63%, 100% { background-position: 0% 50%; }
 }
 .and-line { display: flex; align-items: center; justify-content: center; gap: 15px; color: #96702b; }
 .and-line span { width: 70px; height: 1px; background: #b69a5b; }
