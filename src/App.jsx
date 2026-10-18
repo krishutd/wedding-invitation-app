@@ -11,6 +11,7 @@ import {
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
 const MUSIC_FADE_SECONDS = 1.5;
+const MUSIC_MAX_VOLUME = 0.6;
 
 const WEDDING = {
   groom: "Krishnanand",
@@ -128,7 +129,7 @@ function App() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = 1;
+    audio.volume = MUSIC_MAX_VOLUME;
 
     const fadeTimer = window.setInterval(() => {
       if (audio.paused || !Number.isFinite(audio.duration)) return;
@@ -136,7 +137,7 @@ function App() {
       const fadeIn = Math.min(1, audio.currentTime / MUSIC_FADE_SECONDS);
       const secondsRemaining = audio.duration - audio.currentTime;
       const fadeOut = Math.min(1, secondsRemaining / MUSIC_FADE_SECONDS);
-      audio.volume = Math.max(0, Math.min(fadeIn, fadeOut));
+      audio.volume = MUSIC_MAX_VOLUME * Math.max(0, Math.min(fadeIn, fadeOut));
     }, 50);
 
     return () => window.clearInterval(fadeTimer);
