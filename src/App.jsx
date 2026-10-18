@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
+const MUSIC_FADE_SECONDS = 1.5;
 
 const WEDDING = {
   groom: "Krishnanand",
@@ -128,7 +129,18 @@ function App() {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = 1;
-  }, []);
+
+    const fadeTimer = window.setInterval(() => {
+      if (audio.paused || !Number.isFinite(audio.duration)) return;
+
+      const fadeIn = Math.min(1, audio.currentTime / MUSIC_FADE_SECONDS);
+      const secondsRemaining = audio.duration - audio.currentTime;
+      const fadeOut = Math.min(1, secondsRemaining / MUSIC_FADE_SECONDS);
+      audio.volume = Math.max(0, Math.min(fadeIn, fadeOut));
+    }, 50);
+
+    return () => window.clearInterval(fadeTimer);
+  }, [pageReady]);
 
   const openInvitation = () => {
     if (opening || page !== "intro") return;
