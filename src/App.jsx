@@ -22,7 +22,7 @@ const WEDDING = {
   brideParents: "Mr. Dileep Balan & Mrs. Manju Dileep",
   brideAddress: [
     "Dilland (Munduthoppil),",
-    "Kadakkavoor P.O, Thiruvananthapuram",
+    "Kadakkavoor, Thiruvananthapuram",
   ],
   muhurthamTime: "12:10 PM – 12:30 PM",
   muhurthamVenue: "AL SAJ Convention Centre, Kizhakkottam, Trivandrum",
