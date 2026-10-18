@@ -10,6 +10,26 @@ import {
 } from "lucide-react";
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
+const STARTUP_IMAGES = [
+  "envelope-fabric-background.png",
+  "envelope-paper-texture.png",
+  "ivory-paper-texture.png",
+  "wax-seal-texture.png",
+  "ganesha-seal-engraving.png",
+  "radha-krishna-silhouette.png",
+];
+
+function preloadImage(path) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      if (image.decode) image.decode().catch(() => {}).finally(resolve);
+      else resolve();
+    };
+    image.onerror = resolve;
+    image.src = assetUrl(path);
+  });
+}
 
 const WEDDING = {
   groom: "Krishnanand",
@@ -118,11 +138,26 @@ function PhotoPlaceholder({ label, name }) {
 }
 
 function App() {
+  const [pageReady, setPageReady] = useState(false);
   const [page, setPage] = useState("intro");
   const [opening, setOpening] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
   const audioRef = useRef(null);
   const artworkTriggerRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.allSettled([
+      ...STARTUP_IMAGES.map(preloadImage),
+      document.fonts?.ready ?? Promise.resolve(),
+    ]).then(() => {
+      if (!cancelled) setPageReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -146,9 +181,13 @@ function App() {
   };
 
   return (
-    <main
-      className={`site-shell ${opening ? "is-opening" : ""}`}
-    >
+    <main className={`site-shell${pageReady ? "" : " is-loading"}${opening ? " is-opening" : ""}`}>
+      {!pageReady ? (
+        <div className="startup-loader" role="status" aria-live="polite">
+          <span className="startup-loader-mark" aria-hidden="true">✦</span>
+          <span>Preparing your invitation</span>
+        </div>
+      ) : <>
       <audio
         ref={audioRef}
         src={assetUrl("wedding-music.mp3")}
@@ -347,6 +386,7 @@ function App() {
           </section>
         </motion.div>
       )}
+      </>}
     </main>
   );
 }

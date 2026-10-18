@@ -23,6 +23,10 @@ body { margin: 0; min-width: 320px; background-color: #e8dec8; color: #453a25; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
 .site-shell { max-width: 760px; margin: 0 auto; min-height: 100vh; background: linear-gradient(145deg, #f3ead5 0%, var(--paper) 48%, #ede1c5 100%); box-shadow: 0 0 60px #4a3a2012; position: relative; overflow: clip; }
+.site-shell.is-loading { min-height: 100svh; display: grid; place-items: center; background: #8e775e; color: #f1e8d3; box-shadow: none; }
+.startup-loader { display: flex; flex-direction: column; align-items: center; gap: 12px; font: 10px 'DM Sans', sans-serif; letter-spacing: .18em; text-transform: uppercase; }
+.startup-loader-mark { color: #e0c47c; font: 28px 'Cormorant Garamond', Georgia, serif; animation: loader-turn 1.8s ease-in-out infinite; }
+@keyframes loader-turn { 50% { transform: rotate(45deg); opacity: .58; } }
 .paper-section, .intro-screen { position: relative; background-color: #eee3cb; background-image: radial-gradient(ellipse at 50% 38%, #fffbedc0 0%, #f7efdD90 48%, transparent 83%), linear-gradient(90deg, #cbb88842 0%, #e6d8b74d 3%, #f4ecd8 10%, transparent 24%, transparent 76%, #f4ecd8 90%, #e3d3ae52 97%, #c7b17c45 100%), radial-gradient(ellipse at 12% 88%, #d0bd9140 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #d7c59a38 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .intro-screen { min-height: 100svh; display: grid; place-items: center; padding: 42px 24px; background-color: #8e775e; background-image: linear-gradient(rgba(48, 35, 22, .08), rgba(48, 35, 22, .08)), url('/assets/envelope-fabric-background.png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
 .invitation-section .outer-frame { border-top: 0; outline: none; }
