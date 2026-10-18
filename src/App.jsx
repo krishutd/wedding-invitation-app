@@ -9,6 +9,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
+
 const WEDDING = {
   groom: "Krishnanand",
   bride: "Archa",
@@ -86,8 +88,15 @@ function Envelope({ onOpen }) {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
           <img
+            className="wax-seal-texture"
+            src={assetUrl("wax-seal-texture.png")}
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+          />
+          <img
             className="wax-seal-ganesha"
-            src="/assets/ganesha-seal-engraving.png"
+            src={assetUrl("ganesha-seal-engraving.png")}
             alt=""
             aria-hidden="true"
             draggable="false"
@@ -145,7 +154,7 @@ function App() {
     >
       <audio
         ref={audioRef}
-        src="/assets/wedding-music.mp3"
+        src={assetUrl("wedding-music.mp3")}
         loop
         preload="none"
       />
@@ -154,7 +163,6 @@ function App() {
         <section className="intro-screen">
           <div className="paper-grain" />
           <div className="outer-frame" aria-hidden="true">
-            <span className="top-ornament">♧</span>
           </div>
           <div className="intro-content">
             <Envelope onOpen={openInvitation} />
@@ -219,7 +227,8 @@ function App() {
               onArtworkStart={() => setArtworkReady(true)}
             />
             <div className="outer-frame" aria-hidden="true">
-              <span className="top-ornament">♧</span>
+              <span className="outer-frame-top" />
+              <img className="top-ganesha" src={assetUrl("ganesha-seal-engraving.png")} alt="" />
             </div>
             <Reveal>
               <header className="invite-header">
@@ -274,7 +283,7 @@ function App() {
             <Reveal delay={0.08} amount={0.28}>
               <div className="art-section">
                 <GlitterReveal
-                  src="/assets/radha-krishna-silhouette.png"
+                  src={assetUrl("radha-krishna-silhouette.png")}
                   alt="Krishna and Radha beneath a leafy arch and golden moon"
                   start={artworkReady}
                 />

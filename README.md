@@ -71,7 +71,7 @@ The site starts it when the envelope is tapped. If the file is missing, the rest
 The QR code is the static image at `public/assets/venue-qr.svg` and currently points to the Muhurtham Google Maps URL. It loads locally and does not call a QR service. If you change the Muhurtham `mapsUrl` in `WEDDING`, regenerate and replace this SVG with a QR code for the new URL so the printed code and the directions link stay in sync.
 
 ## Hosting on GitHub Pages
-This project uses Vite. For a GitHub Pages deployment, set Vite's `base` in `vite.config.js` to `'/REPOSITORY-NAME/'` before building, then publish the `dist` folder using GitHub Pages or a GitHub Actions workflow. If you use a custom domain or root-domain hosting, the base path can usually remain `'/'`.
+This project deploys to GitHub Pages using the workflow in `.github/workflows/pages.yml`. Vite is configured with a relative base path so assets work from the repository's Pages URL. On GitHub Free, the repository must be public for Pages to publish; private repository Pages requires a paid plan.
 
 ## Notes
 - The site is a static front-end prototype; RSVP submissions and private guest-specific links are not implemented.
