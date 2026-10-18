@@ -140,7 +140,7 @@ function App() {
     }, 50);
 
     return () => window.clearInterval(fadeTimer);
-  }, [pageReady]);
+  }, []);
 
   const openInvitation = () => {
     if (opening || page !== "intro") return;
