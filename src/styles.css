@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap');
 
-:root {
+:root, body, #root {
   color-scheme: only light;
+}
+:root {
   font-family: 'Cormorant Garamond', Georgia, serif;
   color: #453a25;
   background: #e8dec8;
@@ -17,7 +19,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--paper); }
-body { margin: 0; min-width: 320px; }
+body { margin: 0; min-width: 320px; background-color: #e8dec8; color: #453a25; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
 .site-shell { max-width: 760px; margin: 0 auto; min-height: 100vh; background: linear-gradient(145deg, #f3ead5 0%, var(--paper) 48%, #ede1c5 100%); box-shadow: 0 0 60px #4a3a2012; position: relative; overflow: clip; }
