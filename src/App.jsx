@@ -84,7 +84,7 @@ function Envelope({ onOpen }) {
         </div>
         <motion.div
           className="wax-seal"
-          animate={{ rotate: [0, -3, 3, 0] }}
+          animate={{ rotate: [0, -6, 6, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
           <img
