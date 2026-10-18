@@ -87,7 +87,7 @@ function Envelope({ onOpen }) {
         >
           <img
             className="wax-seal-ganesha"
-            src="/assets/ganesha-wax-seal.png"
+            src="/assets/ganesha-seal-engraving.png"
             alt=""
             aria-hidden="true"
             draggable="false"
