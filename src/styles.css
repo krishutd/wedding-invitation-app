@@ -40,9 +40,7 @@ button { font: inherit; }
 .envelope-back { position: absolute; inset: 0; border: 1px solid #bdb09a; background-color: #e9dfce; background-image: linear-gradient(145deg, #fff8 0%, #fff2 38%, #87775c14 100%), url('/assets/envelope-paper-texture.png'); background-size: auto, 500px 500px; border-radius: 3px; }
 .envelope-letter { position: absolute; z-index: 1; left: 9%; right: 9%; top: 5%; height: 86%; background-color: #f1e9dc; background-image: linear-gradient(145deg, #fff9 0%, #fff2 50%, #84745712 100%), url('/assets/envelope-paper-texture.png'); background-size: auto, 500px 500px; border: 1px solid #c9bca7; box-shadow: 0 3px 10px #51432f1a; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; transition: transform .95s cubic-bezier(.22,.75,.28,1); }
 .is-opening .envelope-letter, .is-open .envelope-letter { transform: translateY(-48%); transition-delay: .3s; }
-.letter-eyebrow { font-family: 'DM Sans', sans-serif; letter-spacing: .2em; font-size: 8px; color: var(--gold); }
-.letter-names { font-size: 45px; line-height: 1; color: var(--gold-dark); }
-.letter-names i { font-size: 23px; }
+.letter-message { max-width: 90%; font-size: clamp(21px, 6vw, 30px); line-height: 1.05; font-style: italic; color: var(--gold-dark); text-align: center; }
 .letter-rule { height: 1px; width: 40%; background: #bda064; }
 .envelope-flap { position: absolute; z-index: 4; inset: 0 0 auto; height: 57%; background-color: #ece3d4; background-image: linear-gradient(160deg, #fff9 0%, #fff3 42%, #82725730 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 57' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L50 57 L100 0' fill='none' stroke='%237d6b50' stroke-opacity='.32' stroke-width='.45'/%3E%3C/svg%3E"), url('/assets/envelope-paper-texture.png'); background-size: auto, 100% 100%, 500px 500px; clip-path: polygon(0 0,100% 0,50% 100%); transform-origin: 50% 0; transform-style: preserve-3d; backface-visibility: hidden; border-top: 1px solid #bdb09a; transition: transform .72s cubic-bezier(.45,0,.2,1); }
 .is-opening .envelope-flap, .is-open .envelope-flap { transform: rotateX(-180deg); }
