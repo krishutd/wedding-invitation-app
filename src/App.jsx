@@ -17,7 +17,7 @@ const WEDDING = {
   groomParents: "Mr. V K Pradeep Kumar & Mrs. Hena Pradeep",
   groomAddress: [
     "Vallomparambath Kuttiparambil (H),",
-    "Ala Kodungallur, Thrissur",
+    "Kodungallur, Thrissur",
   ],
   brideParents: "Mr. Dileep Balan & Mrs. Manju Dileep",
   brideAddress: [
