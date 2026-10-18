@@ -7,14 +7,14 @@ const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const randomBetween = (min, max) => min + Math.random() * (max - min);
 
 /** A short gold-dust sweep that reveals the invitation card once on entry. */
-export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart }) {
+export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart, skipInitialReveal = false }) {
   const layerRef = useRef(null);
   const veilRef = useRef(null);
   const canvasRef = useRef(null);
   const onArtworkStartRef = useRef(onArtworkStart);
   const artworkStartedRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
-  const [complete, setComplete] = useState(false);
+  const [complete, setComplete] = useState(skipInitialReveal);
   onArtworkStartRef.current = onArtworkStart;
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart
       startArtwork();
     };
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || skipInitialReveal) {
       finish();
       return undefined;
     }
@@ -131,7 +131,7 @@ export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart
       cancelled = true;
       window.cancelAnimationFrame(frameId);
     };
-  }, [artworkTriggerRef, prefersReducedMotion]);
+  }, [artworkTriggerRef, prefersReducedMotion, skipInitialReveal]);
 
   return (
     <div
