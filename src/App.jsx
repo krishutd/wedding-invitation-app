@@ -70,10 +70,7 @@ function Envelope({ onOpen }) {
       >
         <div className="envelope-back" />
         <div className="envelope-letter">
-          <span className="letter-eyebrow">YOU ARE INVITED</span>
-          <span className="letter-names">
-            K <i>&</i> A
-          </span>
+          <span className="letter-message">You're cordially invited</span>
           <span className="letter-rule" />
         </div>
         <motion.div className="envelope-flap" initial={false} />
