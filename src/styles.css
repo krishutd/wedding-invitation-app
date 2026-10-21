@@ -110,6 +110,7 @@ button { font: inherit; }
   63%, 100% { background-position: 0% 50%; }
 }
 .ceremonies { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 28px auto 24px; max-width: 620px; width: 100%; }
+.ceremonies.single-ceremony { grid-template-columns: 1fr; max-width: 360px; }
 .ceremony-card { height: 100%; padding: 20px 15px; border: 1px solid #cbb580; background: #f6edd9a8; display: flex; flex-direction: column; align-items: center; }
 .event-date { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 14px 0; line-height: 1; }
 .event-date-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; text-align: left; }
@@ -123,6 +124,13 @@ button { font: inherit; }
 .venue-name { max-width: 300px; margin: 7px auto 10px !important; color: #53472f; font-size: 15px !important; line-height: 1.45; text-transform: uppercase; letter-spacing: .05em; }
 .map-link { display: inline-flex; align-items: center; justify-content: center; gap: 7px; margin-top: auto; border: 0; color: #6b4c18; padding: 7px 0 4px; text-decoration: underline; text-underline-offset: 4px; font: 11px 'DM Sans', sans-serif; letter-spacing: .04em; transition: color .2s ease; }
 .map-link:hover { color: #96702b; }
+.other-event-note { max-width: 520px; margin: 0 auto 18px; color: #74684d; font: 12px/1.55 'DM Sans', sans-serif; text-align: center; }
+.love-signoff { margin: 24px auto 0; text-align: center; }
+.love-divider { display: flex; align-items: center; justify-content: center; gap: 11px; width: min(100%, 190px); margin: 0 auto 8px; color: var(--gold); }
+.love-divider span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #b99b5d); }
+.love-divider span:last-child { transform: rotate(180deg); }
+.love-divider i { font-size: 17px; font-style: normal; line-height: 1; }
+.with-love-note { margin: 0 auto 4px; color: var(--gold-dark); font-size: 20px; font-style: italic; text-align: center; }
 .presence-note { max-width: 390px; margin: 34px auto 0; padding: 24px 12px 0; border-top: 1px solid #c4a86d; color: #70552a; font-family: 'Cormorant Garamond', serif; font-size: 21px; font-style: italic; line-height: 1.45; }
 @media (min-width: 620px) {
   .intro-screen { padding: 60px; }
