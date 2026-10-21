@@ -13,6 +13,37 @@ const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_MAX_VOLUME = 0.6;
 
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    let finished = false;
+    let decoding = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      resolve();
+    };
+    const decodeImage = () => {
+      if (decoding) return;
+      decoding = true;
+      if (typeof image.decode === "function") {
+        image.decode().catch(() => {}).then(finish);
+      } else {
+        finish();
+      }
+    };
+
+    image.onload = decodeImage;
+    image.onerror = finish;
+    image.src = src;
+
+    if (image.complete) {
+      if (image.naturalWidth > 0) decodeImage();
+      else finish();
+    }
+  });
+}
+
 const WEDDING = {
   groom: "Krishnanand",
   bride: "Archa",
@@ -122,9 +153,31 @@ function PhotoPlaceholder({ label, name }) {
 function App() {
   const [page, setPage] = useState("intro");
   const [opening, setOpening] = useState(false);
+  const [introReady, setIntroReady] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
   const audioRef = useRef(null);
   const artworkTriggerRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const introAssets = [
+      "envelope-fabric-background.png",
+      "envelope-paper-texture.png",
+      "wax-seal-texture.png",
+      "ganesha-seal-engraving.png",
+    ];
+
+    Promise.all([
+      Promise.all(introAssets.map((asset) => preloadImage(assetUrl(asset)))),
+      document.fonts?.ready ?? Promise.resolve(),
+    ]).then(() => {
+      if (!cancelled) setIntroReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -160,7 +213,7 @@ function App() {
 
   return (
     <main
-      className={`site-shell ${opening ? "is-opening" : ""}`}
+      className={`site-shell ${opening ? "is-opening" : ""}${page === "intro" && !introReady ? " is-loading" : ""}`}
     >
       <audio
         ref={audioRef}
@@ -170,7 +223,13 @@ function App() {
       />
 
       {page === "intro" && (
-        <section className="intro-screen">
+        <section
+          className="intro-screen"
+          style={{
+            "--intro-fabric-background": `url("${assetUrl("envelope-fabric-background.png")}")`,
+            "--envelope-paper-texture": `url("${assetUrl("envelope-paper-texture.png")}")`,
+          }}
+        >
           <div className="paper-grain" />
           <div className="outer-frame" aria-hidden="true">
           </div>
