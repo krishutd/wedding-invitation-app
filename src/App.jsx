@@ -124,6 +124,7 @@ function App() {
   const [opening, setOpening] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
   const audioRef = useRef(null);
+  const resumeMusicOnForegroundRef = useRef(false);
   const artworkTriggerRef = useRef(null);
 
   useEffect(() => {
@@ -141,6 +142,31 @@ function App() {
     }, 50);
 
     return () => window.clearInterval(fadeTimer);
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Only resume later if playback was active before the page was hidden.
+        resumeMusicOnForegroundRef.current = !audio.paused;
+        if (!audio.paused) audio.pause();
+        return;
+      }
+
+      if (resumeMusicOnForegroundRef.current) {
+        audio.play().then(() => {
+          resumeMusicOnForegroundRef.current = false;
+        }).catch(() => {
+          // Some mobile browsers may require another user gesture to resume.
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   const openInvitation = () => {
