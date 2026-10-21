@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlitterReveal from "./GlitterReveal.jsx";
 import InvitationPageReveal from "./InvitationPageReveal.jsx";
-import {
-  MapPin,
-  ArrowRight,
-  Heart,
-  ExternalLink,
-} from "lucide-react";
+import { MapPin, ArrowRight, Heart, ExternalLink } from "lucide-react";
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
 const MUSIC_FADE_SECONDS = 1.5;
@@ -48,21 +43,20 @@ const WEDDING = {
   groom: "Krishnanand",
   bride: "Archa",
   groomParents: "Mr. V K Pradeep Kumar & Mrs. Hena Pradeep",
-  groomAddress: [
-    "Vallomparambath Kuttiparambil (H),",
-    "Kodungallur, Thrissur",
-  ],
+  groomAddress: ["Vallomparambath Kuttiparambil (H),", "Kodungallur, Thrissur"],
   brideParents: "Mr. Dileep Balan & Mrs. Manju Dileep",
-  brideAddress: [
-    "Dilland (Munduthoppil),",
-    "Kadakkavoor, Thiruvananthapuram",
-  ],
+  brideAddress: ["Dilland (Munduthoppil),", "Kadakkavoor, Thiruvananthapuram"],
   muhurthamTime: ["12:10 PM", "12:30 PM"],
-  muhurthamVenue: "AL SAJ Convention Centre, Kizhakkottam, Trivandrum",
-  receptionTime: "From 6:00 PM onwards",
+  muhurthamVenue: "AL-SAJ Convention Centre, Kazhakkottam, Trivandrum",
+  receptionTime: ["6:00 PM", "9:00 PM"],
   receptionVenue: "ARV Convention Centre, Kodungallur",
   mapsUrl: "https://maps.app.goo.gl/E2NiULxt7Lig8HKz7",
   receptionMapsUrl: "https://maps.app.goo.gl/ENAWgVa9UkHYyZqG7",
+};
+
+const LOVE_MESSAGES = {
+  groom: "With lots of love - Sreedevi, Varun and Etash",
+  bride: "With lots of love - Aswathy and Arjun",
 };
 
 // Set to true to show the optional childhood-photo story page after opening the envelope.
@@ -150,13 +144,45 @@ function PhotoPlaceholder({ label, name }) {
   );
 }
 
+function FamilyDetails({ side }) {
+  const isGroom = side === "groom";
+  const parents = isGroom ? WEDDING.groomParents : WEDDING.brideParents;
+  const address = isGroom ? WEDDING.groomAddress : WEDDING.brideAddress;
+
+  return (
+    <div className={`${side}-family`}>
+      <span className="family-label">{isGroom ? "SON OF" : "DAUGHTER OF"}</span>
+      <p className="family-names">{parents}</p>
+      <p className="family-address">
+        {address.map((line) => (
+          <span className="address-line" key={line}>
+            {line}
+          </span>
+        ))}
+      </p>
+    </div>
+  );
+}
+
 function App() {
   const [page, setPage] = useState("intro");
   const [opening, setOpening] = useState(false);
   const [introReady, setIntroReady] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
   const audioRef = useRef(null);
+  const resumeMusicOnForegroundRef = useRef(false);
   const artworkTriggerRef = useRef(null);
+  const params = new URLSearchParams(window.location.search);
+  const invitationSide =
+    params.get("side")?.toLowerCase() === "bride" ? "bride" : "groom";
+  const requestedInvite = params.get("invite")?.toLowerCase();
+  const inviteType =
+    requestedInvite === "wedding" || requestedInvite === "reception"
+      ? requestedInvite
+      : "both";
+  const firstName = invitationSide === "bride" ? WEDDING.bride : WEDDING.groom;
+  const secondName = invitationSide === "bride" ? WEDDING.groom : WEDDING.bride;
+  const secondFamilySide = invitationSide === "bride" ? "groom" : "bride";
 
   useEffect(() => {
     let cancelled = false;
@@ -196,6 +222,31 @@ function App() {
     return () => window.clearInterval(fadeTimer);
   }, []);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Only resume later if playback was active before the page was hidden.
+        resumeMusicOnForegroundRef.current = !audio.paused;
+        if (!audio.paused) audio.pause();
+        return;
+      }
+
+      if (resumeMusicOnForegroundRef.current) {
+        audio.play().then(() => {
+          resumeMusicOnForegroundRef.current = false;
+        }).catch(() => {
+          // Some mobile browsers may require another user gesture to resume.
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
   const openInvitation = () => {
     if (opening || page !== "intro") return;
     setOpening(true);
@@ -231,8 +282,7 @@ function App() {
           }}
         >
           <div className="paper-grain" />
-          <div className="outer-frame" aria-hidden="true">
-          </div>
+          <div className="outer-frame" aria-hidden="true"></div>
           <div className="intro-content">
             <Envelope onOpen={openInvitation} />
           </div>
@@ -271,10 +321,7 @@ function App() {
               </div>
             </Reveal>
             <Reveal delay={0.15}>
-              <button
-                className="page-next-button"
-                onClick={showInvitationPage}
-              >
+              <button className="page-next-button" onClick={showInvitationPage}>
                 <span>OUR INVITATION</span>
                 <ArrowRight size={16} />
               </button>
@@ -297,7 +344,11 @@ function App() {
             />
             <div className="outer-frame" aria-hidden="true">
               <span className="outer-frame-top" />
-              <img className="top-ganesha" src={assetUrl("ganesha-seal-engraving.png")} alt="" />
+              <img
+                className="top-ganesha"
+                src={assetUrl("ganesha-seal-engraving.png")}
+                alt=""
+              />
             </div>
             <Reveal>
               <header className="invite-header">
@@ -309,46 +360,34 @@ function App() {
                 <p>
                   We are delighted to invite you
                   <br />
-                  to the wedding of
+                  to the {inviteType === "reception" ? "wedding reception" : "wedding"} of
                 </p>
               </header>
             </Reveal>
 
             <Reveal>
-              <div className="groom-family">
-                <span className="family-label">SON OF</span>
-                <p className="family-names">{WEDDING.groomParents}</p>
-                <p className="family-address">
-                  {WEDDING.groomAddress.map((line) => (
-                    <span className="address-line" key={line}>{line}</span>
-                  ))}
-                </p>
-              </div>
+              <FamilyDetails side={invitationSide} />
             </Reveal>
 
             <Reveal delay={0.08}>
               <div className="couple-names">
-                <h2>{WEDDING.groom}</h2>
+                <h2>{firstName}</h2>
                 <div className="and-line">
                   <span /> <i>and</i> <span />
                 </div>
-                <h2>{WEDDING.bride}</h2>
+                <h2>{secondName}</h2>
               </div>
             </Reveal>
 
             <Reveal delay={0.12}>
-              <div className="bride-family">
-                <span className="family-label">DAUGHTER OF</span>
-                <p className="family-names">{WEDDING.brideParents}</p>
-                <p className="family-address">
-                  {WEDDING.brideAddress.map((line) => (
-                    <span className="address-line" key={line}>{line}</span>
-                  ))}
-                </p>
-              </div>
+              <FamilyDetails side={secondFamilySide} />
             </Reveal>
 
-            <div className="art-reveal-trigger" ref={artworkTriggerRef} aria-hidden="true" />
+            <div
+              className="art-reveal-trigger"
+              ref={artworkTriggerRef}
+              aria-hidden="true"
+            />
             <Reveal delay={0.08} amount={0.28}>
               <div className="art-section">
                 <GlitterReveal
@@ -359,64 +398,126 @@ function App() {
               </div>
             </Reveal>
 
-            <div className="ceremonies">
-              <Reveal delay={0.05}>
-                <article className="ceremony-card">
-                  <span className="family-label">WEDDING</span>
-                  <div className="event-date" aria-label="Tuesday, 19 January 2027">
-                    <span className="event-day">19</span>
-                    <span className="event-date-copy">
-                      <span className="event-weekday">Tuesday</span>
-                      <span className="event-month-year">January 2027</span>
-                    </span>
-                  </div>
-                  <span className="event-time-label">TIME</span>
-                  <p className="event-time">
-                    {WEDDING.muhurthamTime[0]} <span>to</span> {WEDDING.muhurthamTime[1]}
-                  </p>
-                  <span className="family-label venue-label">VENUE</span>
-                  <p className="venue-name">{WEDDING.muhurthamVenue}</p>
-                  <a
-                    className="map-link"
-                    href={WEDDING.mapsUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <MapPin size={15} /> Open in Maps <ExternalLink size={13} />
-                  </a>
-                </article>
-              </Reveal>
-              <Reveal delay={0.14}>
-                <article className="ceremony-card">
-                  <span className="family-label">RECEPTION</span>
-                  <div className="event-date" aria-label="Thursday, 21 January 2027">
-                    <span className="event-day">21</span>
-                    <span className="event-date-copy">
-                      <span className="event-weekday">Thursday</span>
-                      <span className="event-month-year">January 2027</span>
-                    </span>
-                  </div>
-                  <span className="event-time-label">TIME</span>
-                  <p className="event-time">6:00 PM <span>onwards</span></p>
-                  <span className="family-label venue-label">VENUE</span>
-                  <p className="venue-name">{WEDDING.receptionVenue}</p>
-                  <a
-                    className="map-link"
-                    href={WEDDING.receptionMapsUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <MapPin size={15} /> Open in Maps <ExternalLink size={13} />
-                  </a>
-                </article>
-              </Reveal>
+            <div
+              className={`ceremonies${
+                inviteType === "both" ? "" : " single-ceremony"
+              }`}
+            >
+              {inviteType !== "reception" && (
+                <Reveal delay={0.05}>
+                  <article className="ceremony-card">
+                    <span className="family-label">WEDDING</span>
+                    <div
+                      className="event-date"
+                      aria-label="Tuesday, 19 January 2027"
+                    >
+                      <span className="event-day">19</span>
+                      <span className="event-date-copy">
+                        <span className="event-weekday">Tuesday</span>
+                        <span className="event-month-year">January 2027</span>
+                      </span>
+                    </div>
+                    <span className="event-time-label">TIME</span>
+                    <p className="event-time">
+                      {WEDDING.muhurthamTime[0]} <span>to</span>{" "}
+                      {WEDDING.muhurthamTime[1]}
+                    </p>
+                    <span className="family-label venue-label">VENUE</span>
+                    <p className="venue-name">{WEDDING.muhurthamVenue}</p>
+                    <a
+                      className="map-link"
+                      href={WEDDING.mapsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <MapPin size={15} /> Open in Maps{" "}
+                      <ExternalLink size={13} />
+                    </a>
+                  </article>
+                </Reveal>
+              )}
+              {inviteType !== "wedding" && (
+                <Reveal delay={0.14}>
+                  <article className="ceremony-card">
+                    <span className="family-label">RECEPTION</span>
+                    <div
+                      className="event-date"
+                      aria-label="Thursday, 21 January 2027"
+                    >
+                      <span className="event-day">21</span>
+                      <span className="event-date-copy">
+                        <span className="event-weekday">Thursday</span>
+                        <span className="event-month-year">January 2027</span>
+                      </span>
+                    </div>
+                    <span className="event-time-label">TIME</span>
+                    <p className="event-time">
+                      {WEDDING.receptionTime[0]} <span>to</span>{" "}
+                      {WEDDING.receptionTime[1]}
+                    </p>
+                    <span className="family-label venue-label">VENUE</span>
+                    <p className="venue-name">{WEDDING.receptionVenue}</p>
+                    <a
+                      className="map-link"
+                      href={WEDDING.receptionMapsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <MapPin size={15} /> Open in Maps{" "}
+                      <ExternalLink size={13} />
+                    </a>
+                  </article>
+                </Reveal>
+              )}
             </div>
+
+            {inviteType === "wedding" && (
+              <Reveal>
+                <p className="other-event-note">
+                  The wedding reception is on Thursday, 21 January 2027, from{" "}
+                  {WEDDING.receptionTime[0]} to {WEDDING.receptionTime[1]} at{" "}
+                  {WEDDING.receptionVenue}.
+                </p>
+              </Reveal>
+            )}
+            {inviteType === "reception" && (
+              <Reveal>
+                <p className="other-event-note">
+                  The wedding is on Tuesday, 19 January 2027, from{" "}
+                  {WEDDING.muhurthamTime[0]} to {WEDDING.muhurthamTime[1]} at{" "}
+                  {WEDDING.muhurthamVenue}.
+                </p>
+              </Reveal>
+            )}
 
             <Reveal>
               <p className="presence-note">
-                Together with our families, we warmly invite you and your family to join us for the wedding and reception.
-                Your presence and blessings will make these celebrations truly special.
+                Together with our families, we warmly invite you and your family
+                to join us for{" "}
+                {inviteType === "both"
+                  ? "the wedding and reception"
+                  : inviteType === "reception"
+                    ? "the wedding reception"
+                    : "the wedding"}
+                . Your presence and blessings will make{" "}
+                {inviteType === "both"
+                  ? "these celebrations"
+                  : "this celebration"}{" "}
+                truly special.
               </p>
+            </Reveal>
+
+            <Reveal>
+              <div className="love-signoff">
+                <div className="love-divider" aria-hidden="true">
+                  <span />
+                  <i>✿</i>
+                  <span />
+                </div>
+                <p className="with-love-note">
+                  {LOVE_MESSAGES[invitationSide]}
+                </p>
+              </div>
             </Reveal>
           </section>
         </motion.div>
