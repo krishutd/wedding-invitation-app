@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlitterReveal from "./GlitterReveal.jsx";
-import InvitationPageReveal from "./InvitationPageReveal.jsx";
+import EnvelopeOpening from "./EnvelopeOpening.jsx";
+import { EVENTS, formatEvent } from "./events.js";
 import {
   MapPin,
   ArrowRight,
@@ -66,10 +67,55 @@ const LOVE_MESSAGES = {
   bride: "With lots of love - Aswathy and Arjun",
 };
 
+function CeremonyVine() {
+  return (
+    <g fill="none" stroke="#A47A30" strokeWidth=".76" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke">
+      {/* A single flowing creeper follows both edges of the corner. */}
+      <path d="M57 5 C45 4 37 4 31 8 C25 12 30 18 24 24 C18 30 7 28 6 38 C5 45 6 50 5 57" />
+      {/* Top-edge leaves */}
+      <path d="M49 5 C46 1 41 1 38 4 C40 8 45 8 49 5Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M48 5 Q43 4 39 4 M43 4 L42 2.8" />
+      <path d="M37 6 C36 2 38 0 42 0 C44 3 41 6 37 6Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M38 5 Q39 2 42 1 M39 3 L37.8 1.8" />
+      {/* Leaves alternate along the curve */}
+      <path d="M30 13 C25 10 21 12 20 16 C24 20 28 18 30 13Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M29 14 Q25 14 21 16 M25 14 L23.5 12.5" />
+      <path d="M25 22 C28 18 32 18 34 21 C32 25 28 26 25 22Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M26 22 Q30 21 33 21 M30 21 L31.4 19.5" />
+      <path d="M18 29 C13 26 9 28 9 32 C13 35 17 33 18 29Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M17 29 Q13 30 10 32 M13 30 L11.4 28.7" />
+      <path d="M13 38 C17 34 21 35 22 39 C19 43 15 42 13 38Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M14 38 Q18 38 21 39 M18 38 L19.6 36.4" />
+      <path d="M7 45 C3 41 0 43 0 47 C3 50 6 49 7 45Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M6 45 Q3 46 1 47 M3 46 L1.5 44.4" />
+      <path d="M6 50 C10 47 13 48 14 52 C12 55 8 55 6 50Z" fill="#A47A30" fillOpacity=".13" />
+      <path d="M7 50 Q10 51 13 52 M10 51 L11.4 49.5" />
+      {/* Fine tendrils curl outward from the young tips. */}
+      <path d="M53 5 C58 3 61 5 59 8 C58 9 56 8 57 7 M5 53 C3 59 5 62 8 60 C9 59 8 57 7 58" />
+      <path d="M33 9 C36 8 38 9 37 11 C36 12 35 11 36 10 M10 34 C9 37 10 39 12 38 C13 37 12 36 11 37" opacity=".8" />
+    </g>
+  );
+}
+
+function CeremonyFrame() {
+  return (
+    <svg className="ceremony-frame" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="none" stroke="#A47A30" strokeWidth="1" vectorEffect="non-scaling-stroke">
+        <rect x="4" y="4" width="392" height="392" />
+        <rect x="11" y="11" width="378" height="378" opacity=".68" />
+      </g>
+      <CeremonyVine />
+      <g transform="translate(400 0) scale(-1 1)"><CeremonyVine /></g>
+      <g transform="translate(0 400) scale(1 -1)"><CeremonyVine /></g>
+      <g transform="translate(400 400) scale(-1 -1)"><CeremonyVine /></g>
+    </svg>
+  );
+}
+
 // Set to true to show the optional childhood-photo story page after opening the envelope.
 const SHOW_STORY_PAGE = false;
 
-function Reveal({ children, className = "", delay = 0, amount = 0.22 }) {
+function Reveal({ children, className = "", delay = 0, amount = 0.22, immediate = false }) {
   const ref = useRef(null);
   const visible = useInView(ref, { once: true, amount });
   const reduced = useReducedMotion();
@@ -77,8 +123,8 @@ function Reveal({ children, className = "", delay = 0, amount = 0.22 }) {
     <motion.div
       ref={ref}
       className={className}
-      initial={reduced ? false : { opacity: 0, y: 24 }}
-      animate={visible ? { opacity: 1, y: 0 } : {}}
+      initial={reduced || immediate ? false : { opacity: 0, y: 24 }}
+      animate={visible || immediate ? { opacity: 1, y: 0 } : {}}
       transition={{
         duration: reduced ? 0 : 1.15,
         delay,
@@ -87,58 +133,6 @@ function Reveal({ children, className = "", delay = 0, amount = 0.22 }) {
     >
       {children}
     </motion.div>
-  );
-}
-
-function Envelope({ onOpen }) {
-  return (
-    <motion.button
-      className="envelope-stage"
-      onClick={onOpen}
-      aria-label="Open the wedding invitation"
-    >
-      <div className="envelope-heading" aria-hidden="true">
-        <span className="envelope-couple-names">Krishna &amp; Archa</span>
-        <span className="envelope-wedding-date">19-01-2027</span>
-      </div>
-      <motion.div
-        className="envelope"
-        whileTap={{ scale: 0.985 }}
-        whileHover={{ y: -3 }}
-      >
-        <div className="envelope-back" />
-        <div className="envelope-letter">
-          <span className="letter-message">You're cordially invited</span>
-          <span className="letter-rule" />
-        </div>
-        <motion.div className="envelope-flap" initial={false} />
-        <div className="envelope-front">
-          <div className="envelope-fold left-fold" />
-          <div className="envelope-fold right-fold" />
-          <div className="envelope-fold bottom-fold" />
-        </div>
-        <motion.div
-          className="wax-seal"
-          animate={{ rotate: [0, -6, 6, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <img
-            className="wax-seal-texture"
-            src={assetUrl("wax-seal-texture.png")}
-            alt=""
-            aria-hidden="true"
-            draggable="false"
-          />
-          <img
-            className="wax-seal-ganesha"
-            src={assetUrl("ganesha-seal-engraving.png")}
-            alt=""
-            aria-hidden="true"
-            draggable="false"
-          />
-        </motion.div>
-      </motion.div>
-    </motion.button>
   );
 }
 
@@ -181,7 +175,6 @@ function FamilyDetails({ side, showRelationship = true }) {
 
 function App() {
   const [page, setPage] = useState("intro");
-  const [opening, setOpening] = useState(false);
   const [introReady, setIntroReady] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
@@ -273,14 +266,10 @@ function App() {
   }, []);
 
   const openInvitation = () => {
-    if (opening || page !== "intro") return;
-    setOpening(true);
+    if (page !== "intro") return;
     musicStartedByUserRef.current = true;
     audioRef.current?.play().catch(() => {});
-    window.setTimeout(() => {
-      setPage(SHOW_STORY_PAGE ? "story" : "invitation");
-      setOpening(false);
-    }, 1550);
+
   };
 
   const toggleMusic = () => {
@@ -307,7 +296,7 @@ function App() {
 
   return (
     <main
-      className={`site-shell ${opening ? "is-opening" : ""}${page === "intro" && !introReady ? " is-loading" : ""}`}
+      className="site-shell"
     >
       <audio
         ref={audioRef}
@@ -329,7 +318,17 @@ function App() {
           <div className="paper-grain" />
           <div className="outer-frame" aria-hidden="true"></div>
           <div className="intro-content">
-            <Envelope onOpen={openInvitation} />
+            <EnvelopeOpening
+              event={EVENTS[inviteType === "reception" ? "reception" : "wedding"]}
+              ready={introReady}
+              onActivate={openInvitation}
+              onFinish={() => {
+                window.scrollTo({ top: 0, behavior: "instant" });
+                setArtworkReady(true);
+                setPage(SHOW_STORY_PAGE ? "story" : "invitation");
+                requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true }));
+              }}
+            />
           </div>
         </section>
       )}
@@ -378,13 +377,14 @@ function App() {
       {page === "invitation" && (
         <motion.div
           key="invitation"
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.55 }}
+          transition={{ duration: 0.85 }}
         >
           <section
             className="invitation-section paper-section"
             id="invitation"
+            tabIndex={-1}
           >
             <button
               className="music-toggle"
@@ -397,10 +397,6 @@ function App() {
               {musicEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
               <span>Music {musicEnabled ? "on" : "off"}</span>
             </button>
-            <InvitationPageReveal
-              artworkTriggerRef={artworkTriggerRef}
-              onArtworkStart={() => setArtworkReady(true)}
-            />
             <div className="outer-frame" aria-hidden="true">
               <span className="outer-frame-top" />
               <span className="frame-corner frame-corner--top-left" />
@@ -413,7 +409,7 @@ function App() {
                 alt=""
               />
             </div>
-            <Reveal>
+            <Reveal immediate>
               <header className="invite-header">
                 <FamilyDetails side={invitationSide} showRelationship={false} />
                 <p>
@@ -463,15 +459,16 @@ function App() {
               {inviteType !== "reception" && (
                 <Reveal delay={0.05}>
                   <article className="ceremony-card">
+                    <CeremonyFrame />
                     <span className="family-label">WEDDING</span>
                     <div
                       className="event-date"
-                      aria-label="Tuesday, 19 January 2027"
+                      aria-label={formatEvent(EVENTS.wedding, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     >
-                      <span className="event-day">19</span>
+                      <span className="event-day">{EVENTS.wedding.day}</span>
                       <span className="event-date-copy">
-                        <span className="event-weekday">Tuesday</span>
-                        <span className="event-month-year">January 2027</span>
+                        <span className="event-weekday">{formatEvent(EVENTS.wedding, { weekday: "long" })}</span>
+                        <span className="event-month-year">{formatEvent(EVENTS.wedding, { month: "long", year: "numeric" })}</span>
                       </span>
                     </div>
                     <span className="event-time-label">TIME</span>
@@ -496,15 +493,16 @@ function App() {
               {inviteType !== "wedding" && (
                 <Reveal delay={0.14}>
                   <article className="ceremony-card">
+                    <CeremonyFrame />
                     <span className="family-label">RECEPTION</span>
                     <div
                       className="event-date"
-                      aria-label="Thursday, 21 January 2027"
+                      aria-label={formatEvent(EVENTS.reception, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     >
-                      <span className="event-day">21</span>
+                      <span className="event-day">{EVENTS.reception.day}</span>
                       <span className="event-date-copy">
-                        <span className="event-weekday">Thursday</span>
-                        <span className="event-month-year">January 2027</span>
+                        <span className="event-weekday">{formatEvent(EVENTS.reception, { weekday: "long" })}</span>
+                        <span className="event-month-year">{formatEvent(EVENTS.reception, { month: "long", year: "numeric" })}</span>
                       </span>
                     </div>
                     <span className="event-time-label">TIME</span>
