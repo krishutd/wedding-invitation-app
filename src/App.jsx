@@ -155,14 +155,18 @@ function PhotoPlaceholder({ label, name }) {
   );
 }
 
-function FamilyDetails({ side }) {
+function FamilyDetails({ side, showRelationship = true }) {
   const isGroom = side === "groom";
   const parents = isGroom ? WEDDING.groomParents : WEDDING.brideParents;
   const address = isGroom ? WEDDING.groomAddress : WEDDING.brideAddress;
 
   return (
     <div className={`${side}-family`}>
-      <span className="family-label">{isGroom ? "SON OF" : "DAUGHTER OF"}</span>
+      {showRelationship && (
+        <span className="family-label">
+          {isGroom ? "SON OF" : "DAUGHTER OF"}
+        </span>
+      )}
       <p className="family-names">{parents}</p>
       <p className="family-address">
         {address.map((line) => (
@@ -402,21 +406,15 @@ function App() {
             </div>
             <Reveal>
               <header className="invite-header">
-                <div className="section-kicker">
-                  TOGETHER
-                  <br />
-                  WITH OUR FAMILIES
-                </div>
+                <FamilyDetails side={invitationSide} showRelationship={false} />
                 <p>
-                  We are delighted to invite you
+                  are delighted to invite you
                   <br />
-                  to the {inviteType === "reception" ? "wedding reception" : "wedding"} of
+                  to the{" "}
+                  {inviteType === "reception" ? "wedding reception" : "wedding"}{" "}
+                  of their {invitationSide === "groom" ? "son" : "daughter"}
                 </p>
               </header>
-            </Reveal>
-
-            <Reveal>
-              <FamilyDetails side={invitationSide} />
             </Reveal>
 
             <Reveal delay={0.08}>
