@@ -38,6 +38,9 @@ button { font: inherit; }
 .intro-content { z-index: 1; width: min(100%, 500px); text-align: center; display: flex; flex-direction: column; align-items: center; }
 .section-kicker, .family-label, .site-end { font-family: 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: .22em; font-size: 10px; }
 .envelope-stage { border: 0; background: transparent; width: min(100%, 430px); cursor: pointer; padding: 12px 8px 16px; color: var(--ink); display: flex; align-items: center; flex-direction: column; }
+.envelope-heading { display: flex; flex-direction: column; align-items: center; gap: 7px; margin: 0 0 20px; text-align: center; }
+.envelope-couple-names { color: var(--gold-dark); font-size: clamp(29px, 7vw, 38px); font-style: italic; font-weight: 500; letter-spacing: -.035em; line-height: 1; }
+.envelope-wedding-date { color: #806b47; font: 500 9px 'DM Sans', sans-serif; letter-spacing: .2em; }
 .envelope { position: relative; width: 100%; aspect-ratio: 1.45; filter: drop-shadow(0 22px 20px #65502b22); perspective: 900px; transform-style: preserve-3d; }
 .envelope-back { position: absolute; inset: 0; border: 1px solid #bdb09a; background-color: #e9dfce; background-image: linear-gradient(145deg, #fff8 0%, #fff2 38%, #87775c14 100%), var(--envelope-paper-texture); background-size: auto, 500px 500px; border-radius: 3px; }
 .envelope-letter { position: absolute; z-index: 1; left: 9%; right: 9%; top: 5%; height: 86%; background-color: #f1e9dc; background-image: linear-gradient(145deg, #fff9 0%, #fff2 50%, #84745712 100%), var(--envelope-paper-texture); background-size: auto, 500px 500px; border: 1px solid #c9bca7; box-shadow: 0 3px 10px #51432f1a; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; transition: transform .95s cubic-bezier(.22,.75,.28,1); }
@@ -73,11 +76,14 @@ button { font: inherit; }
 .tiny-divider { color: var(--gold); font-size: 14px; letter-spacing: .2em; }
 .page-next-button { border: 1px solid #b99b5d; background: #f4ead3b8; color: var(--gold-dark); display: flex; align-items: center; gap: 14px; padding: 12px 18px; font: 10px 'DM Sans', sans-serif; letter-spacing: .14em; cursor: pointer; }
 .invitation-section { padding: 70px 34px 55px; text-align: center; }
+.music-toggle { position: absolute; z-index: 20; top: 30px; right: 32px; display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 5px 8px; border: 1px solid #b99b5d8c; border-radius: 20px; background: #f6edd9d9; color: #6b4c18; font: 9px 'DM Sans', sans-serif; letter-spacing: .04em; cursor: pointer; }
+.music-toggle:hover { background: #f6edd9; }
+.music-toggle:focus-visible { outline: 2px solid #96702b; outline-offset: 2px; }
 .invite-header, .couple-names, .bride-family, .art-section, .ceremonies { position: relative; z-index: 1; }
 .invitation-glitter-layer { position: absolute; z-index: 10; inset: 0; overflow: hidden; pointer-events: none; }
-.invitation-glitter-veil { position: absolute; inset: 0; clip-path: inset(0); will-change: clip-path; }
+.invitation-glitter-veil { position: absolute; inset: 0; -webkit-clip-path: inset(0); clip-path: inset(0); will-change: clip-path; }
 .invitation-glitter-canvas { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; opacity: 1; pointer-events: none; transition: opacity .45s ease; }
-.invitation-glitter-layer.is-complete .invitation-glitter-veil { clip-path: inset(0 0 100% 0); }
+.invitation-glitter-layer.is-complete .invitation-glitter-veil { -webkit-clip-path: inset(0 0 100% 0); clip-path: inset(0 0 100% 0); }
 .invitation-glitter-layer.is-complete .invitation-glitter-canvas { opacity: 0; }
 .invite-header .section-kicker { font-size: 12px; letter-spacing: .25em; }
 .invite-header > p { font-size: 21px; line-height: 1.25; margin: 22px 0; }

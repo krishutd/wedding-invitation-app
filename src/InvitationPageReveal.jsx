@@ -5,6 +5,10 @@ const REVEAL_MS = 4800;
 const DUST_COUNT = 150;
 const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const randomBetween = (min, max) => min + Math.random() * (max - min);
+const setVeilClipPath = (veil, value) => {
+  veil.style.clipPath = value;
+  veil.style.webkitClipPath = value;
+};
 
 /** A short gold-dust sweep that reveals the invitation card once on entry. */
 export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart }) {
@@ -77,7 +81,7 @@ export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart
       if (cancelled) return;
       const elapsed = now - startedAt;
       const progress = clamp(elapsed / REVEAL_MS);
-      veil.style.clipPath = `inset(${progress * 100}% 0 0 0)`;
+      setVeilClipPath(veil, `inset(${progress * 100}% 0 0 0)`);
 
       const marker = artworkTriggerRef?.current;
       if (!artworkStartedRef.current && marker) {
@@ -121,7 +125,7 @@ export default function InvitationPageReveal({ artworkTriggerRef, onArtworkStart
       if (elapsed < REVEAL_MS) {
         frameId = window.requestAnimationFrame(drawFrame);
       } else {
-        veil.style.clipPath = "inset(0 0 100% 0)";
+        setVeilClipPath(veil, "inset(0 0 100% 0)");
         finish();
       }
     };
