@@ -1,0 +1,69 @@
+<!doctype html><html><head><title>Opening sequence checks</title></head><body>
+<button id="run">Run opening checks</button><pre id="results">Ready</pre><iframe id="preview" style="width:320px;height:480px;border:1px solid #aaa" title="Narrow invitation preview"></iframe>
+<script type="module">
+const frame = document.querySelector('iframe');
+const output = document.querySelector('pre');
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const until = async (predicate, timeout = 18000) => { const start = performance.now(); while (!predicate()) { if (performance.now()-start > timeout) throw Error('Timed out'); await wait(20); } };
+document.querySelector('button').onclick = async () => {
+ output.textContent = '';
+ const check = (value, message) => { if (!value) throw Error(message); output.textContent += `PASS ${message}\n`; };
+ try {
+ for (const [query, day, count, mode] of [['wedding',19,1,'normal'],['reception',21,1,'early'],['',19,2,'normal'],['invalid',19,2,'resize'],['reception',21,1,'failure'],['reception',21,1,'reduced']]) {
+  frame.src = (mode === 'reduced' ? '/tests/reduced.html' : '/') + '?opening=enhanced&invite=' + query;
+  await new Promise(resolve => frame.onload = resolve);
+  await until(() => frame.contentDocument.querySelector('.envelope-stage'));
+  const doc = frame.contentDocument;
+  check(doc.querySelector('.date-selected').textContent.trim() === String(day), `${query || 'missing'} selected date`);
+  check(doc.querySelector('.date-row').textContent.replace(/\s/g,'') === [day-2,day-1,day,day+1,day+2].join(''), 'Five-date row');
+  check(doc.documentElement.scrollWidth <= frame.clientWidth, 'No horizontal overflow at 320px');
+  if (mode === 'normal') {
+    await wait(1700);
+    check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-selected path')).strokeDashoffset) === 1, 'Heart waits for tap');
+  }
+  if (mode === 'failure') frame.contentWindow.Element.prototype.animate = () => { throw Error('Simulated unavailable animation API'); };
+  const button = doc.querySelector('.envelope-stage');
+  if (mode === 'reduced') check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-selected path')).strokeDashoffset) === 0, 'Reduced-motion heart already drawn');
+  const started = performance.now();
+  button.click(); button.click();
+  if (mode === 'normal') {
+    await wait(500);
+    check(doc.querySelector('.opening-composition').dataset.stage === 'drawing', 'Tap starts thread drawing');
+    const trailPieces = [...doc.querySelectorAll('.thread-trail')];
+    const styles = trailPieces.map(piece => frame.contentWindow.getComputedStyle(piece));
+    const drawnLength = styles.reduce((sum, style) => sum + parseFloat(style.strokeDasharray), 0) * doc.querySelector('.date-thread path').getTotalLength();
+    check(Math.abs(drawnLength - doc.querySelector('.date-selected path').getTotalLength()) < 1, 'Moving trail is limited to the heart perimeter');
+    check(parseFloat(styles[0].opacity) > parseFloat(styles.at(-1).opacity) && parseFloat(styles.at(-1).opacity) < .02, 'Trail fades toward its tail');
+    const path = doc.querySelector('.date-thread path');
+    const sealBounds = doc.querySelector('.wax-seal').getBoundingClientRect();
+    const origin = path.getPointAtLength(0);
+    const orbitLength = (310 / 180) * Math.PI * (Math.max(sealBounds.width, sealBounds.height) / 2 + 5);
+    const halfway = path.getPointAtLength(orbitLength / 2);
+    const loopEnd = path.getPointAtLength(orbitLength);
+    check(Math.hypot(loopEnd.x - origin.x, loopEnd.y - origin.y) > 20 && halfway.y - origin.y > sealBounds.height, 'Thread sweeps around seal with an open gap before departing');
+    check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-neighbour')).opacity) === 1, 'Neighbour dates remain during drawing');
+    await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'flap');
+    const flap = doc.querySelector('.envelope-flap');
+    check(flap.querySelectorAll('.envelope-flap-face').length === 2, 'Flap has separate front and inner paper faces');
+    await wait(350);
+    check(frame.contentWindow.getComputedStyle(flap).zIndex === '4', 'Flap stays above envelope during first half');
+    await wait(850);
+    check(frame.contentWindow.getComputedStyle(flap).zIndex === '0', 'Flap moves behind insert after passing edge-on');
+    await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'reading');
+    check(performance.now()-started > 6000, 'Slower sequence holds readable insert');
+  }
+  if (mode === 'resize') { await wait(100); frame.style.width = '375px'; }
+  await until(() => doc.querySelector('#invitation'));
+  check(performance.now()-started < 17000, `${query || 'missing'} ${mode} reaches invitation within recovery deadline`);
+  check(!doc.querySelector('.opening-composition'), 'Opening overlay removed');
+  check(!doc.querySelector('.expanding-paper'), 'No intermediate blank paper layer');
+  check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.invite-header').parentElement).opacity) === 1, 'Invitation header visible immediately');
+  check(doc.querySelectorAll('.ceremony-card').length === count, 'Correct event cards');
+  check(doc.documentElement.scrollHeight > frame.clientHeight, 'Final invitation scrollable');
+  frame.style.width = '320px';
+ }
+ output.textContent += 'DONE\n';
+ } catch(error) { output.textContent += `FAIL ${error.message}\n`; }
+};
+</script></body></html>
+

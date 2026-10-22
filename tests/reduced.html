@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reduced motion branch fixture</title></head><body><div id="root"></div><script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from '/src/App.jsx';
+import '/src/styles.css';
+// Test-only simulation of the OS preference before React mounts.
+const original = window.matchMedia.bind(window);
+window.matchMedia = query => query.includes('prefers-reduced-motion') ? { matches: true, media: query, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {} } : original(query);
+createRoot(document.getElementById('root')).render(React.createElement(App));
+</script></body></html>
+

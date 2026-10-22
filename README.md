@@ -78,3 +78,21 @@ This project deploys to GitHub Pages using the workflow in `.github/workflows/pa
 - Fonts load from Google Fonts and need an internet connection. The QR image is stored locally.
 - The Radha–Krishna artwork is stored as a transparent PNG at `public/assets/radha-krishna-silhouette.png` and reveals with an animation when it enters view.
 - The default Google Maps searches are based on the venue names from the supplied reference. Verify the exact pins before sharing the final invitation.
+
+## Classic and enhanced experience
+
+The default experience is the original app from the base of PR #15. Both the PR's visual redesign and the enhanced date/seal animation are opt-in:
+
+- `?opening=enhanced`: redesigned opening and invitation, including the date-unlock animation.
+- `?opening=classic`, no `opening`, or an invalid value: original opening and invitation.
+- Values are case-insensitive. The first value wins if the parameter is repeated.
+
+Existing `side` and `invite` selection and their fallback behavior are unchanged. For example:
+
+- `?side=bride&invite=wedding&opening=enhanced`
+- `?side=groom&invite=reception&opening=enhanced`
+- `?side=bride&invite=reception` (classic)
+
+Selection happens before mounting React and loads only that experience's stylesheet. `src/ClassicApp.jsx` and `src/classic.css` preserve the original implementation from base commit e1ac1e1; `src/App.jsx` and `src/styles.css` contain the enhanced version. When changing shared invitation content in future, update both implementations while this flag exists. Shared artwork and reveal components remain reused.
+
+Run the enhanced animation checks at `/tests/opening.html` and the flag checks at `/tests/feature-flags.html` using the Vite development server. These test pages are not part of the production build.
