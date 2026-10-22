@@ -540,7 +540,7 @@ function App() {
 
             <Reveal>
               <p className="presence-note">
-                Together with our families, we warmly invite you and your family
+                We warmly invite you and your family
                 to join us for{" "}
                 {inviteType === "both"
                   ? "the wedding and reception"
