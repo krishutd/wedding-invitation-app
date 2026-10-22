@@ -205,7 +205,8 @@ function App() {
   useEffect(() => {
     let cancelled = false;
     const introAssets = [
-      "envelope-fabric-background.png",
+      "envelope-botanical-background.png",
+      "envelope-botanical-overlay.png",
       "envelope-paper-texture.png",
       "wax-seal-texture.png",
       "ganesha-seal-engraving.png",
@@ -320,7 +321,8 @@ function App() {
         <section
           className="intro-screen"
           style={{
-            "--intro-fabric-background": `url("${assetUrl("envelope-fabric-background.png")}")`,
+            "--intro-botanical-background": `url("${assetUrl("envelope-botanical-background.png")}")`,
+            "--envelope-botanical-overlay": `url("${assetUrl("envelope-botanical-overlay.png")}")`,
             "--envelope-paper-texture": `url("${assetUrl("envelope-paper-texture.png")}")`,
           }}
         >
@@ -380,7 +382,10 @@ function App() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.55 }}
         >
-          <section className="invitation-section paper-section" id="invitation">
+          <section
+            className="invitation-section paper-section"
+            id="invitation"
+          >
             <button
               className="music-toggle"
               type="button"
@@ -398,6 +403,10 @@ function App() {
             />
             <div className="outer-frame" aria-hidden="true">
               <span className="outer-frame-top" />
+              <span className="frame-corner frame-corner--top-left" />
+              <span className="frame-corner frame-corner--top-right" />
+              <span className="frame-corner frame-corner--bottom-left" />
+              <span className="frame-corner frame-corner--bottom-right" />
               <img
                 className="top-ganesha"
                 src={assetUrl("ganesha-seal-engraving.png")}
