@@ -2,7 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlitterReveal from "./GlitterReveal.jsx";
 import InvitationPageReveal from "./InvitationPageReveal.jsx";
-import { MapPin, ArrowRight, Heart, ExternalLink } from "lucide-react";
+import {
+  MapPin,
+  ArrowRight,
+  Heart,
+  ExternalLink,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
 const MUSIC_FADE_SECONDS = 1.5;
@@ -90,6 +97,10 @@ function Envelope({ onOpen }) {
       onClick={onOpen}
       aria-label="Open the wedding invitation"
     >
+      <div className="envelope-heading" aria-hidden="true">
+        <span className="envelope-couple-names">Krishna &amp; Archa</span>
+        <span className="envelope-wedding-date">19-01-2027</span>
+      </div>
       <motion.div
         className="envelope"
         whileTap={{ scale: 0.985 }}
@@ -169,7 +180,10 @@ function App() {
   const [opening, setOpening] = useState(false);
   const [introReady, setIntroReady] = useState(false);
   const [artworkReady, setArtworkReady] = useState(false);
+  const [musicEnabled, setMusicEnabled] = useState(true);
   const audioRef = useRef(null);
+  const musicStartedByUserRef = useRef(false);
+  const musicEnabledRef = useRef(true);
   const resumeMusicOnForegroundRef = useRef(false);
   const artworkTriggerRef = useRef(null);
   const params = new URLSearchParams(window.location.search);
@@ -208,6 +222,7 @@ function App() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    audio.pause();
     audio.volume = MUSIC_MAX_VOLUME;
 
     const fadeTimer = window.setInterval(() => {
@@ -229,12 +244,17 @@ function App() {
     const handleVisibilityChange = () => {
       if (document.hidden) {
         // Only resume later if playback was active before the page was hidden.
-        resumeMusicOnForegroundRef.current = !audio.paused;
+        resumeMusicOnForegroundRef.current =
+          musicEnabledRef.current && musicStartedByUserRef.current && !audio.paused;
         if (!audio.paused) audio.pause();
         return;
       }
 
-      if (resumeMusicOnForegroundRef.current) {
+      if (
+        musicEnabledRef.current &&
+        musicStartedByUserRef.current &&
+        resumeMusicOnForegroundRef.current
+      ) {
         audio.play().then(() => {
           resumeMusicOnForegroundRef.current = false;
         }).catch(() => {
@@ -250,11 +270,29 @@ function App() {
   const openInvitation = () => {
     if (opening || page !== "intro") return;
     setOpening(true);
+    musicStartedByUserRef.current = true;
     audioRef.current?.play().catch(() => {});
     window.setTimeout(() => {
       setPage(SHOW_STORY_PAGE ? "story" : "invitation");
       setOpening(false);
     }, 1550);
+  };
+
+  const toggleMusic = () => {
+    const enabled = !musicEnabledRef.current;
+    musicEnabledRef.current = enabled;
+    setMusicEnabled(enabled);
+
+    const audio = audioRef.current;
+    if (!enabled) {
+      resumeMusicOnForegroundRef.current = false;
+      audio?.pause();
+      return;
+    }
+
+    if (musicStartedByUserRef.current) {
+      audio?.play().catch(() => {});
+    }
   };
 
   const showInvitationPage = () => {
@@ -270,6 +308,7 @@ function App() {
         ref={audioRef}
         src={assetUrl("wedding-music.mp3")}
         loop
+        autoPlay={false}
         preload="none"
       />
 
@@ -338,6 +377,17 @@ function App() {
           transition={{ duration: 0.55 }}
         >
           <section className="invitation-section paper-section" id="invitation">
+            <button
+              className="music-toggle"
+              type="button"
+              onClick={toggleMusic}
+              aria-label={musicEnabled ? "Turn music off" : "Turn music on"}
+              aria-pressed={musicEnabled}
+              title={musicEnabled ? "Turn music off" : "Turn music on"}
+            >
+              {musicEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
+              <span>Music {musicEnabled ? "on" : "off"}</span>
+            </button>
             <InvitationPageReveal
               artworkTriggerRef={artworkTriggerRef}
               onArtworkStart={() => setArtworkReady(true)}
