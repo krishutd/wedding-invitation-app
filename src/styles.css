@@ -159,3 +159,17 @@ button { font: inherit; }
   .divine-art-stage.is-revealed::after { animation: none !important; opacity: 0; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Preserve the invitation's paper palette when a browser applies dark mode. */
+@media (prefers-color-scheme: dark) {
+  :root, body, #root { color-scheme: only light; }
+  :root { --gold: #82601e; --gold-dark: #684911; --muted: #65583e; }
+  :root, html, body { background-color: #e8dec8; color: #453a25; }
+  .site-shell { background: linear-gradient(145deg, #f3ead5 0%, #f1e8d3 48%, #ede1c5 100%); }
+  .paper-section, .intro-screen { background-color: #eee3cb; }
+  .ceremony-card { background-color: #f6edd9; }
+  .page-next-button, .music-toggle { background-color: #f4ead3; }
+  .music-toggle:hover { background-color: #f6edd9; }
+  .envelope-wedding-date, .event-weekday, .event-month-year,
+  .event-time-label, .event-time span, .other-event-note { color: #65583e; }
+}
