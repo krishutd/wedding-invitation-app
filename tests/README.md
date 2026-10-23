@@ -11,4 +11,4 @@ The PNG is flattened, so only its original pixels are masked; there are no separ
 
 Physical Safari/WhatsApp rendering, device orientation and audible music output still require a device check. Browser checks verify controls and layout, not physical audio output.
 
-The enhanced central reveal samples opaque pixels from the unchanged PNG. 190 falling flecks settle onto those points as soft overlapping mask blooms resolve the original image over three seconds. A local canvas is removed before the measured handoff; reduced motion skips it. The longer focal reveal intentionally brings the complete sequence to approximately 6.7 seconds.
+The enhanced central reveal samples opaque pixels from the unchanged PNG. 760 falling flecks settle onto those points as soft overlapping mask blooms resolve the original image over three seconds. A local canvas is removed before the measured handoff; reduced motion skips it. The longer focal reveal intentionally brings the complete sequence to approximately 6.7 seconds.

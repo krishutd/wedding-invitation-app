@@ -33,7 +33,7 @@ export function createGoldenFormation(canvas, image) {
   const random=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
   const clamp=n=>Math.max(0,Math.min(1,n));
   const smooth=n=>{const t=clamp(n);return t*t*(3-2*t);};
-  const particles=Array.from({length:190},()=>{
+  const particles=Array.from({length:760},()=>{
     const target=points[Math.floor(random()*points.length)];
     return {...target, startX:target.x+(random()-.5)*width*.6,
       startY:-padTop+random()*height*.18,
