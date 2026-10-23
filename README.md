@@ -83,7 +83,7 @@ This project deploys to GitHub Pages using the workflow in `.github/workflows/pa
 
 The default experience is the original app from the base of PR #15. Both the PR's visual redesign and the enhanced date/seal animation are opt-in:
 
-- `?opening=enhanced`: redesigned opening and invitation, including the date-unlock animation.
+- `?opening=enhanced`: redesigned opening and invitation, including the date-unlock animation. `?opening=enhancement` is also accepted as an alias for shared links.
 - `?opening=classic`, no `opening`, or an invalid value: original opening and invitation.
 - Values are case-insensitive. The first value wins if the parameter is repeated.
 
@@ -93,6 +93,10 @@ Existing `side` and `invite` selection and their fallback behavior are unchanged
 - `?side=groom&invite=reception&opening=enhanced`
 - `?side=bride&invite=reception` (classic)
 
-Selection happens before mounting React and loads only that experience's stylesheet. `src/ClassicApp.jsx` and `src/classic.css` preserve the original implementation from base commit e1ac1e1; `src/App.jsx` and `src/styles.css` contain the enhanced version. When changing shared invitation content in future, update both implementations while this flag exists. Shared artwork and reveal components remain reused.
+Selection happens before mounting React and loads only that experience's stylesheet. `src/ClassicApp.jsx` and `src/classic.css` preserve the original design from base commit e1ac1e1, with the shared deployment-safe asset URL helper; `src/App.jsx` and `src/styles.css` contain the enhanced version. When changing shared invitation content in future, update both implementations while this flag exists. Shared artwork and reveal components remain reused.
 
 Run the enhanced animation checks at `/tests/opening.html` and the flag checks at `/tests/feature-flags.html` using the Vite development server. These test pages are not part of the production build.
+
+### Verify deployed artwork locally
+
+After building, run `node tests/serve-production.mjs`, then open `http://127.0.0.1:4174/tests/production-assets.html`. This serves the compiled app under `/wedding-invitation-app/`, matching GitHub Pages, and verifies decoded background, paper, and overlay images for classic, enhanced, and enhancement-alias links. Runtime asset URLs are made absolute in `src/assets.js` before being passed to CSS custom properties; this prevents built stylesheets from requesting `assets/assets/` paths.

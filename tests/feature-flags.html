@@ -18,6 +18,7 @@ document.querySelector('button').onclick = async () => {
   ['?opening=&invite=reception', 'classic', 1],
   ['?opening=enhanced&side=bride&invite=wedding', 'enhanced', 1],
   ['?opening=ENHANCED&side=groom&invite=reception', 'enhanced', 1],
+  ['?opening=enhancement&side=bride&invite=reception', 'enhanced', 1],
  ];
  for (const [query, mode, count] of cases) {
   check(resolveOpening(query) === mode, `Flag resolution: ${query || 'missing'}`);
