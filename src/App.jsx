@@ -172,6 +172,7 @@ function App() {
       "envelope-botanical-background.png",
       "envelope-botanical-overlay.png",
       "envelope-paper-texture.png",
+      "ivory-paper-texture.png",
       "wax-seal-texture.png",
       "ganesha-seal-engraving.png",
     ];
@@ -271,7 +272,7 @@ function App() {
   };
 
   return (
-    <main className="site-shell" style={{
+    <main className={`site-shell${page === "intro" && !introReady ? " is-loading" : ""}`} aria-busy={page === "intro" && !introReady} style={{
       "--intro-botanical-background": `url("${assetUrl("envelope-botanical-background.png")}")`,
     }}>
       <audio

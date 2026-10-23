@@ -210,6 +210,7 @@ function App() {
     const introAssets = [
       "envelope-fabric-background.png",
       "envelope-paper-texture.png",
+      "ivory-paper-texture.png",
       "wax-seal-texture.png",
       "ganesha-seal-engraving.png",
     ];
@@ -281,7 +282,7 @@ function App() {
   }, []);
 
   const openInvitation = () => {
-    if (opening || page !== "intro") return;
+    if (!introReady || opening || page !== "intro") return;
     setOpening(true);
     musicStartedByUserRef.current = true;
     audioRef.current?.play().catch(() => {});
@@ -316,6 +317,7 @@ function App() {
   return (
     <main
       className={`site-shell ${opening ? "is-opening" : ""}${page === "intro" && !introReady ? " is-loading" : ""}`}
+      aria-busy={page === "intro" && !introReady}
     >
       <audio
         ref={audioRef}

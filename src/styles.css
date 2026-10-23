@@ -52,6 +52,8 @@ button { font: inherit; }
 .site-shell { max-width: 760px; margin: 0 auto; min-height: 100vh; background: linear-gradient(145deg, #fbf6ef 0%, var(--color-paper) 48%, var(--color-paper-edge) 100%); box-shadow: 0 0 60px #40352c12; position: relative; overflow: clip; }
 .site-shell.is-loading { min-height: 100svh; background: var(--color-paper); box-shadow: none; }
 .site-shell.is-loading .intro-screen { visibility: hidden; }
+/* The fixed background belongs to the same reveal as the envelope itself. */
+.site-shell.is-loading::before { visibility: hidden; }
 .paper-section, .intro-screen { position: relative; background-color: var(--color-paper); background-image: radial-gradient(ellipse at 50% 38%, #fffdf8c0 0%, #f7f0e790 48%, transparent 83%), linear-gradient(90deg, #a47a3020 0%, #c8a96a2a 3%, #f4ebdd 10%, transparent 24%, transparent 76%, #f4ebdd 90%, #c8a96a2e 97%, #a47a3020 100%), radial-gradient(ellipse at 12% 88%, #c8a96a24 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #c8a96a20 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .intro-screen { min-height: 100svh; display: grid; place-items: center; padding: 42px 24px; background-image: linear-gradient(rgba(244, 235, 221, .22), rgba(244, 235, 221, .22)), var(--intro-botanical-background); background-size: cover; background-position: center; background-repeat: no-repeat; }
 /* The artwork is sized to one viewport, independent of the scrollable page.
