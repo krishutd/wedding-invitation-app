@@ -57,7 +57,9 @@ document.querySelector('button').onclick = async () => {
   check(performance.now()-started < 17000, `${query || 'missing'} ${mode} reaches invitation within recovery deadline`);
   check(!doc.querySelector('.opening-composition'), 'Opening overlay removed');
   check(!doc.querySelector('.expanding-paper'), 'No intermediate blank paper layer');
-  check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.invite-header').parentElement).opacity) === 1, 'Invitation header visible immediately');
+  await wait(1500);
+  check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.invite-header').parentElement).opacity) === 1, 'Invitation header readable within handoff budget');
+  check(!doc.querySelector('.paper-handoff'), 'Paper transition removed');
   check(doc.querySelectorAll('.ceremony-card').length === count, 'Correct event cards');
   check(doc.documentElement.scrollHeight > frame.clientHeight, 'Final invitation scrollable');
   frame.style.width = '320px';

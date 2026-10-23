@@ -12,3 +12,7 @@ The thread path is checked for an open 310-degree sweep outside the measured sea
 
 
 The moving thread is limited to the measured heart perimeter, with decreasing opacity along its tail. Checks verify its length and opacity falloff; the remaining connector is withdrawn while the heart draws.
+
+Enhanced stationery regression: open `/tests/stationery.html` in the Vite preview and click **Run stationery checks**. Covers wedding/reception, family ordering inputs, missing/invalid event fallbacks, 320×480 overflow, selected heart, fast scrolling, no replay, overlay cleanup, map destinations, music toggle, reduced motion and unavailable WAAPI. Opening timings are accelerated in this fixture only; `/tests/opening.html` retains real-speed opening checks. **Inspect slow handoff** stretches only the paper transition for visual inspection.
+
+The enhanced app defaults to visible text/artwork when observation or animation APIs fail. The classic app and its shared legacy glitter implementation are unchanged. Validate actual audio output and WhatsApp/Safari rendering on a physical phone before release; browser fixtures verify playback controls, not audibility.

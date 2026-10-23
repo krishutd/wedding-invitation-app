@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { eventDate, formatEvent } from './events';
 
-const heart = 'M24 41 C20 36 3 25 3 15 C3 3 18 1 24 11 C30 1 45 3 45 15 C45 25 28 36 24 41Z';
+import { HEART as heart } from './StationeryReveal.jsx';
 const TRAIL_SEGMENTS = 24;
 const FLOW_MS = 1700;
 const FLOW_EASING = 'ease-in-out';
 import { assetUrl as asset } from "./assets.js";
 
-export default function EnvelopeOpening({ event, ready, onActivate, onFinish }) {
+export default function EnvelopeOpening({ event, ready, onActivate, onFinish, onPaper }) {
   const root = useRef(null);
   const selected = useRef(null);
   const seal = useRef(null);
@@ -140,9 +140,15 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish }) 
       ], FLOW_MS, { easing: 'cubic-bezier(.42,0,.58,1)' }).finished;
       setStage('letter');
       await animate(letter.current, [{ transform: 'translateY(0)' }, { transform: 'translateY(-48%)' }], FLOW_MS, { easing: FLOW_EASING }).finished;
-      // Hold the wording, then reveal the invitation directly without a blank paper layer.
+      // Preserve the readable insert, then expand only its paper surface.
       setStage('reading');
       await animate(letter.current, [{ transform: 'translateY(-48%)' }, { transform: 'translateY(-48%)' }], 700).finished;
+      await animate(letter.current.querySelector('.letter-message'), [{ opacity: 1 }, { opacity: 0 }], 180).finished;
+      await animate(letter.current.querySelector('.letter-rule'), [{ opacity: 1 }, { opacity: 0 }], 100).finished;
+      const bounds = letter.current.getBoundingClientRect();
+      const envelopeTop = root.current.querySelector('.envelope').getBoundingClientRect().top;
+      setStage('paper');
+      await onPaper?.({ left: bounds.left, top: bounds.top, width: bounds.width, height: Math.max(1, envelopeTop - bounds.top) });
       finish();
     } catch { finish(); }
   }
@@ -169,7 +175,7 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish }) 
       <button type="button" className="envelope-stage" onClick={open} aria-disabled={stage !== 'sealed'} aria-label={`Open the ${event.label} invitation`}>
         <div className="envelope" aria-hidden="true">
           <div className="envelope-back" />
-          <div className="envelope-letter" ref={letter}><span className="letter-message">You're cordially invited</span><span className="letter-rule" /></div>
+          <div className="envelope-letter paper-section" ref={letter}><span className="letter-message">You're cordially invited</span><span className="letter-rule" /></div>
           <div className="envelope-flap">
             <div className="envelope-flap-face envelope-flap-outer" />
             <div className="envelope-flap-face envelope-flap-inner" />
