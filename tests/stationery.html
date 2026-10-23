@@ -1,5 +1,5 @@
 <!doctype html><html><head><style>iframe{position:fixed;right:12px;top:70px}pre{max-width:calc(100vw - 470px);max-height:80vh;overflow:auto}</style><title>Artwork handoff checks</title></head><body>
-<button id="run">Run artwork checks</button><button id="inspect">Inspect artwork slowly</button><pre id="results">Ready</pre><iframe title="Invitation preview" style="width:320px;height:480px"></iframe>
+<button id="run">Run artwork checks</button><button id="inspect">Inspect artwork slowly</button><button id="still">Inspect glitter frame</button><pre id="results">Ready</pre><iframe title="Invitation preview" style="width:320px;height:480px"></iframe>
 <script type="module">
 const frame=document.querySelector('iframe'), out=document.querySelector('pre');
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -19,14 +19,15 @@ async function load(query,mode='normal',width=320,height=480){
   animation.finished.then(()=>clearTimeout(timer),()=>clearTimeout(timer));return animation;
  };
  if(mode==='slow'){
-  const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===4200?42000:ms,...args);
-  w.Element.prototype.animate=function(frames,opts){return animate.call(this,frames,{...opts,duration:this.closest('.artwork-handoff')?opts.duration*8:opts.duration});};
+  const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===6500?65000:ms===17000?170000:ms,...args);
+  w.Element.prototype.animate=function(frames,opts){return animate.call(this,frames,{...opts,duration:this.closest('.artwork-handoff')?opts.duration*3:opts.duration});};
  }
  const started=performance.now();
  d.querySelector('.envelope-stage').click();d.querySelector('.envelope-stage').click();
  return {w,d,started};
 }
 document.querySelector('#inspect').onclick=()=>load('side=bride','slow',375,700);
+document.querySelector('#still').onclick=async()=>{const {d}=await load('side=bride','slow',375,700);await until(()=>d.querySelector('.formation-glitter')?.getAnimations().length);const animation=d.querySelector('.formation-glitter').getAnimations()[0];await until(()=>Number(animation.currentTime)/animation.effect.getTiming().duration>.45);d.querySelectorAll('.artwork-handoff *').forEach(n=>n.getAnimations().forEach(a=>a.pause()));out.textContent='Paused at the forming-artwork moment. Reload to reset.';};
 document.querySelector('#run').onclick=async()=>{
  out.textContent='';
  try{
@@ -40,10 +41,12 @@ document.querySelector('#run').onclick=async()=>{
  ['invite=wedding',19,1,'failure',320,480],
  ['invite=wedding',19,1,'key',320,480],
  ['invite=wedding',19,1,'asset',320,480],
+ ['invite=wedding',19,1,'canvas',320,480],
  ];
  for(const [query,day,count,mode,width,height,route] of cases){
   const {w,d,started}=await load(query,mode,width,height);
   let measured;
+  if(mode==='canvas')w.HTMLCanvasElement.prototype.getContext=()=>null;
   if(mode==='asset')w.HTMLImageElement.prototype.decode=()=>Promise.reject(Error('decode failure'));
   if(['normal','skip','resize','key'].includes(mode)){
    await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='reveal');
@@ -55,6 +58,11 @@ document.querySelector('#run').onclick=async()=>{
    if(mode==='key')w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Tab'}));
    if(mode==='resize'){frame.style.width='430px';}
    if(mode==='normal'){
+    await wait(800);
+    const glitter=d.querySelector('.formation-glitter');
+    check(glitter && w.getComputedStyle(d.querySelector('.handoff-art img')).visibility==='hidden','Canvas owns the forming artwork');
+    const pixels=glitter.getContext('2d').getImageData(0,0,glitter.width,glitter.height).data;
+    check(pixels.some((value,i)=>i%4===3 && value>40),'Falling glitter and forming pixels are painted');
     await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='settling');
     check(d.querySelector('.artwork-handoff').dataset.destination===route,'Destination route '+route+' at '+width+'x'+height);
     const target=d.querySelector('#invitation .divine-art').getBoundingClientRect(); measured=target;
@@ -73,11 +81,11 @@ document.querySelector('#run').onclick=async()=>{
   await until(()=>d.querySelector('#invitation')&&!d.querySelector('.intro-screen')&&!d.querySelector('.artwork-handoff'));
   await wait(120);
   if(measured){const final=d.querySelector('.divine-art').getBoundingClientRect();check(['left','top','width','height'].every(k=>Math.abs(final[k]-measured[k])<1),'Final layout matches measured destination');}
-  check(performance.now()-started<6500,'Tap to ready within budget: '+mode);
+  check(performance.now()-started<8500,'Tap to ready within budget: '+mode);
   check(d.querySelectorAll('.ceremony-card').length===count,'Correct variant '+query);
   check(d.querySelector('.event-heart').parentElement.textContent===String(day),'Correct selected day '+day);
   check(w.getComputedStyle(d.querySelector('.divine-art')).visibility==='visible','Original artwork fully visible');
-  check(d.querySelectorAll('.divine-art').length===1 && !d.querySelector('.art-fleck'),'No duplicate art or particles');
+  check(d.querySelectorAll('.divine-art').length===1 && !d.querySelector('.art-fleck, .formation-glitter'),'No duplicate art or particles');
   check(!d.querySelector('[inert]'),'Focus restriction released');
   check(w.scrollY===0,'No automatic scrolling');
   check(d.documentElement.scrollWidth<=d.documentElement.clientWidth,'No horizontal overflow');
@@ -87,7 +95,7 @@ document.querySelector('#run').onclick=async()=>{
   w.scrollTo({top:d.body.scrollHeight,behavior:'instant'});await wait(180);
   check(w.scrollY>0,'Normal scrolling restored');
   w.scrollTo({top:0,behavior:'instant'});await wait(120);
-  check(!d.querySelector('.art-fleck') && d.querySelector('.divine-art').getAnimations().length===0,'Artwork never replays on scroll');
+  check(!d.querySelector('.art-fleck, .formation-glitter') && d.querySelector('.divine-art').getAnimations().length===0,'Artwork never replays on scroll');
   out.textContent+='CASE COMPLETE '+mode+'\n';
  }
  out.textContent+='DONE\n';

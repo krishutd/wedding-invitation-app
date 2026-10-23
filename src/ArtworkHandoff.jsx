@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useReducedMotion } from 'framer-motion';
+import { createGoldenFormation } from './goldenFormation';
 import { assetUrl } from './assets';
 
 /** Shares the envelope's completion promise; all paths establish the final page first. */
@@ -21,6 +22,8 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     let disposed = false;
     let completed = false;
     let readinessTimer;
+    let glitterFrame = 0;
+    let formation;
     const run = (node, frames, duration, extra = {}) => {
       if (disposed || completed) throw Error('Transition finished');
       const animation = node.animate(frames, { duration, fill: 'forwards', easing: 'cubic-bezier(.22,.75,.28,1)', ...extra });
@@ -43,7 +46,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     events.forEach(name => window.addEventListener(name, finish, { passive: true }));
     window.addEventListener('keydown', skipKey);
     window.visualViewport?.addEventListener('resize', finish);
-    const watchdog = setTimeout(finish, 4200);
+    const watchdog = setTimeout(finish, 6500);
     async function play() {
       try {
         if (!page || !destination || reduced) { finish(); return; }
@@ -65,23 +68,29 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         ], 300);
         scene.dataset.phase = 'reveal';
         art.style.visibility = 'visible';
-        const flecks = [...art.querySelectorAll('.art-fleck')];
-        flecks.forEach((fleck, i) => {
-          const angle = i * 2.399;
-          const x = Math.cos(angle) * 80, y = Math.sin(angle) * 90;
-          run(fleck, [
-            { transform: `translate(${x}px,${y}px)`, opacity: 0 },
-            { opacity: .65, offset: .25 },
-            { transform: `translate(${x*.25}px,${y*.25}px)`, opacity: 0 },
-          ], 1050, { delay: i * 14 }).catch(() => {});
-        });
-        run(art.querySelector('.art-gold'), [{ opacity: 0 }, { opacity: .3, offset: .3 }, { opacity: 0 }], 1350).catch(() => {});
-        await run(image, [
-          { '--art-radius': '0%', opacity: .08 },
-          { '--art-radius': '78%', opacity: 1, offset: .65 },
-          { '--art-radius': '150%', opacity: 1 },
-        ], 1350);
-        await run(image, [{ opacity: 1 }, { opacity: 1 }], 180);
+        const canvas = art.querySelector('canvas');
+        formation = createGoldenFormation(canvas, image);
+        image.style.visibility = 'hidden';
+        const clock = canvas.animate([{ opacity: 1 }, { opacity: 1 }], { duration: 3000, fill: 'forwards' });
+        animations.push(clock);
+        const draw = () => {
+          if (disposed || completed) return;
+          try {
+            formation.draw(Math.min(1, Number(clock.currentTime || 0) / clock.effect.getTiming().duration));
+            if (clock.playState !== 'finished') glitterFrame = requestAnimationFrame(draw);
+          } catch { finish(); }
+        };
+        draw();
+        run(art.querySelector('.art-gold'), [
+          { opacity: 0 }, { opacity: .16, offset: .3 }, { opacity: .08, offset: .65 }, { opacity: 0 },
+        ], 3000).catch(() => {});
+        await clock.finished;
+        cancelAnimationFrame(glitterFrame);
+        // Match the fully resolved pixels before removing the transient canvas.
+        image.style.visibility = 'visible';
+        formation.dispose();
+        canvas.style.visibility = 'hidden';
+        await run(image, [{ opacity: 1 }, { opacity: 1 }], 240);
         if (disposed || completed) return;
         const from = art.getBoundingClientRect();
         const to = destination.getBoundingClientRect();
@@ -109,6 +118,8 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     play();
     return () => {
       disposed = true;
+      cancelAnimationFrame(glitterFrame);
+      formation?.dispose();
       clearTimeout(watchdog);
       clearTimeout(readinessTimer);
       animations.forEach(animation => animation.cancel());
@@ -126,7 +137,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     <div className="handoff-art stationery-art">
       <img className="divine-art" src={src} width="1150" height="1367" alt="" />
       <span className="art-gold" style={{ maskImage: `url("${src}")` }} />
-      {Array.from({ length: 12 }, (_, i) => <span className="art-fleck" key={i} />)}
+      <canvas className="formation-glitter" aria-hidden="true" />
     </div>
   </div>, document.body);
 }

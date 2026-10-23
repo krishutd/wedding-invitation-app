@@ -255,3 +255,7 @@ button { font: inherit; }
 .invitation-prepared .stationery-art .divine-art { mask-image: none; }
 .invitation-prepared { max-width: 760px; margin-inline: auto; }
 html { scrollbar-gutter: stable; }
+/* Image-aware falling gold is confined to the central artwork interlude. */
+.formation-glitter { position: absolute; pointer-events: none; z-index: 3; }
+.handoff-art .art-gold { z-index: 0; }
+.formation-glitter { filter: sepia(.08) saturate(.9) drop-shadow(0 5px 5px #a47a3012); }
