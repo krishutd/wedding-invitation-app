@@ -81,6 +81,22 @@ This project deploys to GitHub Pages using the workflow in `.github/workflows/pa
 
 ## Classic and enhanced experience
 
+### The Thread Chooses the Date (experimental)
+
+Use `?thread=choose-date&invite=wedding` to preview the connected thread opening.
+This flag selects the enhanced layout, sends the original fading thread directly
+to January 19, forms the heart, holds without a connector, then draws a taut thread
+back to the seal and sends a tug to release
+the flap. The date never moves toward the envelope. Reception links keep their
+correct selected date (January 21). Values are case-insensitive; the first value wins.
+Omitting this flag or using an unknown value preserves existing URL behavior,
+including the existing `opening=enhanced` and `opening=enhancement` variants.
+
+Run `node tests/thread-date.mjs [directory-containing-playwright]` against Vite
+(`TEST_URL` defaults to `http://127.0.0.1:5176`). Checks cover stationary date geometry,
+sequence stages, date fades, mobile overflow, reduced motion, resize, animation
+failure, repeated taps, and feature isolation. The test uses installed Edge.
+
 The default experience is the original app from the base of PR #15. Both the PR's visual redesign and the enhanced date/seal animation are opt-in:
 
 - `?opening=enhanced`: redesigned opening and invitation, including the date-unlock animation. `?opening=enhancement` is also accepted as an alias for shared links.

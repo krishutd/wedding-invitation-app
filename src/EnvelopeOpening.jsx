@@ -3,6 +3,7 @@ import { useReducedMotion } from "framer-motion";
 import { eventDate, formatEvent } from "./events";
 
 import { HEART as heart } from "./StationeryReveal.jsx";
+import { chooseDate, ORGANIC_LOOP } from "./threadChoosesDate.js";
 const TRAIL_SEGMENTS = 24;
 const DATE_RETURN_MS = 1000;
 const SEAL_RELEASE_MS = 700;
@@ -19,6 +20,7 @@ export default function EnvelopeOpening({
   onActivate,
   onFinish,
   onPaper,
+  threadChoosesDate = false,
 }) {
   const root = useRef(null);
   const selected = useRef(null);
@@ -105,7 +107,7 @@ export default function EnvelopeOpening({
     if (!ready || active.current) return;
     active.current = true;
     onActivate(); // Keep audio.play() in the native user-activation call stack.
-    watchdog.current = setTimeout(finish, 17000);
+    watchdog.current = setTimeout(finish, threadChoosesDate ? 22000 : 17000);
     setStage("drawing");
     try {
       if (reduced || !ready) {
@@ -114,6 +116,10 @@ export default function EnvelopeOpening({
         finish();
         return;
       }
+      if (threadChoosesDate) {
+        await chooseDate({ root: root.current, strand: strand.current,
+          loop: heartPath.current, seal: seal.current, animate, setStage });
+      } else {
       // A short dash train follows the path; its total length is the heart perimeter.
       // Opacity falls toward the tail, rather than leaving the entire route painted.
       const tailLength = Math.min(
@@ -186,8 +192,9 @@ export default function EnvelopeOpening({
         DATE_RETURN_MS,
         { easing: FLOW_EASING },
       ).finished;
-      setStage("release");
       animate(selected.current, [{ opacity: 0.8 }, { opacity: 0 }], 300);
+      }
+      setStage("release");
       animate(
         root.current.querySelector(".seal-ripple"),
         [
@@ -244,6 +251,7 @@ export default function EnvelopeOpening({
       className="opening-composition"
       ref={root}
       data-stage={stage}
+      data-thread-date={threadChoosesDate || undefined}
       aria-busy={!ready}
     >
       <div className="envelope-heading">
@@ -272,7 +280,7 @@ export default function EnvelopeOpening({
                 <svg viewBox="0 0 48 46">
                   <path
                     ref={heartPath}
-                    d={heart}
+                    d={threadChoosesDate ? ORGANIC_LOOP : heart}
                     pathLength="1"
                     style={{ strokeDashoffset: reduced ? 0 : 1 }}
                   />
@@ -293,6 +301,7 @@ export default function EnvelopeOpening({
             pathLength="1"
           />
         ))}
+        {threadChoosesDate && <path className="thread-tug" pathLength="1" />}
       </svg>
       <button
         type="button"
