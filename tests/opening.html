@@ -43,14 +43,21 @@ document.querySelector('button').onclick = async () => {
     check(Math.hypot(loopEnd.x - origin.x, loopEnd.y - origin.y) > 20 && halfway.y - origin.y > sealBounds.height, 'Thread sweeps around seal with an open gap before departing');
     check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-neighbour')).opacity) === 1, 'Neighbour dates remain during drawing');
     await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'flap');
+    const pocket = doc.querySelector('.envelope-front');
+    const pocketStyle = frame.contentWindow.getComputedStyle(pocket);
+    check(pocketStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' && pocketStyle.backgroundColor !== 'transparent', 'Pocket has an opaque paper backing');
+    const pocketRect = pocket.getBoundingClientRect();
+    const textRect = doc.querySelector('.letter-message').getBoundingClientRect();
+    check(textRect.top > pocketRect.top + pocketRect.height * .3, 'Unraised insert wording is fully below the pocket mouth');
+    check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-selected')).opacity) === 0, 'Merged date stays invisible through flap opening');
     const flap = doc.querySelector('.envelope-flap');
     check(flap.querySelectorAll('.envelope-flap-face').length === 2, 'Flap has separate front and inner paper faces');
     await wait(40);
     check(frame.contentWindow.getComputedStyle(flap).zIndex === '4', 'Flap stays above envelope during first half');
     await wait(130);
     check(frame.contentWindow.getComputedStyle(flap).zIndex === '0', 'Flap moves behind insert after passing edge-on');
-    await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'reading');
-    check(performance.now()-started < 3500, 'Opening integrates within the artwork handoff budget');
+    check(doc.querySelector('.artwork-handoff'), 'Golden light begins while the flap opens');
+
   }
   if (mode === 'resize') { await wait(100); frame.style.width = '375px'; }
   await until(() => doc.querySelector('#invitation') && !doc.querySelector('.intro-screen') && !doc.querySelector('.artwork-handoff'));

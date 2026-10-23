@@ -4,7 +4,11 @@ import { eventDate, formatEvent } from './events';
 
 import { HEART as heart } from './StationeryReveal.jsx';
 const TRAIL_SEGMENTS = 24;
-const FLOW_MS = 280;
+const DATE_RETURN_MS = 1000;
+const SEAL_RELEASE_MS = 700;
+const FLAP_OPEN_MS = 1000;
+const THREAD_TRAVEL_MS = 1350;
+const DATE_HEART_MS = 1050;
 const FLOW_EASING = 'ease-in-out';
 import { assetUrl as asset } from "./assets.js";
 
@@ -103,17 +107,17 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
         return animate(segment, [
           { strokeDashoffset: offset, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
           { strokeDashoffset: offset - 1, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
-        ], 450, { easing: 'linear' }).finished;
+        ], THREAD_TRAVEL_MS, { easing: 'linear' }).finished;
       }));
       // As the heart fills, pull the remaining tail into it until no connector remains.
       await Promise.all([
-        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' }], 350, { easing: 'ease-in-out' }).finished,
+        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' }], DATE_HEART_MS, { easing: 'ease-in-out' }).finished,
         ...segments.map((segment, index) => {
           const offset = (index + 1) * segmentLength - 1;
           return animate(segment, [
             { strokeDashoffset: offset },
             { strokeDashoffset: offset - tailLength },
-          ], 350 * .85, { easing: 'ease-in-out' }).finished;
+          ], DATE_HEART_MS * .85, { easing: 'ease-in-out' }).finished;
         }),
       ]);
       setStage('gathering');
@@ -123,32 +127,27 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
       const s = seal.current.getBoundingClientRect();
       const dx = s.left + s.width / 2 - d.left - d.width / 2;
       const dy = s.top + s.height / 2 - d.top - d.height / 2;
-      await animate(selected.current, [{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .8 }], FLOW_MS, { easing: FLOW_EASING }).finished;
+      await animate(selected.current, [{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .8 }], DATE_RETURN_MS, { easing: FLOW_EASING }).finished;
       setStage('release');
-      animate(selected.current, [{ opacity: .8 }, { opacity: 0 }], 120);
-      animate(root.current.querySelector('.seal-ripple'), [{ transform: 'scale(.65)', opacity: .65 }, { transform: 'scale(1.65)', opacity: 0 }], FLOW_MS);
-      await animate(seal.current, [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-18px) rotate(-8deg)', opacity: 0 }], FLOW_MS, { easing: FLOW_EASING }).finished;
+      animate(selected.current, [{ opacity: .8 }, { opacity: 0 }], 300);
+      animate(root.current.querySelector('.seal-ripple'), [{ transform: 'scale(.65)', opacity: .65 }, { transform: 'scale(1.65)', opacity: 0 }], SEAL_RELEASE_MS);
+      await animate(seal.current, [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-18px) rotate(-8deg)', opacity: 0 }], SEAL_RELEASE_MS, { easing: FLOW_EASING }).finished;
       setStage('flap');
       const flap = root.current.querySelector('.envelope-flap');
       // Change stacking only while the paper is edge-on, not after it has opened.
       // Both faces rotate on one hinge, avoiding a mirrored front surface on the reverse side.
-      await animate(flap, [
+      const flapMotion = animate(flap, [
         { transform: 'rotateX(0deg)', zIndex: 4, offset: 0 },
         { transform: 'rotateX(-90deg)', zIndex: 4, offset: .5 },
         { transform: 'rotateX(-90.018deg)', zIndex: 0, offset: .5001 },
         { transform: 'rotateX(-180deg)', zIndex: 0, offset: 1 },
-      ], FLOW_MS, { easing: 'cubic-bezier(.42,0,.58,1)' }).finished;
-      setStage('letter');
-      await animate(letter.current, [{ transform: 'translateY(0)' }, { transform: 'translateY(-48%)' }], FLOW_MS, { easing: FLOW_EASING }).finished;
-      // Preserve the readable insert, then expand only its paper surface.
-      setStage('reading');
-      await animate(letter.current, [{ transform: 'translateY(-48%)' }, { transform: 'translateY(-48%)' }], 80).finished;
-      await animate(letter.current.querySelector('.letter-message'), [{ opacity: 1 }, { opacity: 0 }], 180).finished;
-      await animate(letter.current.querySelector('.letter-rule'), [{ opacity: 1 }, { opacity: 0 }], 100).finished;
-      const bounds = letter.current.getBoundingClientRect();
-      const envelopeTop = root.current.querySelector('.envelope').getBoundingClientRect().top;
-      setStage('paper');
-      await onPaper?.({ left: bounds.left, top: bounds.top, width: bounds.width, height: Math.max(1, envelopeTop - bounds.top) });
+      ], FLAP_OPEN_MS, { easing: 'cubic-bezier(.42,0,.58,1)' }).finished;
+      // Release the light while the flap is still moving, from its actual seam.
+      const envelopeBounds = root.current.querySelector('.envelope').getBoundingClientRect();
+      await Promise.all([flapMotion, onPaper?.({
+        left: envelopeBounds.left, top: envelopeBounds.top,
+        width: envelopeBounds.width, height: envelopeBounds.height,
+      })]);
       finish();
     } catch { finish(); }
   }
