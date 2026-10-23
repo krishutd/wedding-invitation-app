@@ -75,11 +75,6 @@
   96% { opacity: .85; }
   100% { opacity: 0; transform: translate3d(55%, 0, 0); }
 }
-.opening-composition:not([data-stage="sealed"]) .envelope-name-language,
-.opening-composition:not([data-stage="sealed"]) .envelope-names-cycle::before,
-.opening-composition:not([data-stage="sealed"]) .envelope-names-cycle::after {
-  animation-play-state: paused;
-}
 @media (prefers-reduced-motion: reduce) {
   .envelope-names-cycle::before, .envelope-names-cycle::after { display: none; }
   .envelope-names-cycle .envelope-name-language { animation: none; clip-path: none; opacity: 1; will-change: auto; }
