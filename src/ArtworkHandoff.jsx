@@ -44,7 +44,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     events.forEach(name => window.addEventListener(name, finish, { passive: true }));
     window.addEventListener('keydown', skipKey);
     window.visualViewport?.addEventListener('resize', finish);
-    const watchdog = setTimeout(finish, 10000);
+    const watchdog = setTimeout(finish, 16000);
     const threads = [...scene.querySelectorAll('.story-thread')];
     const drawThread = (path, d, duration, delay = 0) => {
       path.setAttribute('d', d);
@@ -83,11 +83,12 @@ export default function ArtworkHandoff({ bounds, onDone }) {
           run(paper,[{opacity:0},{opacity:1}],1000),
           drawThread(threads[0],`M${sx} ${sy} C${sx-40} ${sy-65} ${mx-radius} ${my+radius} ${mx} ${my+radius}`,1000),
         ]);
-        // One orbit and the forming artwork share the same timeline.
+        // At 2600ms per turn, the first 1950ms complete .75 turns before formation.
+        const revealDelay = 1950;
         const circle=`M${mx} ${my+radius} A${radius} ${radius} 0 1 1 ${mx} ${my-radius} A${radius} ${radius} 0 1 1 ${mx} ${my+radius}`;
         const orbit=scene.querySelector('.portal-orbit');
         orbit.setAttribute('d',circle);
-        const orbitMotion=run(orbit,[{strokeDashoffset:0,opacity:0},{opacity:1,offset:.08},{strokeDashoffset:-2,opacity:1}],3200,{easing:'linear'});
+        const orbitMotion=run(orbit,[{strokeDashoffset:0,opacity:0},{opacity:1,offset:.04},{strokeDashoffset:-2.75,opacity:1}],7150,{easing:'linear'});
         const orbitClock=animations[animations.length-1];
         portalGlitter=createPortalGlitter(scene.querySelector('.portal-glitter'),mx,my,radius);
         for(let i=0;i<80;i++){
@@ -97,17 +98,19 @@ export default function ArtworkHandoff({ bounds, onDone }) {
           scene.append(dust);
           run(dust,[{opacity:0,transform:'translate(0,0)'},{opacity:.8,offset:.2},{opacity:0,transform:`translate(${-Math.cos(angle)*18}px,${-Math.sin(angle)*18+8}px)`}],700,{delay:i*31}).catch(()=>{});
         }
-        scene.dataset.phase = 'reveal';
+        scene.dataset.phase = 'orbit';
         art.style.visibility = 'visible';
         const canvas = art.querySelector('canvas');
         formation = createGoldenFormation(canvas, image);
         image.style.visibility = 'hidden';
-        const clock = canvas.animate([{opacity:1},{opacity:1}], {duration:3000,fill:'forwards'});
+        const clock = canvas.animate([{opacity:1},{opacity:1}], {duration:5000,delay:revealDelay,fill:'both'});
         animations.push(clock);
         const draw = () => {
           if (disposed || completed) return;
           try {
-            formation.draw(Math.min(1, Number(clock.currentTime || 0)/clock.effect.getTiming().duration));
+            const elapsed = Number(clock.currentTime || 0);
+            if (elapsed >= revealDelay) scene.dataset.phase = 'reveal';
+            formation.draw(Math.max(0, Math.min(1, (elapsed-revealDelay)/clock.effect.getTiming().duration)));
             portalGlitter.draw(Math.min(1, Number(orbitClock.currentTime || 0)/orbitClock.effect.getTiming().duration));
             if (orbitClock.playState !== 'finished') glitterFrame = requestAnimationFrame(draw);
           } catch { finish(); }
