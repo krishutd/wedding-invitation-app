@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import StationeryArtwork from "./StationeryArtwork.jsx";
-import { InkReveal, EventDay, PaperHandoff, BorderReveal, InvitationBorder, ClosingDivider } from "./StationeryReveal.jsx";
+import { InkReveal, EventDay, PaperHandoff, BorderReveal, ClosingDivider } from "./StationeryReveal.jsx";
+import InvitationBorder from "./ThreadBorder.jsx";
 import EnvelopeOpening from "./EnvelopeOpening.jsx";
 import { EVENTS, formatEvent } from "./events.js";
 import {
@@ -382,11 +383,11 @@ function App() {
               <span>Music {musicEnabled ? "on" : "off"}</span>
             </button>
             <InvitationBorder>
-              <BorderReveal className="outer-frame-top" />
-              <BorderReveal className="frame-corner frame-corner--top-left" />
-              <BorderReveal className="frame-corner frame-corner--top-right" />
-              <BorderReveal className="frame-corner frame-corner--bottom-left" />
-              <BorderReveal className="frame-corner frame-corner--bottom-right" />
+              <span className="outer-frame-top" />
+              <span className="frame-corner frame-corner--top-left" />
+              <span className="frame-corner frame-corner--top-right" />
+              <span className="frame-corner frame-corner--bottom-left" />
+              <span className="frame-corner frame-corner--bottom-right" />
               <img
                 className="top-ganesha"
                 src={assetUrl("ganesha-seal-engraving.png")}

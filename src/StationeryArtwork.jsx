@@ -42,7 +42,7 @@ export default function StationeryArtwork({ src, alt }) {
     return () => { observer?.disconnect(); animations.forEach(animation => animation.cancel()); };
   }, [reduced, src]);
   return <div ref={ref} className="divine-art-stage stationery-art">
-    <img className="divine-art" src={src} alt={alt} decoding="async" />
+    <img className="divine-art" width="1150" height="1367" src={src} alt={alt} decoding="async" />
     <span className="art-gold" style={{ maskImage: `url("${src}")` }} aria-hidden="true" />
     {Array.from({ length: 12 }, (_, i) => <span className="art-fleck" key={i} aria-hidden="true" />)}
   </div>;

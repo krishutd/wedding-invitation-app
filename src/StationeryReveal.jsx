@@ -81,36 +81,6 @@ export function BorderReveal({ children, className }) {
   return <span ref={ref} className={className}>{children}</span>;
 }
 
-export function InvitationBorder({ children }) {
-  const ref = useRef(null);
-  const reduced = useReducedMotion();
-  useLayoutEffect(() => {
-    const node = ref.current;
-    if (reduced || !node.animate) return;
-    let animation;
-    let reached = 0;
-    const update = () => {
-      const bounds = node.getBoundingClientRect();
-      reached = Math.max(reached, innerHeight - bounds.top + 80);
-      node.style.clipPath = 'inset(-20px -2px ' + Math.max(-2, bounds.height - reached) + 'px -2px)';
-    };
-    update();
-    try {
-      animation = node.animate([
-        { clipPath: 'inset(-20px 50% calc(100% - 2px) 50%)' },
-        { clipPath: 'inset(-20px -2px calc(100% - 2px) -2px)', offset: .45 },
-        { clipPath: node.style.clipPath },
-      ], { duration: 1000, easing: 'ease-out' });
-      animation.finished.catch(() => {});
-    } catch { node.style.clipPath = ''; }
-    const scroll = () => { animation?.cancel(); update(); };
-    window.addEventListener('scroll', scroll, { passive: true });
-    window.addEventListener('resize', scroll);
-    return () => { animation?.cancel(); node.style.clipPath = ''; window.removeEventListener('scroll', scroll); window.removeEventListener('resize', scroll); };
-  }, [reduced]);
-  return <div ref={ref} className="outer-frame" aria-hidden="true">{children}</div>;
-}
-
 export function ClosingDivider({ children }) {
   const ref = useRef(null);
   useOnceReveal(ref, [{ opacity: .55 }, { opacity: 1, offset: .45 }, { opacity: .8, offset: .7 }, { opacity: 1 }], { duration: 900 });

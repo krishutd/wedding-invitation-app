@@ -1,5 +1,5 @@
 <!doctype html><html><head><title>Enhanced stationery checks</title></head><body>
-<button id="run">Run stationery checks</button><button id="slow">Inspect slow handoff</button><pre id="results">Ready</pre><iframe title="Invitation at 320 by 480" style="width:320px;height:480px"></iframe>
+<button id="run">Run stationery checks</button><button id="slow">Inspect slow handoff</button><button id="thread">Inspect golden thread</button><pre id="results">Ready</pre><iframe title="Invitation at 320 by 480" style="width:320px;height:480px"></iframe>
 <script type="module">
 const frame = document.querySelector('iframe'), out = document.querySelector('pre');
 const wait = ms => new Promise(r => setTimeout(r,ms));
@@ -12,6 +12,14 @@ async function load(query,mode='fast') {
  const w=frame.contentWindow,d=w.document;
  await d.fonts.ready; await wait(500);
  const original=w.Element.prototype.animate;
+ if(mode==='thread') {
+  const clock=w.performance.now.bind(w.performance), base=clock();
+  const virtual=now=>base+(now-base)/4;
+  const raf=w.requestAnimationFrame.bind(w), timer=w.setTimeout.bind(w);
+  w.performance.now=()=>virtual(clock());
+  w.requestAnimationFrame=fn=>raf(now=>fn(virtual(now)));
+  w.setTimeout=(fn,ms,...args)=>timer(fn,ms*4,...args);
+ }
  if(mode==='slow'){const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===1000?6000:ms,...args);}
  if(mode==='failure')w.Element.prototype.animate=()=>{throw Error('Test unavailable WAAPI');};
  else if(mode!=='reduced')w.Element.prototype.animate=function(frames,opts){
@@ -22,6 +30,7 @@ async function load(query,mode='fast') {
  d.querySelector('.envelope-stage').click();
  return {w,d};
 }
+document.querySelector('#thread').onclick=()=>load('side=bride&invite=wedding','thread');
 document.querySelector('#slow').onclick=()=>load('invite=wedding','slow');
 document.querySelector('#run').onclick=async()=>{
  out.textContent='';
@@ -29,6 +38,19 @@ document.querySelector('#run').onclick=async()=>{
  for(const [query,day,count,mode] of [['invite=wedding',19,1,'fast'],['invite=reception&side=bride',21,1,'fast'],['',19,2,'fast'],['invite=invalid',19,2,'fast'],['invite=reception',21,1,'reduced'],['invite=wedding',19,1,'failure']]){
   const {w,d}=await load(query,mode);
   await until(()=>d.querySelector('#invitation'));
+  if(mode==='fast') {
+    const svg=d.querySelector('.invitation-thread'), paths=[...svg.querySelectorAll('.invitation-thread-stroke')];
+    check(paths.length===2 && paths.every(p=>p.getAttribute('d')?.includes('H')), 'Two real thread paths leave the top ornament');
+    await wait(240);
+    const before=[...svg.querySelectorAll('.invitation-thread-tip')].map(n=>Number(n.getAttribute('cx')));
+    check(w.getComputedStyle(svg).opacity!=='0','Thread visible on the second page');
+    await wait(190);
+    const after=[...svg.querySelectorAll('.invitation-thread-tip')].map(n=>Number(n.getAttribute('cx')));
+    check(after[0]<before[0] && after[1]>before[1],'Gold travels outward in both directions');
+    await wait(380);
+    check(d.querySelector('.invitation-border-host').dataset.threadState==='sides','Gold turns down the existing sides');
+    check(d.querySelector('.invitation-border-host .outer-frame').style.clipPath!=='','Offscreen border is not drawn on a timer');
+  }
   check(d.querySelectorAll('.ceremony-card').length===count,query+' event count');
   check(d.querySelector('.event-heart').parentElement.textContent===String(day),'Selected event heart '+day);
   check(d.querySelectorAll('.event-heart').length===1,'Exactly one selected accent');
@@ -38,13 +60,19 @@ document.querySelector('#run').onclick=async()=>{
   w.scrollTo({top:d.body.scrollHeight,behavior:'instant'});
   await wait(1500);
   check(!d.querySelector('.paper-handoff'),'Paper removed');
+  check(w.getComputedStyle(d.querySelector('.invitation-thread')).opacity==='0','Thread settles after fast scroll');
   check(!d.querySelector('.opening-composition'),'Opening removed');
   check([...d.querySelectorAll('.presence-note,.with-love-note')].every(n=>w.getComputedStyle(n.parentElement).opacity==='1'),'Closing readable after fast scroll');
   check(!d.querySelector('.divine-glitter-canvas'),'No duplicate artwork timeline');
-  w.scrollTo({top:0,behavior:'instant'}); await wait(1500);
+  w.scrollTo({top:0,behavior:'instant'}); await wait(100);
+  check(w.getComputedStyle(d.querySelector('.invitation-thread')).opacity==='0','Returning upward does not restart the thread');
+  await wait(1400);
   check(w.getComputedStyle(d.querySelector('.invite-header').parentElement).opacity==='1','Header settled');
   check(d.getAnimations().length===0,'No replay or infinite animations');
   const music=d.querySelector('.music-toggle'); music.click(); await wait(50);
+  frame.style.width='375px'; await wait(100);
+  check(w.getComputedStyle(d.querySelector('.invitation-thread')).opacity==='0','Resize settles thread without misalignment');
+  frame.style.width='320px';
   check(music.getAttribute('aria-pressed')==='false' && d.querySelector('audio').paused,'Music control pauses');
  }
  out.textContent+='DONE\n';
