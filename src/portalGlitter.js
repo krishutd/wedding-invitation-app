@@ -8,8 +8,8 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
   canvas.style.width = innerWidth + 'px';
   canvas.style.height = innerHeight + 'px';
   context.scale(ratio, ratio);
-  const particles = Array.from({ length: 200 }, (_, i) => ({
-    age: (i + .5) / 200,
+  const particles = Array.from({ length: 400 }, (_, i) => ({
+    age: (i + .5) / 400,
     spread: Math.sin(i * 127.1) * Math.cos(i * 31.7),
     size: .55 + (Math.sin(i * 17.3) + 1) * .5,
     phase: i * 2.39996,
