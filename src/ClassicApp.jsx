@@ -11,7 +11,7 @@ import {
   VolumeX,
 } from "lucide-react";
 
-const assetUrl = (path) => `${import.meta.env.BASE_URL}assets/${path}`;
+import { assetUrl } from "./assets.js";
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_MAX_VOLUME = 0.6;
 

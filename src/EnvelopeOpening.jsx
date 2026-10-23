@@ -6,7 +6,7 @@ const heart = 'M24 41 C20 36 3 25 3 15 C3 3 18 1 24 11 C30 1 45 3 45 15 C45 25 2
 const TRAIL_SEGMENTS = 24;
 const FLOW_MS = 1700;
 const FLOW_EASING = 'ease-in-out';
-const asset = (name) => `${import.meta.env.BASE_URL}assets/${name}`;
+import { assetUrl as asset } from "./assets.js";
 
 export default function EnvelopeOpening({ event, ready, onActivate, onFinish }) {
   const root = useRef(null);
