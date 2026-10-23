@@ -20,7 +20,7 @@ export function createGoldenFormation(canvas, image) {
   };
   if (!ctx) throw Error('Canvas unavailable');
   ctx.scale(ratio, ratio);
-  const source = makeBuffer(), mask = makeBuffer(), revealed = makeBuffer();
+  const source = makeBuffer(), mask = makeBuffer(), revealed = makeBuffer(), shimmer = makeBuffer();
   source.context.drawImage(image, 0, 0, width, height);
   const pixels = source.context.getImageData(0, 0, source.node.width, source.node.height).data;
   const points = [];
@@ -33,13 +33,13 @@ export function createGoldenFormation(canvas, image) {
   const random=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
   const clamp=n=>Math.max(0,Math.min(1,n));
   const smooth=n=>{const t=clamp(n);return t*t*(3-2*t);};
-  const particles=Array.from({length:28},()=>{
+  const particles=Array.from({length:240},()=>{
     const target=points[Math.floor(random()*points.length)];
     return {...target, startX:target.x+(random()-.5)*width*.6,
       startY:target.y+(random()-.5)*height*.4,
-      delay:random()*.24, duration:.36+random()*.29,
+      delay:random()*.48, duration:.28+random()*.24,
       size:.45+random()*.95, brightness:.4+random()*.48,
-      phase:random()*Math.PI*2, drift:6+random()*12, glint:random()>.86};
+      phase:random()*Math.PI*2, drift:10+random()*18, glint:random()>.8};
   });
   // The first light is between their faces. The flattened original is revealed
   // spatially: figures, moon, then the arch, without recolouring any pixels.
@@ -79,6 +79,25 @@ export function createGoldenFormation(canvas, image) {
     revealed.context.drawImage(mask.node,0,0,width,height);
     revealed.context.globalCompositeOperation='source-over';
     ctx.drawImage(revealed.node,padX,padTop,width,height);
+    // A soft golden light travels over only the revealed artwork, then clears
+    // completely so the original colours settle into place without a final jump.
+    shimmer.context.clearRect(0,0,width,height);
+    shimmer.context.globalCompositeOperation='source-over';
+    shimmer.context.drawImage(revealed.node,0,0,width,height);
+    shimmer.context.globalCompositeOperation='source-in';
+    const lightY=height*(1.15-p*1.4);
+    const light=shimmer.context.createLinearGradient(0,lightY-height*.16,width,lightY+height*.16);
+    light.addColorStop(0,'#efc66b00');
+    light.addColorStop(.4,'#e9bd6360');
+    light.addColorStop(.5,'#fff0bfc0');
+    light.addColorStop(.6,'#e9bd6360');
+    light.addColorStop(1,'#efc66b00');
+    shimmer.context.fillStyle=light;
+    shimmer.context.fillRect(0,0,width,height);
+    shimmer.context.globalCompositeOperation='source-over';
+    ctx.globalAlpha=smooth(p/.12)*(1-smooth((p-.78)/.2));
+    ctx.drawImage(shimmer.node,padX,padTop,width,height);
+    ctx.globalAlpha=1;
     for(const particle of particles){
       const t=clamp((p-particle.delay)/particle.duration);
       if(t<=0)continue;
@@ -88,9 +107,15 @@ export function createGoldenFormation(canvas, image) {
       const fade=smooth(t/.16)*(1-smooth((p-.76)/.22));
       const flicker=.62+.38*Math.pow(Math.sin(p*25+particle.phase),2);
       const alpha=particle.brightness*fade*flicker;
-      ctx.fillStyle='rgba(164,122,48,'+alpha+')';
+      // A curved gathering motion and warm glints make the source pixels feel
+      // as though they are condensing from floating gold dust.
+      ctx.fillStyle='rgba(211,166,72,'+alpha+')';
       ctx.beginPath();ctx.arc(x,y,particle.size,0,Math.PI*2);ctx.fill();
       if(particle.glint&&alpha>.35){
+        const halo=ctx.createRadialGradient(x,y,0,x,y,6);
+        halo.addColorStop(0,'rgba(255,233,168,'+alpha*.45+')');
+        halo.addColorStop(1,'rgba(235,189,93,0)');
+        ctx.fillStyle=halo;ctx.fillRect(x-6,y-6,12,12);
         const ray=1.4+flicker*1.7;
         ctx.strokeStyle='rgba(194,151,69,'+alpha*.65+')';
         ctx.lineWidth=.5;
@@ -100,5 +125,5 @@ export function createGoldenFormation(canvas, image) {
       }
     }
   }
-  return {draw, dispose(){ctx.clearRect(0,0,canvas.width,canvas.height);for(const buffer of [source,mask,revealed]){buffer.node.width=0;buffer.node.height=0;}}};
+  return {draw, dispose(){ctx.clearRect(0,0,canvas.width,canvas.height);for(const buffer of [source,mask,revealed,shimmer]){buffer.node.width=0;buffer.node.height=0;}}};
 }

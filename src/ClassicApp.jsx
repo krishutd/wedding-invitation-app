@@ -29,7 +29,10 @@ function preloadImage(src) {
       if (decoding) return;
       decoding = true;
       if (typeof image.decode === "function") {
-        image.decode().catch(() => {}).then(finish);
+        image
+          .decode()
+          .catch(() => {})
+          .then(finish);
       } else {
         finish();
       }
@@ -98,7 +101,7 @@ function Envelope({ onOpen }) {
       aria-label="Open the wedding invitation"
     >
       <div className="envelope-heading" aria-hidden="true">
-        <span className="envelope-couple-names">Krishna &amp; Archa</span>
+        <span className="envelope-couple-names">Krishnanand &amp; Archa</span>
         <span className="envelope-wedding-date">19-01-2027</span>
       </div>
       <motion.div
@@ -249,7 +252,9 @@ function App() {
       if (document.hidden) {
         // Only resume later if playback was active before the page was hidden.
         resumeMusicOnForegroundRef.current =
-          musicEnabledRef.current && musicStartedByUserRef.current && !audio.paused;
+          musicEnabledRef.current &&
+          musicStartedByUserRef.current &&
+          !audio.paused;
         if (!audio.paused) audio.pause();
         return;
       }
@@ -259,16 +264,20 @@ function App() {
         musicStartedByUserRef.current &&
         resumeMusicOnForegroundRef.current
       ) {
-        audio.play().then(() => {
-          resumeMusicOnForegroundRef.current = false;
-        }).catch(() => {
-          // Some mobile browsers may require another user gesture to resume.
-        });
+        audio
+          .play()
+          .then(() => {
+            resumeMusicOnForegroundRef.current = false;
+          })
+          .catch(() => {
+            // Some mobile browsers may require another user gesture to resume.
+          });
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   const openInvitation = () => {
@@ -411,7 +420,9 @@ function App() {
                   are delighted to invite you
                   <br />
                   to the{" "}
-                  {inviteType === "reception" ? "wedding reception" : "wedding"}{" "}
+                  {inviteType === "reception"
+                    ? "wedding reception"
+                    : "wedding"}{" "}
                   of their {invitationSide === "groom" ? "son" : "daughter"}
                 </p>
               </header>
@@ -540,8 +551,7 @@ function App() {
 
             <Reveal>
               <p className="presence-note">
-                We warmly invite you and your family
-                to join us for{" "}
+                We warmly invite you and your family to join us for{" "}
                 {inviteType === "both"
                   ? "the wedding and reception"
                   : inviteType === "reception"

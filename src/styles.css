@@ -1,5 +1,76 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap');
 
+@font-face {
+  font-family: 'RIT Rachana';
+  src: url('../public/assets/fonts/RIT-Rachana-Italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.envelope-couple-names.envelope-names-cycle { position: relative; display: grid; place-items: center; isolation: isolate; line-height: clamp(47.85px, 11.55vw, 62.7px); }
+.envelope-names-cycle::before,
+.envelope-names-cycle::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  inset: 4% -5%;
+  z-index: -1;
+  animation: envelope-name-aura 6s ease-in-out 3.6s infinite;
+}
+.envelope-names-cycle::before {
+  background: radial-gradient(ellipse, #e5c58655 0%, #e5c58618 42%, transparent 70%);
+}
+.envelope-names-cycle::after {
+  background:
+    radial-gradient(circle at 12% 60%, #c8a96a 0 1px, transparent 2px),
+    radial-gradient(circle at 29% 23%, #fff6d5 0 1px, transparent 2px),
+    radial-gradient(circle at 51% 77%, #c8a96a 0 1px, transparent 2px),
+    radial-gradient(circle at 73% 28%, #fff6d5 0 1px, transparent 2px),
+    radial-gradient(circle at 89% 55%, #c8a96a 0 1px, transparent 2px);
+  animation-name: envelope-name-stardust;
+}
+.envelope-names-cycle .envelope-name-language {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  line-height: inherit;
+  /* Both scripts stay stationary throughout the crossfade. */
+  will-change: opacity;
+  animation: envelope-name-language 12s ease-in-out infinite;
+}
+.envelope-names-cycle .envelope-name-malayalam {
+  font-family: 'RIT Rachana', 'Nirmala UI', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: clamp(27px, 6.4vw, 36px);
+  /* Rachana's glyphs sit higher within its line box than Cormorant's. */
+  position: relative;
+  top: .09em;
+}
+.envelope-names-cycle .envelope-name-english {
+  opacity: 0;
+  animation-delay: -6s;
+}
+@keyframes envelope-name-language {
+  0%, 35%, 100% { opacity: 1; }
+  50%, 85% { opacity: 0; }
+}
+@keyframes envelope-name-aura {
+  0%, 50%, 100% { opacity: 0; }
+  25% { opacity: .45; }
+}
+@keyframes envelope-name-stardust {
+  0%, 50%, 100% { opacity: 0; }
+  25% { opacity: .45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .envelope-names-cycle::before, .envelope-names-cycle::after { display: none; }
+  .envelope-names-cycle .envelope-name-language { animation: none; transform: none; filter: none; text-shadow: none; }
+  .envelope-names-cycle .envelope-name-english { display: none; }
+}
+
 :root, body, #root {
   color-scheme: only light;
 }
@@ -276,6 +347,6 @@ html { scrollbar-gutter: stable; }
 .thread-tip { position: absolute; left: 0; top: 0; width: 3px; height: 3px; border-radius: 50%; opacity: 0; background: #fff6d4; box-shadow: 0 0 4px 1px #cba454, 0 0 10px 3px #e8c36a70; pointer-events: none; }
 /* One circular light reveals the artwork and resolves into the frame. */
 .portal-orbit { fill: none; stroke: #c49a50; stroke-linecap: round; opacity: 0; }
-.portal-orbit { stroke: #dab56c; stroke-width: 4.5; stroke-dasharray: .228 .772; filter: drop-shadow(0 0 2px #e8c36a80); }
+.portal-orbit { stroke: #ebca83; stroke-width: 2.6; stroke-dasharray: .539448 .460552; filter: drop-shadow(0 0 3px #e8c36aa0); }
 .portal-dust { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #c49a50; opacity: 0; pointer-events: none; }
 .portal-glitter { position: absolute; inset: 0; pointer-events: none; }

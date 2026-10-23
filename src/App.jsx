@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import StationeryArtwork from "./StationeryArtwork.jsx";
-import { InkReveal, EventDay, BorderReveal, ClosingDivider } from "./StationeryReveal.jsx";
+import {
+  InkReveal,
+  EventDay,
+  BorderReveal,
+  ClosingDivider,
+} from "./StationeryReveal.jsx";
 import ArtworkHandoff from "./ArtworkHandoff.jsx";
 import InvitationBorder from "./ThreadBorder.jsx";
 import EnvelopeOpening from "./EnvelopeOpening.jsx";
@@ -33,7 +38,10 @@ function preloadImage(src) {
       if (decoding) return;
       decoding = true;
       if (typeof image.decode === "function") {
-        image.decode().catch(() => {}).then(finish);
+        image
+          .decode()
+          .catch(() => {})
+          .then(finish);
       } else {
         finish();
       }
@@ -72,45 +80,103 @@ const LOVE_MESSAGES = {
 
 function CeremonyVine() {
   return (
-    <g fill="none" stroke="#A47A30" strokeWidth=".76" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke">
+    <g
+      fill="none"
+      stroke="#A47A30"
+      strokeWidth=".76"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      vectorEffect="non-scaling-stroke"
+    >
       {/* A single flowing creeper follows both edges of the corner. */}
       <path d="M57 5 C45 4 37 4 31 8 C25 12 30 18 24 24 C18 30 7 28 6 38 C5 45 6 50 5 57" />
       {/* Top-edge leaves */}
-      <path d="M49 5 C46 1 41 1 38 4 C40 8 45 8 49 5Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M49 5 C46 1 41 1 38 4 C40 8 45 8 49 5Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M48 5 Q43 4 39 4 M43 4 L42 2.8" />
-      <path d="M37 6 C36 2 38 0 42 0 C44 3 41 6 37 6Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M37 6 C36 2 38 0 42 0 C44 3 41 6 37 6Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M38 5 Q39 2 42 1 M39 3 L37.8 1.8" />
       {/* Leaves alternate along the curve */}
-      <path d="M30 13 C25 10 21 12 20 16 C24 20 28 18 30 13Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M30 13 C25 10 21 12 20 16 C24 20 28 18 30 13Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M29 14 Q25 14 21 16 M25 14 L23.5 12.5" />
-      <path d="M25 22 C28 18 32 18 34 21 C32 25 28 26 25 22Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M25 22 C28 18 32 18 34 21 C32 25 28 26 25 22Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M26 22 Q30 21 33 21 M30 21 L31.4 19.5" />
-      <path d="M18 29 C13 26 9 28 9 32 C13 35 17 33 18 29Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M18 29 C13 26 9 28 9 32 C13 35 17 33 18 29Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M17 29 Q13 30 10 32 M13 30 L11.4 28.7" />
-      <path d="M13 38 C17 34 21 35 22 39 C19 43 15 42 13 38Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M13 38 C17 34 21 35 22 39 C19 43 15 42 13 38Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M14 38 Q18 38 21 39 M18 38 L19.6 36.4" />
-      <path d="M7 45 C3 41 0 43 0 47 C3 50 6 49 7 45Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M7 45 C3 41 0 43 0 47 C3 50 6 49 7 45Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M6 45 Q3 46 1 47 M3 46 L1.5 44.4" />
-      <path d="M6 50 C10 47 13 48 14 52 C12 55 8 55 6 50Z" fill="#A47A30" fillOpacity=".13" />
+      <path
+        d="M6 50 C10 47 13 48 14 52 C12 55 8 55 6 50Z"
+        fill="#A47A30"
+        fillOpacity=".13"
+      />
       <path d="M7 50 Q10 51 13 52 M10 51 L11.4 49.5" />
       {/* Fine tendrils curl outward from the young tips. */}
       <path d="M53 5 C58 3 61 5 59 8 C58 9 56 8 57 7 M5 53 C3 59 5 62 8 60 C9 59 8 57 7 58" />
-      <path d="M33 9 C36 8 38 9 37 11 C36 12 35 11 36 10 M10 34 C9 37 10 39 12 38 C13 37 12 36 11 37" opacity=".8" />
+      <path
+        d="M33 9 C36 8 38 9 37 11 C36 12 35 11 36 10 M10 34 C9 37 10 39 12 38 C13 37 12 36 11 37"
+        opacity=".8"
+      />
     </g>
   );
 }
 
 function CeremonyFrame() {
   return (
-    <svg className="ceremony-frame" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true">
-      <g fill="none" stroke="#A47A30" strokeWidth="1" vectorEffect="non-scaling-stroke">
+    <svg
+      className="ceremony-frame"
+      viewBox="0 0 400 400"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <g
+        fill="none"
+        stroke="#A47A30"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      >
         <rect x="4" y="4" width="392" height="392" />
         <rect x="11" y="11" width="378" height="378" opacity=".68" />
       </g>
       <CeremonyVine />
-      <g transform="translate(400 0) scale(-1 1)"><CeremonyVine /></g>
-      <g transform="translate(0 400) scale(1 -1)"><CeremonyVine /></g>
-      <g transform="translate(400 400) scale(-1 -1)"><CeremonyVine /></g>
+      <g transform="translate(400 0) scale(-1 1)">
+        <CeremonyVine />
+      </g>
+      <g transform="translate(0 400) scale(1 -1)">
+        <CeremonyVine />
+      </g>
+      <g transform="translate(400 400) scale(-1 -1)">
+        <CeremonyVine />
+      </g>
     </svg>
   );
 }
@@ -175,7 +241,8 @@ function App() {
     requestedInvite === "wedding" || requestedInvite === "reception"
       ? requestedInvite
       : "both";
-  const selectedEvent = EVENTS[inviteType === "reception" ? "reception" : "wedding"];
+  const selectedEvent =
+    EVENTS[inviteType === "reception" ? "reception" : "wedding"];
   const firstName = invitationSide === "bride" ? WEDDING.bride : WEDDING.groom;
   const secondName = invitationSide === "bride" ? WEDDING.groom : WEDDING.bride;
   const secondFamilySide = invitationSide === "bride" ? "groom" : "bride";
@@ -229,7 +296,9 @@ function App() {
       if (document.hidden) {
         // Only resume later if playback was active before the page was hidden.
         resumeMusicOnForegroundRef.current =
-          musicEnabledRef.current && musicStartedByUserRef.current && !audio.paused;
+          musicEnabledRef.current &&
+          musicStartedByUserRef.current &&
+          !audio.paused;
         if (!audio.paused) audio.pause();
         return;
       }
@@ -239,23 +308,26 @@ function App() {
         musicStartedByUserRef.current &&
         resumeMusicOnForegroundRef.current
       ) {
-        audio.play().then(() => {
-          resumeMusicOnForegroundRef.current = false;
-        }).catch(() => {
-          // Some mobile browsers may require another user gesture to resume.
-        });
+        audio
+          .play()
+          .then(() => {
+            resumeMusicOnForegroundRef.current = false;
+          })
+          .catch(() => {
+            // Some mobile browsers may require another user gesture to resume.
+          });
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   const openInvitation = () => {
     if (page !== "intro") return;
     musicStartedByUserRef.current = true;
     audioRef.current?.play().catch(() => {});
-
   };
 
   const toggleMusic = () => {
@@ -281,18 +353,34 @@ function App() {
   };
 
   return (
-    <main
-      className="site-shell"
-    >
+    <main className="site-shell">
       <audio
         ref={audioRef}
-        src={assetUrl("wedding-music.mp3")}
+        src={assetUrl(
+          params.get("opening") === "enhanced"
+            ? "wedding-music-2.mp3"
+            : "wedding-music.mp3",
+        )}
         loop
         autoPlay={false}
         preload="none"
       />
 
-      {handoff && <ArtworkHandoff bounds={handoff} onDone={() => { setPage("invitation"); setHandoff(null); paperResolve.current?.(); requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true })); }} />}
+      {handoff && (
+        <ArtworkHandoff
+          bounds={handoff}
+          onDone={() => {
+            setPage("invitation");
+            setHandoff(null);
+            paperResolve.current?.();
+            requestAnimationFrame(() =>
+              document
+                .getElementById("invitation")
+                ?.focus({ preventScroll: true }),
+            );
+          }}
+        />
+      )}
 
       {page === "intro" && (
         <section
@@ -307,14 +395,24 @@ function App() {
           <div className="outer-frame" aria-hidden="true"></div>
           <div className="intro-content">
             <EnvelopeOpening
+              side={invitationSide}
               event={selectedEvent}
-              onPaper={(bounds) => new Promise(resolve => { paperResolve.current = resolve; setHandoff(bounds); })}
+              onPaper={(bounds) =>
+                new Promise((resolve) => {
+                  paperResolve.current = resolve;
+                  setHandoff(bounds);
+                })
+              }
               ready={introReady}
               onActivate={openInvitation}
               onFinish={() => {
                 setHandoff(null);
                 setPage(SHOW_STORY_PAGE ? "story" : "invitation");
-                requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true }));
+                requestAnimationFrame(() =>
+                  document
+                    .getElementById("invitation")
+                    ?.focus({ preventScroll: true }),
+                );
               }}
             />
           </div>
@@ -407,7 +505,9 @@ function App() {
                   are delighted to invite you
                   <br />
                   to the{" "}
-                  {inviteType === "reception" ? "wedding reception" : "wedding"}{" "}
+                  {inviteType === "reception"
+                    ? "wedding reception"
+                    : "wedding"}{" "}
                   of their {invitationSide === "groom" ? "son" : "daughter"}
                 </p>
               </header>
@@ -415,11 +515,17 @@ function App() {
 
             <div>
               <div className="couple-names">
-                <InkReveal delay={0.12}><h2>{firstName}</h2></InkReveal>
-                <InkReveal delay={0.24}><div className="and-line">
-                  <span /> <i>and</i> <span />
-                </div></InkReveal>
-                <InkReveal delay={0.36}><h2>{secondName}</h2></InkReveal>
+                <InkReveal delay={0.12}>
+                  <h2>{firstName}</h2>
+                </InkReveal>
+                <InkReveal delay={0.24}>
+                  <div className="and-line">
+                    <span /> <i>and</i> <span />
+                  </div>
+                </InkReveal>
+                <InkReveal delay={0.36}>
+                  <h2>{secondName}</h2>
+                </InkReveal>
               </div>
             </div>
 
@@ -444,16 +550,33 @@ function App() {
               {inviteType !== "reception" && (
                 <Reveal delay={0.05}>
                   <article className="ceremony-card">
-                    <BorderReveal className="ceremony-frame-reveal"><CeremonyFrame /></BorderReveal>
+                    <BorderReveal className="ceremony-frame-reveal">
+                      <CeremonyFrame />
+                    </BorderReveal>
                     <span className="family-label">WEDDING</span>
                     <div
                       className="event-date"
-                      aria-label={formatEvent(EVENTS.wedding, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                      aria-label={formatEvent(EVENTS.wedding, {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
                     >
-                      <EventDay event={EVENTS.wedding} selected={selectedEvent === EVENTS.wedding} />
+                      <EventDay
+                        event={EVENTS.wedding}
+                        selected={selectedEvent === EVENTS.wedding}
+                      />
                       <span className="event-date-copy">
-                        <span className="event-weekday">{formatEvent(EVENTS.wedding, { weekday: "long" })}</span>
-                        <span className="event-month-year">{formatEvent(EVENTS.wedding, { month: "long", year: "numeric" })}</span>
+                        <span className="event-weekday">
+                          {formatEvent(EVENTS.wedding, { weekday: "long" })}
+                        </span>
+                        <span className="event-month-year">
+                          {formatEvent(EVENTS.wedding, {
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
                       </span>
                     </div>
                     <span className="event-time-label">TIME</span>
@@ -482,12 +605,27 @@ function App() {
                     <span className="family-label">RECEPTION</span>
                     <div
                       className="event-date"
-                      aria-label={formatEvent(EVENTS.reception, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                      aria-label={formatEvent(EVENTS.reception, {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
                     >
-                      <EventDay event={EVENTS.reception} selected={selectedEvent === EVENTS.reception} />
+                      <EventDay
+                        event={EVENTS.reception}
+                        selected={selectedEvent === EVENTS.reception}
+                      />
                       <span className="event-date-copy">
-                        <span className="event-weekday">{formatEvent(EVENTS.reception, { weekday: "long" })}</span>
-                        <span className="event-month-year">{formatEvent(EVENTS.reception, { month: "long", year: "numeric" })}</span>
+                        <span className="event-weekday">
+                          {formatEvent(EVENTS.reception, { weekday: "long" })}
+                        </span>
+                        <span className="event-month-year">
+                          {formatEvent(EVENTS.reception, {
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
                       </span>
                     </div>
                     <span className="event-time-label">TIME</span>
@@ -532,8 +670,7 @@ function App() {
 
             <Reveal>
               <p className="presence-note">
-                We warmly invite you and your family
-                to join us for{" "}
+                We warmly invite you and your family to join us for{" "}
                 {inviteType === "both"
                   ? "the wedding and reception"
                   : inviteType === "reception"

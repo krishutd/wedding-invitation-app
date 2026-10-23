@@ -1,0 +1,27 @@
+<!doctype html><html><head><title>Envelope layer inspection</title></head><body>
+<div id="controls" style="position:fixed;top:0;left:0;z-index:100;background:white;padding:8px;font:12px sans-serif">
+<button id="release">Pause seal release</button><button id="flap">Pause flap</button><button id="letter">Pause insert</button>
+<input id="progress" aria-label="Stage progress" type="range" min="0" max="99.99" step="1" value="0">
+<button id="date">Toggle date</button><button id="text">Toggle insert text</button><pre id="status"></pre></div><div id="root"></div>
+<script type="module">
+import React from 'react'; import {createRoot} from 'react-dom/client'; import App from '/src/App.jsx'; import '/src/styles.css';
+const realTimeout=window.setTimeout.bind(window); window.setTimeout=(fn,ms,...args)=>realTimeout(fn,ms===17000?600000:ms,...args);
+createRoot(document.getElementById('root')).render(React.createElement(App));
+const wait=ms=>new Promise(r=>realTimeout(r,ms));
+const status=document.querySelector('#status'); let paused=[];
+async function stopAt(stage) {
+ document.querySelector('.envelope-stage').click();
+ paused.forEach(a=>a.play());
+ while(document.querySelector('.opening-composition')?.dataset.stage!==stage) await wait(5);
+ paused=document.getAnimations().filter(a=>a.playState==='running'); paused.forEach(a=>a.pause());
+ document.querySelector('#progress').value=0; scrub(0);
+}
+function scrub(percent) {
+ paused.forEach(a=>a.currentTime=a.effect.getTiming().duration*percent/100);
+ const date=document.querySelector('.date-selected');
+ status.textContent=`Stage: ${document.querySelector('.opening-composition')?.dataset.stage}; frame ${percent}%\nDate elements: ${document.querySelectorAll('.date-selected').length}; date opacity: ${getComputedStyle(date).opacity}`;
+}
+for(const stage of ['release','flap','letter']) document.getElementById(stage).onclick=()=>stopAt(stage);
+document.querySelector('#progress').oninput=e=>scrub(Number(e.target.value));
+for(const [id,selector] of [['date','.date-selected'],['text','.letter-message']]) document.getElementById(id).onclick=()=>{const el=document.querySelector(selector);el.style.visibility=el.style.visibility==='hidden'?'visible':'hidden';};
+</script></body></html>
