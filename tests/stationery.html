@@ -55,7 +55,7 @@ document.querySelector('#run').onclick=async()=>{
    check(d.querySelector('.opening-composition').dataset.stage==='flap','Light releases during flap opening');
    await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='reveal');
    const prepared=d.querySelector('.invitation-prepared');
-   check(d.querySelector('.portal-ring').getAttribute('d').includes(' A'),'One circular ring surrounds the artwork');
+   check(d.querySelector('.portal-orbit').getAttribute('d').includes(' A') && !d.querySelector('.portal-ring'),'Moving arc follows a circle without a full-circle guide');
    check(d.querySelector('.portal-orbit').getAnimations().some(a=>a.playState==='running'),'Circular thread moves during artwork formation');
    check(d.querySelectorAll('.portal-dust').length===80,'Ring releases delicate gold dust');
    check(d.querySelector('.invitation-border-host').style.clipPath!=='','Border hidden until its tracing phase');

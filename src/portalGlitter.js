@@ -8,8 +8,8 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
   canvas.style.width = innerWidth + 'px';
   canvas.style.height = innerHeight + 'px';
   context.scale(ratio, ratio);
-  const particles = Array.from({ length: 160 }, (_, i) => ({
-    age: (i + .5) / 160,
+  const particles = Array.from({ length: 200 }, (_, i) => ({
+    age: (i + .5) / 200,
     spread: Math.sin(i * 127.1) * Math.cos(i * 31.7),
     size: .55 + (Math.sin(i * 17.3) + 1) * .5,
     phase: i * 2.39996,
@@ -19,8 +19,8 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
       context.clearRect(0, 0, innerWidth, innerHeight);
       const fade = Math.min(1, progress / .08, (1 - progress) / .08);
       if (fade <= 0) return;
-      // The SVG dash spans .19 of the circle and travels two turns clockwise.
-      const head = Math.PI / 2 + (2 * progress + .19) * Math.PI * 2;
+      // The SVG dash spans .228 of the circle and travels two turns clockwise.
+      const head = Math.PI / 2 + (2 * progress + .228) * Math.PI * 2;
       const x = cx + Math.cos(head) * radius, y = cy + Math.sin(head) * radius;
       const glow = context.createRadialGradient(x, y, 0, x, y, 15);
       glow.addColorStop(0, '#fff4cfcc');
@@ -31,7 +31,7 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
       context.fillRect(x - 15, y - 15, 30, 30);
       for (const particle of particles) {
         const age = (particle.age + progress * 3) % 1;
-        const angle = head - age * .19 * Math.PI * 2;
+        const angle = head - age * .228 * Math.PI * 2;
         const drift = particle.spread * (4 + age * 16);
         const px = cx + Math.cos(angle) * (radius + drift);
         const py = cy + Math.sin(angle) * (radius + drift) + age * age * 6;

@@ -85,9 +85,8 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         ]);
         // One orbit and the forming artwork share the same timeline.
         const circle=`M${mx} ${my+radius} A${radius} ${radius} 0 1 1 ${mx} ${my-radius} A${radius} ${radius} 0 1 1 ${mx} ${my+radius}`;
-        const ring=scene.querySelector('.portal-ring'),orbit=scene.querySelector('.portal-orbit');
-        ring.setAttribute('d',circle);orbit.setAttribute('d',circle);
-        const ringMotion=run(ring,[{strokeDashoffset:1,opacity:0},{strokeDashoffset:0,opacity:.65,offset:.45},{strokeDashoffset:0,opacity:.5}],3200,{easing:'linear'});
+        const orbit=scene.querySelector('.portal-orbit');
+        orbit.setAttribute('d',circle);
         const orbitMotion=run(orbit,[{strokeDashoffset:0,opacity:0},{opacity:1,offset:.08},{strokeDashoffset:-2,opacity:1}],3200,{easing:'linear'});
         const orbitClock=animations[animations.length-1];
         portalGlitter=createPortalGlitter(scene.querySelector('.portal-glitter'),mx,my,radius);
@@ -114,7 +113,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
           } catch { finish(); }
         };
         draw();
-        await Promise.all([clock.finished, ringMotion, orbitMotion]);
+        await Promise.all([clock.finished, orbitMotion]);
         cancelAnimationFrame(glitterFrame);
         portalGlitter.dispose();
         image.style.visibility = 'visible';
@@ -133,7 +132,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         const joinY=Math.max(top+2,Math.min(bottom-2,my));
         // Leave the circle directly sideways before any wording is exposed.
         // Each strand then follows half the perimeter; neither crosses the page interior.
-        const flourishes=[run(ring,[{opacity:.5},{opacity:0}],400),run(orbit,[{opacity:1},{opacity:0}],400)];
+        const flourishes=[run(orbit,[{opacity:1},{opacity:0}],400)];
         const paths=[
           `M${left} ${joinY} V${top} H${right} V${joinY}`,
           `M${right} ${joinY} V${bottom} H${left} V${joinY}`,
@@ -189,7 +188,6 @@ export default function ArtworkHandoff({ bounds, onDone }) {
       <canvas className="formation-glitter" aria-hidden="true" />
     </div>
     <svg className="story-light" aria-hidden="true">
-      <path className="portal-ring" pathLength="1" />
       <path className="portal-orbit" pathLength="1" />
       {[0,1,2].map(i => <path key={i} className="story-thread" pathLength="1" />)}
     </svg>
