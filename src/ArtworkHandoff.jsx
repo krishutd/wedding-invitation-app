@@ -123,39 +123,38 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         if (intro) intro.style.visibility = 'hidden';
         page.style.visibility = 'visible';
         const frame=border.getBoundingClientRect();
-        const left=frame.left,right=frame.right,top=frame.top,bottom=frame.bottom,centre=(left+right)/2;
-        const duration=1800;
+        const left=frame.left,right=frame.right,top=frame.top,bottom=frame.bottom;
+        const duration=2400;
+        const joinY=Math.max(top+2,Math.min(bottom-2,my));
+        // Leave the circle directly sideways before any wording is exposed.
+        // Each strand then follows half the perimeter; neither crosses the page interior.
+        const flourishes=[run(ring,[{opacity:.5},{opacity:0}],400),run(orbit,[{opacity:1},{opacity:0}],400)];
         const paths=[
-          `M${mx-radius} ${my} Q${mx-radius} ${top} ${centre} ${top} H${left} V${bottom} H${centre}`,
-          `M${mx+radius} ${my} Q${mx+radius} ${top} ${centre} ${top} H${right} V${bottom} H${centre}`,
+          `M${left} ${joinY} V${top} H${right} V${joinY}`,
+          `M${right} ${joinY} V${bottom} H${left} V${joinY}`,
         ];
-        const flourishes=[run(ring,[{opacity:.5},{opacity:0}],600),run(orbit,[{opacity:1},{opacity:0}],600)];
         paths.forEach((d,i)=>{
+          const edge=i?right:left;
+          const approach=document.createElementNS('http://www.w3.org/2000/svg','path');
+          approach.setAttribute('pathLength','1');approach.setAttribute('class','story-thread');
+          scene.querySelector('.story-light').append(approach);
+          flourishes.push(drawThread(approach,`M${mx+(i?radius:-radius)} ${my} L${edge} ${joinY}`,400));
           const path=threads[i+1];path.setAttribute('d',d);path.style.strokeDasharray='1 1';
-          const probe=document.createElementNS('http://www.w3.org/2000/svg','path');
-          probe.setAttribute('d',`M${mx+(i?radius:-radius)} ${my} Q${mx+(i?radius:-radius)} ${top} ${centre} ${top}`);
-          const total=path.getTotalLength(),join=probe.getTotalLength()/total;
-          const corner=join+frame.width/2/total,base=corner+frame.height/total;
-          const offsets=[0,.24,.40,.91,1],distances=[0,join,corner,base,1];
-          flourishes.push(run(path,distances.map((v,n)=>({strokeDashoffset:1-v,opacity:n===0?0:1,offset:offsets[n]})),duration,{easing:'linear'}));
+          flourishes.push(run(path,[{strokeDashoffset:1,opacity:1},{strokeDashoffset:0,opacity:1}],2000,{delay:400,easing:'linear'}));
           const tip=document.createElement('span');tip.className='thread-tip';tip.style.offsetPath='path('+JSON.stringify(d)+')';scene.append(tip);
-          flourishes.push(run(tip,distances.map((v,n)=>({offsetDistance:v*100+'%',opacity:n===0?0:1,offset:offsets[n]})),duration,{easing:'linear'}));
+          flourishes.push(run(tip,[{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],2000,{delay:400,easing:'linear'}));
         });
-        // The permanent frame is exposed behind the travelling tips, not faded in ahead of them.
-        flourishes.push(run(border,[
-          {clipPath:'inset(0 50% 100% 50%)',offset:0},
-          {clipPath:'inset(0 50% 100% 50%)',offset:.24},
-          {clipPath:`inset(-16px -2px ${frame.height-2}px -2px)`,offset:.40},
-          {clipPath:'inset(-16px -2px -2px -2px)',offset:.91},
-          {clipPath:'inset(-16px -2px -2px -2px)',offset:1},
-        ],duration,{easing:'linear'}));
+        // Only the traced strokes are visible until the perimeter is complete.
+        // The original double-line frame then takes over without a moving mask jump.
+        border.style.clipPath='';
+        flourishes.push(run(border,[{opacity:0},{opacity:0,offset:.90},{opacity:1}],duration,{easing:'linear'}));
         const text=[...page.querySelectorAll('.couple-names, .invite-header')];
-        text.forEach((node,i)=>flourishes.push(run(node,[{opacity:0},{opacity:1}],700,{delay:250+i*100})));
+        text.forEach((node,i)=>flourishes.push(run(node,[{opacity:0},{opacity:1}],700,{delay:500+i*100})));
         await Promise.all([...flourishes,
-          run(page,[{opacity:0},{opacity:1}],700),
-          run(paper,[{opacity:1},{opacity:0}],850),
+          run(page,[{opacity:0},{opacity:1}],700,{delay:400}),
+          run(paper,[{opacity:1},{opacity:0}],850,{delay:400}),
           // Even a below-fold destination uses the same continuous image movement.
-          run(art,[{transform:'translate(0px,0px) scale(1)'},{transform:`translate(${to.left-from.left}px,${to.top-from.top}px) scale(${to.width/from.width})`}],1800),
+          run(art,[{transform:'translate(0px,0px) scale(1)'},{transform:`translate(${to.left-from.left}px,${to.top-from.top}px) scale(${to.width/from.width})`}],duration),
         ]);
         finish();
       } catch { finish(); }

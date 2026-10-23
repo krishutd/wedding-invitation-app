@@ -273,11 +273,6 @@ html { scrollbar-gutter: stable; }
 .meeting-bloom { position: absolute; width: 85px; height: 85px; border-radius: 50%; opacity: 0; background: radial-gradient(circle, #fff9dc 0%, #f4d891a0 16%, #d9b56835 42%, transparent 70%); pointer-events: none; }
 .handoff-art .art-gold { z-index: 4; background: linear-gradient(110deg, transparent 43%, #fff6ce 49%, transparent 55%); background-size: 250% 100%; }
 .stationery-art .divine-art, .formation-glitter { filter: none; }
-.invitation-vine { position: absolute; width: 65px; height: 65px; fill: none; stroke: #a47a30; stroke-width: .8; }
-.invitation-vine:nth-of-type(1) { left: 0; top: 0; }
-.invitation-vine:nth-of-type(2) { right: 0; top: 0; transform: scaleX(-1); }
-.invitation-vine:nth-of-type(3) { left: 0; bottom: 0; transform: scaleY(-1); }
-.invitation-vine:nth-of-type(4) { right: 0; bottom: 0; transform: scale(-1); }
 .thread-tip { position: absolute; left: 0; top: 0; width: 3px; height: 3px; border-radius: 50%; opacity: 0; background: #fff6d4; box-shadow: 0 0 4px 1px #cba454, 0 0 10px 3px #e8c36a70; pointer-events: none; }
 /* One circular light reveals the artwork and resolves into the frame. */
 .portal-ring, .portal-orbit { fill: none; stroke: #c49a50; stroke-linecap: round; opacity: 0; }

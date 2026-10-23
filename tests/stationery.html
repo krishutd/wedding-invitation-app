@@ -76,7 +76,8 @@ document.querySelector('#run').onclick=async()=>{
     const target=d.querySelector('#invitation .divine-art').getBoundingClientRect(); measured=target;
     check(w.getComputedStyle(d.querySelector('.intro-screen')).visibility==='hidden','Envelope concealed during settling');
     check(w.getComputedStyle(d.querySelector('#invitation .divine-art')).visibility==='hidden','No second visible artwork during settling');
-    check(d.querySelectorAll('.story-thread')[1].getAttribute('d').includes(' H'),'Outgoing strands trace the frame edges');
+    check([...d.querySelectorAll('.story-thread')].slice(1,3).every(p=>!/[QC]/.test(p.getAttribute('d'))),'Border strands use straight perimeter paths without arches');
+    check(!d.querySelector('.invitation-vine'),'Leaf corner decorations removed');
     check(performance.now()-flapStarted<7500,'Reveal and breathing pause leave time for the card arrival');
     {
      const moving=d.querySelector('.handoff-art');
@@ -92,7 +93,7 @@ document.querySelector('#run').onclick=async()=>{
   await until(()=>d.querySelector('#invitation')&&!d.querySelector('.intro-screen')&&!d.querySelector('.artwork-handoff'));
   await wait(120);
   if(measured){const final=d.querySelector('.divine-art').getBoundingClientRect();check(['left','top','width','height'].every(k=>Math.abs(final[k]-measured[k])<1),'Final layout matches measured destination');}
-  check(performance.now()-started<12500,'Tap to ready within budget: '+mode);
+  check(performance.now()-started<13500,'Tap to ready within budget: '+mode);
   check(d.querySelectorAll('.ceremony-card').length===count,'Correct variant '+query);
   check(d.querySelector('.event-heart').parentElement.textContent===String(day),'Correct selected day '+day);
   check(w.getComputedStyle(d.querySelector('.divine-art')).visibility==='visible','Original artwork fully visible');
