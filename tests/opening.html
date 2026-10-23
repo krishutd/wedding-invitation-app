@@ -50,7 +50,7 @@ document.querySelector('button').onclick = async () => {
     await wait(130);
     check(frame.contentWindow.getComputedStyle(flap).zIndex === '0', 'Flap moves behind insert after passing edge-on');
     await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'reading');
-    check(performance.now()-started < 3500, 'Opening integrates within the artwork handoff budget');
+    check(performance.now()-started < 5500, 'Opening integrates within the artwork handoff budget');
   }
   if (mode === 'resize') { await wait(100); frame.style.width = '375px'; }
   await until(() => doc.querySelector('#invitation') && !doc.querySelector('.intro-screen') && !doc.querySelector('.artwork-handoff'));

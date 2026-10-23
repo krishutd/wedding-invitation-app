@@ -5,6 +5,8 @@ import { eventDate, formatEvent } from './events';
 import { HEART as heart } from './StationeryReveal.jsx';
 const TRAIL_SEGMENTS = 24;
 const FLOW_MS = 280;
+const THREAD_TRAVEL_MS = 1350;
+const DATE_HEART_MS = 1050;
 const FLOW_EASING = 'ease-in-out';
 import { assetUrl as asset } from "./assets.js";
 
@@ -103,17 +105,17 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
         return animate(segment, [
           { strokeDashoffset: offset, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
           { strokeDashoffset: offset - 1, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
-        ], 450, { easing: 'linear' }).finished;
+        ], THREAD_TRAVEL_MS, { easing: 'linear' }).finished;
       }));
       // As the heart fills, pull the remaining tail into it until no connector remains.
       await Promise.all([
-        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' }], 350, { easing: 'ease-in-out' }).finished,
+        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' } ], DATE_HEART_MS, { easing: 'ease-in-out' }).finished,
         ...segments.map((segment, index) => {
           const offset = (index + 1) * segmentLength - 1;
           return animate(segment, [
             { strokeDashoffset: offset },
             { strokeDashoffset: offset - tailLength },
-          ], 350 * .85, { easing: 'ease-in-out' }).finished;
+          ], DATE_HEART_MS * .85, { easing: 'ease-in-out' }).finished;
         }),
       ]);
       setStage('gathering');
