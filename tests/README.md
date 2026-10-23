@@ -1,14 +1,14 @@
-# Opening sequence browser checks
+# Enhanced invitation browser checks
 
-Start the Vite dev server and open `/tests/opening.html`, then choose **Run opening checks**. The fixtures are development-only and are not included in the production build.
+Run Vite and open /tests/stationery.html, then choose Run artwork checks.
+The lifecycle cases keep production durations but explicitly finish native animations at their declared deadlines from the parent fixture, avoiding offscreen/background compositor throttling. Use Inspect artwork slowly and the actual invitation for visual timing checks. Coverage includes wedding/reception and missing/invalid parameters; 320x480, 375x667 and 390x1000 layouts; both near and below-viewport destinations; hidden wording and inert controls during the interlude; duplicate/particle cleanup; no automatic scroll; no artwork replay; wheel and keyboard skips; resize; reduced motion; animation and decoding failure; map URLs and music controls.
 
-Checks cover wedding/reception, empty and invalid invitation parameters, date rows, a 320 x 480 viewport, early/repeated activation, resize interruption, an unavailable animation API, removal of opening elements, event cards, and final scrolling. The reduced-motion fixture simulates the JavaScript media preference before mounting React; it does not change the host OS setting.
+Inspect artwork slowly stretches only transition animations for visual inspection. No application code is changed by the fixture.
 
-Also checked manually: keyboard Enter activation, reception/wedding invitation content, music toggle, and scrolling. Actual WhatsApp/iOS/Android audio autoplay policy and physical orientation changes need a device check.
+Run /tests/opening.html for the envelope trail, date, flap layering, repeated taps and recovery checks. Run /tests/feature-flags.html for classic/enhanced isolation.
 
-The normal-flow cases also verify that the heart stays undrawn until activation, neighbours remain visible during drawing, and the slowed sequence reaches a distinct reading pause before revealing the invitation directly. The full sequence now lasts about 14 seconds, with a 17-second recovery watchdog.
+The PNG is flattened, so only its original pixels are masked; there are no separately animated figures. Artwork reveal and hold take 3240ms, settling 700ms, and paper expansion 300ms. The envelope sequence takes approximately 2.6 seconds. Asset readiness is bounded, and failure completes immediately.
 
-The thread path is checked for an open 310-degree sweep outside the measured seal before it departs toward the date. The sweep and departure draw continuously over 2.7 seconds without pausing at their join.
+Physical Safari/WhatsApp rendering, device orientation and audible music output still require a device check. Browser checks verify controls and layout, not physical audio output.
 
-
-The moving thread is limited to the measured heart perimeter, with decreasing opacity along its tail. Checks verify its length and opacity falloff; the remaining connector is withdrawn while the heart draws.
+The enhanced central reveal samples opaque pixels from the unchanged PNG. 7,600 falling flecks settle onto those points as soft overlapping mask blooms resolve the original image over three seconds. A local canvas is removed before the measured handoff; reduced motion skips it. The longer focal reveal intentionally brings the complete sequence to approximately 6.7 seconds.

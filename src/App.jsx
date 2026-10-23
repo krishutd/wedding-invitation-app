@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import GlitterReveal from "./GlitterReveal.jsx";
+import { motion } from "framer-motion";
+import StationeryArtwork from "./StationeryArtwork.jsx";
+import { InkReveal, EventDay, BorderReveal, ClosingDivider } from "./StationeryReveal.jsx";
+import ArtworkHandoff from "./ArtworkHandoff.jsx";
+import InvitationBorder from "./ThreadBorder.jsx";
 import EnvelopeOpening from "./EnvelopeOpening.jsx";
 import { EVENTS, formatEvent } from "./events.js";
 import {
@@ -115,26 +118,7 @@ function CeremonyFrame() {
 // Set to true to show the optional childhood-photo story page after opening the envelope.
 const SHOW_STORY_PAGE = false;
 
-function Reveal({ children, className = "", delay = 0, amount = 0.22, immediate = false }) {
-  const ref = useRef(null);
-  const visible = useInView(ref, { once: true, amount });
-  const reduced = useReducedMotion();
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={reduced || immediate ? false : { opacity: 0, y: 24 }}
-      animate={visible || immediate ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        duration: reduced ? 0 : 1.15,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+const Reveal = InkReveal;
 
 function PhotoPlaceholder({ label, name }) {
   return (
@@ -174,15 +158,15 @@ function FamilyDetails({ side, showRelationship = true }) {
 }
 
 function App() {
+  const [handoff, setHandoff] = useState(null);
+  const paperResolve = useRef(null);
   const [page, setPage] = useState("intro");
   const [introReady, setIntroReady] = useState(false);
-  const [artworkReady, setArtworkReady] = useState(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const audioRef = useRef(null);
   const musicStartedByUserRef = useRef(false);
   const musicEnabledRef = useRef(true);
   const resumeMusicOnForegroundRef = useRef(false);
-  const artworkTriggerRef = useRef(null);
   const params = new URLSearchParams(window.location.search);
   const invitationSide =
     params.get("side")?.toLowerCase() === "bride" ? "bride" : "groom";
@@ -191,6 +175,7 @@ function App() {
     requestedInvite === "wedding" || requestedInvite === "reception"
       ? requestedInvite
       : "both";
+  const selectedEvent = EVENTS[inviteType === "reception" ? "reception" : "wedding"];
   const firstName = invitationSide === "bride" ? WEDDING.bride : WEDDING.groom;
   const secondName = invitationSide === "bride" ? WEDDING.groom : WEDDING.bride;
   const secondFamilySide = invitationSide === "bride" ? "groom" : "bride";
@@ -198,6 +183,7 @@ function App() {
   useEffect(() => {
     let cancelled = false;
     const introAssets = [
+      "radha-krishna-silhouette.png",
       "envelope-botanical-background.png",
       "envelope-botanical-overlay.png",
       "envelope-paper-texture.png",
@@ -306,6 +292,8 @@ function App() {
         preload="none"
       />
 
+      {handoff && <ArtworkHandoff bounds={handoff} onDone={() => { setPage("invitation"); setHandoff(null); paperResolve.current?.(); requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true })); }} />}
+
       {page === "intro" && (
         <section
           className="intro-screen"
@@ -319,12 +307,12 @@ function App() {
           <div className="outer-frame" aria-hidden="true"></div>
           <div className="intro-content">
             <EnvelopeOpening
-              event={EVENTS[inviteType === "reception" ? "reception" : "wedding"]}
+              event={selectedEvent}
+              onPaper={(bounds) => new Promise(resolve => { paperResolve.current = resolve; setHandoff(bounds); })}
               ready={introReady}
               onActivate={openInvitation}
               onFinish={() => {
-                window.scrollTo({ top: 0, behavior: "instant" });
-                setArtworkReady(true);
+                setHandoff(null);
                 setPage(SHOW_STORY_PAGE ? "story" : "invitation");
                 requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true }));
               }}
@@ -374,9 +362,12 @@ function App() {
         </motion.div>
       )}
 
-      {page === "invitation" && (
+      {(page === "invitation" || handoff) && (
         <motion.div
           key="invitation"
+          className={page === "intro" ? "invitation-prepared" : undefined}
+          inert={page === "intro"}
+          aria-hidden={page === "intro" ? true : undefined}
           initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.85 }}
@@ -397,7 +388,7 @@ function App() {
               {musicEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
               <span>Music {musicEnabled ? "on" : "off"}</span>
             </button>
-            <div className="outer-frame" aria-hidden="true">
+            <InvitationBorder>
               <span className="outer-frame-top" />
               <span className="frame-corner frame-corner--top-left" />
               <span className="frame-corner frame-corner--top-right" />
@@ -408,7 +399,7 @@ function App() {
                 src={assetUrl("ganesha-seal-engraving.png")}
                 alt=""
               />
-            </div>
+            </InvitationBorder>
             <Reveal immediate>
               <header className="invite-header">
                 <FamilyDetails side={invitationSide} showRelationship={false} />
@@ -422,34 +413,28 @@ function App() {
               </header>
             </Reveal>
 
-            <Reveal delay={0.08}>
+            <div>
               <div className="couple-names">
-                <h2>{firstName}</h2>
-                <div className="and-line">
+                <InkReveal delay={0.12}><h2>{firstName}</h2></InkReveal>
+                <InkReveal delay={0.24}><div className="and-line">
                   <span /> <i>and</i> <span />
-                </div>
-                <h2>{secondName}</h2>
+                </div></InkReveal>
+                <InkReveal delay={0.36}><h2>{secondName}</h2></InkReveal>
               </div>
-            </Reveal>
+            </div>
 
-            <Reveal delay={0.12}>
+            <Reveal delay={0.45}>
               <FamilyDetails side={secondFamilySide} />
             </Reveal>
 
-            <div
-              className="art-reveal-trigger"
-              ref={artworkTriggerRef}
-              aria-hidden="true"
-            />
-            <Reveal delay={0.08} amount={0.28}>
+            <div>
               <div className="art-section">
-                <GlitterReveal
+                <StationeryArtwork
                   src={assetUrl("radha-krishna-silhouette.png")}
                   alt="Krishna and Radha beneath a leafy arch and golden moon"
-                  start={artworkReady}
                 />
               </div>
-            </Reveal>
+            </div>
 
             <div
               className={`ceremonies${
@@ -459,13 +444,13 @@ function App() {
               {inviteType !== "reception" && (
                 <Reveal delay={0.05}>
                   <article className="ceremony-card">
-                    <CeremonyFrame />
+                    <BorderReveal className="ceremony-frame-reveal"><CeremonyFrame /></BorderReveal>
                     <span className="family-label">WEDDING</span>
                     <div
                       className="event-date"
                       aria-label={formatEvent(EVENTS.wedding, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     >
-                      <span className="event-day">{EVENTS.wedding.day}</span>
+                      <EventDay event={EVENTS.wedding} selected={selectedEvent === EVENTS.wedding} />
                       <span className="event-date-copy">
                         <span className="event-weekday">{formatEvent(EVENTS.wedding, { weekday: "long" })}</span>
                         <span className="event-month-year">{formatEvent(EVENTS.wedding, { month: "long", year: "numeric" })}</span>
@@ -499,7 +484,7 @@ function App() {
                       className="event-date"
                       aria-label={formatEvent(EVENTS.reception, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     >
-                      <span className="event-day">{EVENTS.reception.day}</span>
+                      <EventDay event={EVENTS.reception} selected={selectedEvent === EVENTS.reception} />
                       <span className="event-date-copy">
                         <span className="event-weekday">{formatEvent(EVENTS.reception, { weekday: "long" })}</span>
                         <span className="event-month-year">{formatEvent(EVENTS.reception, { month: "long", year: "numeric" })}</span>
@@ -564,11 +549,11 @@ function App() {
 
             <Reveal>
               <div className="love-signoff">
-                <div className="love-divider" aria-hidden="true">
+                <ClosingDivider>
                   <span />
                   <i>✿</i>
                   <span />
-                </div>
+                </ClosingDivider>
                 <p className="with-love-note">
                   {LOVE_MESSAGES[invitationSide]}
                 </p>
