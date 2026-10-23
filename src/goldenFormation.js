@@ -33,25 +33,31 @@ export function createGoldenFormation(canvas, image) {
   const random=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
   const clamp=n=>Math.max(0,Math.min(1,n));
   const smooth=n=>{const t=clamp(n);return t*t*(3-2*t);};
-  const particles=Array.from({length:7600},()=>{
+  const particles=Array.from({length:28},()=>{
     const target=points[Math.floor(random()*points.length)];
     return {...target, startX:target.x+(random()-.5)*width*.6,
-      startY:-padTop+random()*height*.18,
+      startY:target.y+(random()-.5)*height*.4,
       delay:random()*.24, duration:.36+random()*.29,
       size:.45+random()*.95, brightness:.4+random()*.48,
       phase:random()*Math.PI*2, drift:6+random()*12, glint:random()>.86};
   });
-  const blooms=[];
-  for(let y=0;y<=8;y++)for(let x=0;x<=6;x++){
-    const px=(x+(random()-.5)*.65)*width/6, py=(y+(random()-.5)*.65)*height/8;
-    blooms.push({x:px,y:py,delay:.12+(py/height)*.18+random()*.12, radius:Math.max(width/6,height/8)*2.2});
+  // The first light is between their faces. The flattened original is revealed
+  // spatially: figures, moon, then the arch, without recolouring any pixels.
+  const blooms=[
+    {x:width*.53,y:height*.46,delay:0,radius:width*.31},
+    {x:width*.48,y:height*.68,delay:.08,radius:width*.39},
+    {x:width*.5,y:height*.91,delay:.16,radius:width*.36},
+    {x:width*.48,y:height*.38,delay:.24,radius:width*.43},
+  ];
+  for(let i=0;i<13;i++){
+    const angle=Math.PI+i/12*Math.PI;
+    blooms.push({x:width*(.5+.44*Math.cos(angle)),y:height*(.42+.34*Math.sin(angle)),
+      delay:.37+i*.017,radius:width*.27});
   }
   function draw(progress) {
     const p=clamp(progress);
     ctx.clearRect(0,0,width+padX*2,height+padTop+padBottom);
     mask.context.clearRect(0,0,width,height);
-    mask.context.fillStyle='rgba(0,0,0,'+(.16*smooth((p-.15)/.5))+')';
-    mask.context.fillRect(0,0,width,height);
     for(const bloom of blooms){
       const growth=smooth((p-bloom.delay)/.48);
       if(!growth)continue;

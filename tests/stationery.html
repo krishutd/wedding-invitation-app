@@ -19,7 +19,7 @@ async function load(query,mode='normal',width=320,height=480){
   animation.finished.then(()=>clearTimeout(timer),()=>clearTimeout(timer));return animation;
  };
  if(mode==='slow'){
-  const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===6500?65000:ms===17000?170000:ms,...args);
+  const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===10000?100000:ms===17000?170000:ms,...args);
   w.Element.prototype.animate=function(frames,opts){return animate.call(this,frames,{...opts,duration:this.closest('.artwork-handoff')?opts.duration*3:opts.duration});};
  }
  const started=performance.now();
@@ -49,8 +49,16 @@ document.querySelector('#run').onclick=async()=>{
   if(mode==='canvas')w.HTMLCanvasElement.prototype.getContext=()=>null;
   if(mode==='asset')w.HTMLImageElement.prototype.decode=()=>Promise.reject(Error('decode failure'));
   if(['normal','skip','resize','key'].includes(mode)){
+   await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='threads');
+   const flapStarted=performance.now();
+   check(d.querySelectorAll('.story-thread').length===3,'A seam strand and two border paths exist');
+   check(d.querySelector('.opening-composition').dataset.stage==='flap','Light releases during flap opening');
    await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='reveal');
    const prepared=d.querySelector('.invitation-prepared');
+   check(d.querySelector('.portal-orbit').getAttribute('d').includes(' A') && !d.querySelector('.portal-ring'),'Moving arc follows a circle without a full-circle guide');
+   check(d.querySelector('.portal-orbit').getAnimations().some(a=>a.playState==='running'),'Circular thread moves during artwork formation');
+   check(d.querySelectorAll('.portal-dust').length===80,'Ring releases delicate gold dust');
+   check(d.querySelector('.invitation-border-host').style.clipPath!=='','Border hidden until its tracing phase');
    check(w.getComputedStyle(prepared).visibility==='hidden','Wording concealed during reveal');
    check(prepared.inert && prepared.getAttribute('aria-hidden')==='true','Invisible controls excluded');
    check(w.getComputedStyle(d.querySelector('#invitation .divine-art')).visibility==='hidden','Final artwork hidden while transition copy reveals');
@@ -62,26 +70,30 @@ document.querySelector('#run').onclick=async()=>{
     const glitter=d.querySelector('.formation-glitter');
     check(glitter && w.getComputedStyle(d.querySelector('.handoff-art img')).visibility==='hidden','Canvas owns the forming artwork');
     const pixels=glitter.getContext('2d').getImageData(0,0,glitter.width,glitter.height).data;
-    check(pixels.some((value,i)=>i%4===3 && value>40),'Falling glitter and forming pixels are painted');
+    check(pixels.some((value,i)=>i%4===3 && value>40),'Meeting-centred artwork and sparse sparks are painted');
     await until(()=>d.querySelector('.artwork-handoff')?.dataset.phase==='settling');
     check(d.querySelector('.artwork-handoff').dataset.destination===route,'Destination route '+route+' at '+width+'x'+height);
     const target=d.querySelector('#invitation .divine-art').getBoundingClientRect(); measured=target;
     check(w.getComputedStyle(d.querySelector('.intro-screen')).visibility==='hidden','Envelope concealed during settling');
     check(w.getComputedStyle(d.querySelector('#invitation .divine-art')).visibility==='hidden','No second visible artwork during settling');
-    if(route==='near'){
+    check([...d.querySelectorAll('.story-thread')].slice(1,3).every(p=>!/[QC]/.test(p.getAttribute('d'))),'Border strands use straight perimeter paths without arches');
+    check(!d.querySelector('.invitation-vine'),'Leaf corner decorations removed');
+    check(performance.now()-flapStarted<7500,'Reveal and breathing pause leave time for the card arrival');
+    {
      const moving=d.querySelector('.handoff-art');
      const motion=moving.getAnimations().find(a=>a.effect.getKeyframes().some(f=>f.transform));
+     check(motion.effect.getKeyframes().every(f=>f.opacity===undefined || Number(f.opacity)===1),'Artwork never fades out during movement');
      const matrix=new w.DOMMatrix(motion.effect.getKeyframes().at(-1).transform);
      const origin=motion.effect.target;
      // CSS translate centres the unscaled art; transform targets viewport pixel bounds.
-     check(Math.abs(matrix.a-target.width/origin.offsetWidth)<.02,'Near artwork matches destination scale');
+     check(Math.abs(matrix.a-target.width/origin.offsetWidth)<.02,'Continuous artwork matches destination scale');
     }
    }
   }
   await until(()=>d.querySelector('#invitation')&&!d.querySelector('.intro-screen')&&!d.querySelector('.artwork-handoff'));
   await wait(120);
   if(measured){const final=d.querySelector('.divine-art').getBoundingClientRect();check(['left','top','width','height'].every(k=>Math.abs(final[k]-measured[k])<1),'Final layout matches measured destination');}
-  check(performance.now()-started<8500,'Tap to ready within budget: '+mode);
+  check(performance.now()-started<13500,'Tap to ready within budget: '+mode);
   check(d.querySelectorAll('.ceremony-card').length===count,'Correct variant '+query);
   check(d.querySelector('.event-heart').parentElement.textContent===String(day),'Correct selected day '+day);
   check(w.getComputedStyle(d.querySelector('.divine-art')).visibility==='visible','Original artwork fully visible');
