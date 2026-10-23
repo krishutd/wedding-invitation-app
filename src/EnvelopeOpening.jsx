@@ -102,7 +102,7 @@ export default function EnvelopeOpening({
   }, [ready]);
 
   async function open() {
-    if (active.current) return;
+    if (!ready || active.current) return;
     active.current = true;
     onActivate(); // Keep audio.play() in the native user-activation call stack.
     watchdog.current = setTimeout(finish, 17000);
@@ -298,7 +298,8 @@ export default function EnvelopeOpening({
         type="button"
         className="envelope-stage"
         onClick={open}
-        aria-disabled={stage !== "sealed"}
+        disabled={!ready}
+        aria-disabled={!ready || stage !== "sealed"}
         aria-label={`Open the ${event.label} invitation`}
       >
         <div className="envelope" aria-hidden="true">

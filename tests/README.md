@@ -1,5 +1,7 @@
 # Enhanced invitation browser checks
 
+For the initial envelope reveal, build the site, run `node tests/serve-production.mjs`, then run `node tests/intro-loading.mjs` with Playwright installed (or pass its node_modules directory as the first argument). Set `BROWSER_CHANNEL=msedge` to use installed Edge. This checks both opening variants at the GitHub Pages project path with a delayed image response, delayed image decoding, and delayed font readiness. The composition stays hidden through all three stages, including the enhanced fixed background, then appears with its seal artwork loaded and its busy state cleared.
+
 Run Vite and open /tests/stationery.html, then choose Run artwork checks.
 The lifecycle cases keep production durations but finish native animations at their declared deadlines from the parent fixture to avoid background compositor throttling. Use Inspect artwork slowly and the real invitation for visual timing checks.
 
