@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import StationeryArtwork from "./StationeryArtwork.jsx";
-import { InkReveal, EventDay, PaperHandoff, BorderReveal, ClosingDivider } from "./StationeryReveal.jsx";
+import { InkReveal, EventDay, BorderReveal, ClosingDivider } from "./StationeryReveal.jsx";
+import ArtworkHandoff from "./ArtworkHandoff.jsx";
 import InvitationBorder from "./ThreadBorder.jsx";
 import EnvelopeOpening from "./EnvelopeOpening.jsx";
 import { EVENTS, formatEvent } from "./events.js";
@@ -182,6 +183,7 @@ function App() {
   useEffect(() => {
     let cancelled = false;
     const introAssets = [
+      "radha-krishna-silhouette.png",
       "envelope-botanical-background.png",
       "envelope-botanical-overlay.png",
       "envelope-paper-texture.png",
@@ -290,7 +292,7 @@ function App() {
         preload="none"
       />
 
-      {handoff && <PaperHandoff handoff={handoff} presented={page !== "intro"} onCovered={() => paperResolve.current?.()} onDone={() => setHandoff(null)} />}
+      {handoff && <ArtworkHandoff bounds={handoff} onDone={() => { setPage("invitation"); setHandoff(null); paperResolve.current?.(); requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true })); }} />}
 
       {page === "intro" && (
         <section
@@ -310,6 +312,7 @@ function App() {
               ready={introReady}
               onActivate={openInvitation}
               onFinish={() => {
+                setHandoff(null);
                 setPage(SHOW_STORY_PAGE ? "story" : "invitation");
                 requestAnimationFrame(() => document.getElementById("invitation")?.focus({ preventScroll: true }));
               }}
@@ -359,9 +362,12 @@ function App() {
         </motion.div>
       )}
 
-      {page === "invitation" && (
+      {(page === "invitation" || handoff) && (
         <motion.div
           key="invitation"
+          className={page === "intro" ? "invitation-prepared" : undefined}
+          inert={page === "intro"}
+          aria-hidden={page === "intro" ? true : undefined}
           initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.85 }}

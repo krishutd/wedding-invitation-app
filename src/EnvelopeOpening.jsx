@@ -4,7 +4,7 @@ import { eventDate, formatEvent } from './events';
 
 import { HEART as heart } from './StationeryReveal.jsx';
 const TRAIL_SEGMENTS = 24;
-const FLOW_MS = 1700;
+const FLOW_MS = 280;
 const FLOW_EASING = 'ease-in-out';
 import { assetUrl as asset } from "./assets.js";
 
@@ -103,21 +103,21 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
         return animate(segment, [
           { strokeDashoffset: offset, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
           { strokeDashoffset: offset - 1, opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4 },
-        ], FLOW_MS + 1000, { easing: 'linear' }).finished;
+        ], 450, { easing: 'linear' }).finished;
       }));
       // As the heart fills, pull the remaining tail into it until no connector remains.
       await Promise.all([
-        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' }], 1700, { easing: 'ease-in-out' }).finished,
+        animate(heartPath.current, [{ strokeDashoffset: 1, stroke: '#A47A30' }, { strokeDashoffset: 0, stroke: '#A47A30', offset: .85 }, { strokeDashoffset: 0, stroke: '#702D36' }], 350, { easing: 'ease-in-out' }).finished,
         ...segments.map((segment, index) => {
           const offset = (index + 1) * segmentLength - 1;
           return animate(segment, [
             { strokeDashoffset: offset },
             { strokeDashoffset: offset - tailLength },
-          ], 1700 * .85, { easing: 'ease-in-out' }).finished;
+          ], 350 * .85, { easing: 'ease-in-out' }).finished;
         }),
       ]);
       setStage('gathering');
-      await animate(trail.current, [{ opacity: 1 }, { opacity: 0 }], FLOW_MS, { easing: FLOW_EASING }).finished;
+      await animate(trail.current, [{ opacity: 1 }, { opacity: 0 }], 120, { easing: FLOW_EASING }).finished;
       setStage('travelling');
       const d = selected.current.getBoundingClientRect();
       const s = seal.current.getBoundingClientRect();
@@ -125,7 +125,7 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
       const dy = s.top + s.height / 2 - d.top - d.height / 2;
       await animate(selected.current, [{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .8 }], FLOW_MS, { easing: FLOW_EASING }).finished;
       setStage('release');
-      animate(selected.current, [{ opacity: .8 }, { opacity: 0 }], 350);
+      animate(selected.current, [{ opacity: .8 }, { opacity: 0 }], 120);
       animate(root.current.querySelector('.seal-ripple'), [{ transform: 'scale(.65)', opacity: .65 }, { transform: 'scale(1.65)', opacity: 0 }], FLOW_MS);
       await animate(seal.current, [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-18px) rotate(-8deg)', opacity: 0 }], FLOW_MS, { easing: FLOW_EASING }).finished;
       setStage('flap');
@@ -142,7 +142,7 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
       await animate(letter.current, [{ transform: 'translateY(0)' }, { transform: 'translateY(-48%)' }], FLOW_MS, { easing: FLOW_EASING }).finished;
       // Preserve the readable insert, then expand only its paper surface.
       setStage('reading');
-      await animate(letter.current, [{ transform: 'translateY(-48%)' }, { transform: 'translateY(-48%)' }], 700).finished;
+      await animate(letter.current, [{ transform: 'translateY(-48%)' }, { transform: 'translateY(-48%)' }], 80).finished;
       await animate(letter.current.querySelector('.letter-message'), [{ opacity: 1 }, { opacity: 0 }], 180).finished;
       await animate(letter.current.querySelector('.letter-rule'), [{ opacity: 1 }, { opacity: 0 }], 100).finished;
       const bounds = letter.current.getBoundingClientRect();
@@ -154,7 +154,7 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
   }
 
   return (
-    <div className="opening-composition" ref={root} data-stage={stage}>
+    <div className="opening-composition" ref={root} data-stage={stage} aria-busy={!ready}>
       <div className="envelope-heading"><span className="envelope-couple-names">Krishna &amp; Archa</span></div>
       <div className="date-motif" role="img" aria-label={formatEvent(event, { day: 'numeric', month: 'long', year: 'numeric' })}>
         <div className="date-month" aria-hidden="true">{formatEvent(event, { month: 'long', year: 'numeric' })}</div>
@@ -192,4 +192,3 @@ export default function EnvelopeOpening({ event, ready, onActivate, onFinish, on
     </div>
   );
 }
-

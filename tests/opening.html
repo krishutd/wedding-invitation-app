@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>Opening sequence checks</title></head><body>
+<!doctype html><html><head><style>iframe{position:fixed;right:12px;top:70px}pre{max-width:calc(100vw - 430px);max-height:80vh;overflow:auto}</style><title>Opening sequence checks</title></head><body>
 <button id="run">Run opening checks</button><pre id="results">Ready</pre><iframe id="preview" style="width:320px;height:480px;border:1px solid #aaa" title="Narrow invitation preview"></iframe>
 <script type="module">
 const frame = document.querySelector('iframe');
@@ -45,15 +45,15 @@ document.querySelector('button').onclick = async () => {
     await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'flap');
     const flap = doc.querySelector('.envelope-flap');
     check(flap.querySelectorAll('.envelope-flap-face').length === 2, 'Flap has separate front and inner paper faces');
-    await wait(350);
+    await wait(40);
     check(frame.contentWindow.getComputedStyle(flap).zIndex === '4', 'Flap stays above envelope during first half');
-    await wait(850);
+    await wait(130);
     check(frame.contentWindow.getComputedStyle(flap).zIndex === '0', 'Flap moves behind insert after passing edge-on');
     await until(() => doc.querySelector('.opening-composition')?.dataset.stage === 'reading');
-    check(performance.now()-started > 6000, 'Slower sequence holds readable insert');
+    check(performance.now()-started < 3500, 'Opening integrates within the artwork handoff budget');
   }
   if (mode === 'resize') { await wait(100); frame.style.width = '375px'; }
-  await until(() => doc.querySelector('#invitation'));
+  await until(() => doc.querySelector('#invitation') && !doc.querySelector('.intro-screen') && !doc.querySelector('.artwork-handoff'));
   check(performance.now()-started < 17000, `${query || 'missing'} ${mode} reaches invitation within recovery deadline`);
   check(!doc.querySelector('.opening-composition'), 'Opening overlay removed');
   check(!doc.querySelector('.expanding-paper'), 'No intermediate blank paper layer');
@@ -68,4 +68,3 @@ document.querySelector('button').onclick = async () => {
  } catch(error) { output.textContent += `FAIL ${error.message}\n`; }
 };
 </script></body></html>
-

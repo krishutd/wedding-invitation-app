@@ -227,7 +227,7 @@ button { font: inherit; }
 }
 
 /* Enhanced-only stylesheet: all enhancements leave the classic entry untouched. */
-.paper-handoff { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+
 .envelope-letter.paper-section { position: absolute; background-color: var(--color-paper); background-image: radial-gradient(ellipse at 50% 38%, #fffdf8c0 0%, #f7f0e790 48%, transparent 83%), linear-gradient(90deg, #a47a3020 0%, #c8a96a2a 3%, #f4ebdd 10%, transparent 24%, transparent 76%, #f4ebdd 90%, #c8a96a2e 97%, #a47a3020 100%), radial-gradient(ellipse at 12% 88%, #c8a96a24 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #c8a96a20 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .event-day { position: relative; }
 .event-heart { position: absolute; inset: -24% -30%; width: 160%; height: 148%; overflow: visible; opacity: 0; fill: none; stroke: var(--color-antique-gold); stroke-width: .9; stroke-dasharray: 1; pointer-events: none; }
@@ -243,11 +243,15 @@ button { font: inherit; }
 @property --art-radius { syntax: '<percentage>'; inherits: false; initial-value: 150%; }
 .stationery-art .divine-art { mask-image: radial-gradient(ellipse at 48% 46%, black calc(var(--art-radius) - 18%), transparent var(--art-radius)); }
 
-/* The travelling thread sits exactly on the existing frame, then disappears. */
+/* Original invitation frame fades with the surrounding wording. */
 .invitation-border-host { position: absolute; inset: 22px 18px; pointer-events: none; z-index: 0; }
 .invitation-border-host > .outer-frame { inset: 0; }
-.invitation-thread { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; pointer-events: none; fill: none; stroke: #ba8935; }
-.invitation-thread-stroke { stroke-width: 1.8; stroke-linecap: round; }
-.invitation-thread-tip { fill: #edcc82; stroke: #a47a30; stroke-width: .65; }
-.invitation-thread-glint { stroke: #c3984a; stroke-width: 1; }
-@media (prefers-reduced-motion: reduce) { .invitation-thread { display: none; } }
+/* A single enhanced opening scene prepares the invitation in its real layout. */
+.invitation-prepared { position: fixed; inset: 0; overflow: hidden; visibility: hidden; pointer-events: none; }
+.artwork-handoff { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+.handoff-paper { position: absolute; inset: 0; }
+.handoff-art { position: absolute; width: min(50vw, 220px, 38vh); left: 50%; top: 50%; translate: -50% -50%; transform-origin: 0 0; visibility: hidden; }
+.handoff-art .divine-art { width: 100%; height: auto; }
+.invitation-prepared .stationery-art .divine-art { mask-image: none; }
+.invitation-prepared { max-width: 760px; margin-inline: auto; }
+html { scrollbar-gutter: stable; }

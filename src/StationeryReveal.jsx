@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
+
 import { useReducedMotion } from 'framer-motion';
 
 export const HEART = 'M24 41 C20 36 3 25 3 15 C3 3 18 1 24 11 C30 1 45 3 45 15 C45 25 28 36 24 41Z';
@@ -46,33 +46,6 @@ export function EventDay({ event, selected }) {
     { strokeDashoffset: 0, opacity: 0 },
   ], { duration: 1700 });
   return <span className="event-day">{event.day}{selected && <svg ref={ref} className="event-heart" viewBox="0 0 48 46" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} pathLength="1" /></svg>}</span>;
-}
-
-export function PaperHandoff({ handoff, presented, onCovered, onDone }) {
-  const ref = useRef(null);
-  const reduced = useReducedMotion();
-  useLayoutEffect(() => {
-    const node = ref.current;
-    let animation;
-    let timer;
-    let cancelled = false;
-    const finish = () => { if (!cancelled) (presented ? onDone : onCovered)(); };
-    try {
-      if (presented) {
-        animation = node.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 180 });
-      } else {
-        const { left, top, width, height } = handoff;
-        animation = node.animate([
-          { clipPath: `inset(${top}px ${Math.max(0, innerWidth - left - width)}px ${Math.max(0, innerHeight - top - height)}px ${left}px)` },
-          { clipPath: 'inset(0px 0px 0px 0px)' },
-        ], { duration: reduced ? 0 : 650, easing: 'cubic-bezier(.22,.75,.28,1)', fill: 'forwards' });
-      }
-      animation.finished.then(finish, finish);
-      timer = setTimeout(finish, 1000);
-    } catch { finish(); }
-    return () => { cancelled = true; clearTimeout(timer); animation?.cancel(); };
-  }, [presented, reduced]);
-  return createPortal(<div ref={ref} className="paper-handoff paper-section" aria-hidden="true" />, document.body);
 }
 
 export function BorderReveal({ children, className }) {
