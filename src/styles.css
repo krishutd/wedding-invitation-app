@@ -8,77 +8,16 @@
   font-display: swap;
 }
 
-.envelope-couple-names.envelope-names-cycle { position: relative; display: grid; place-items: center; isolation: isolate; line-height: clamp(47.85px, 11.55vw, 62.7px); }
-.envelope-names-cycle::before,
-.envelope-names-cycle::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
-  inset: 0;
-  z-index: 1;
-}
-.envelope-names-cycle::before {
-  background: radial-gradient(ellipse, #e5c58635 0%, transparent 68%);
-  animation: envelope-name-aura 7s ease-in-out infinite;
-}
-.envelope-names-cycle::after {
-  /* A small luminous head and trailing grains travel across the new lettering. */
-  background:
-    radial-gradient(ellipse 2px 8px at 50% 50%, #fff9dc 10%, #d8b46990 42%, transparent 100%),
-    radial-gradient(ellipse 17px 23px at 50% 50%, #e5c58650, transparent),
-    radial-gradient(circle at 47% 29%, #d5ae66 0 1px, transparent 1.7px),
-    radial-gradient(circle at 44% 64%, #d5ae6690 0 .8px, transparent 1.5px),
-    radial-gradient(circle at 49% 76%, #fff4c9 0 1px, transparent 1.8px),
-    radial-gradient(circle at 42% 42%, #c8a96a65 0 .6px, transparent 1.3px);
-  will-change: transform, opacity;
-  animation: envelope-name-light 7s linear infinite;
-}
-.envelope-names-cycle .envelope-name-language {
-  grid-area: 1 / 1;
-  white-space: nowrap;
-  line-height: inherit;
-  /* Dissolve completely before the next script is written by the light.
-     Only opacity and a simple clip change; the glyphs never move or rescale. */
-  will-change: opacity;
-  animation: envelope-name-inscription 14s linear infinite;
-}
-.envelope-names-cycle .envelope-name-malayalam {
+.envelope-couple-names.envelope-name-malayalam {
   font-family: 'RIT Rachana', 'Nirmala UI', serif;
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0;
   font-size: clamp(27px, 6.4vw, 36px);
-  /* Rachana's glyphs sit higher within its line box than Cormorant's. */
+  line-height: clamp(47.85px, 11.55vw, 62.7px);
+  white-space: nowrap;
   position: relative;
   top: .09em;
-}
-.envelope-names-cycle .envelope-name-english {
-  opacity: 0;
-  animation-delay: -7s;
-}
-@keyframes envelope-name-inscription {
-  0%, 30% { opacity: 1; clip-path: inset(-20% -5%); animation-timing-function: ease-in-out; }
-  36% { opacity: 0; clip-path: inset(-20% -5%); }
-  37%, 86% { opacity: 0; clip-path: inset(-20% 100% -20% -5%); }
-  87% { opacity: 1; clip-path: inset(-20% 100% -20% -5%); }
-  100% { opacity: 1; clip-path: inset(-20% -5%); }
-}
-@keyframes envelope-name-aura {
-  0%, 60%, 100% { opacity: 0; }
-  75% { opacity: .65; }
-  90% { opacity: .3; }
-}
-@keyframes envelope-name-light {
-  0%, 72% { opacity: 0; transform: translate3d(-50%, 0, 0); }
-  74% { opacity: .85; transform: translate3d(-50%, 0, 0); }
-  96% { opacity: .85; }
-  100% { opacity: 0; transform: translate3d(55%, 0, 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .envelope-names-cycle::before, .envelope-names-cycle::after { display: none; }
-  .envelope-names-cycle .envelope-name-language { animation: none; clip-path: none; opacity: 1; will-change: auto; }
-  .envelope-names-cycle .envelope-name-english { display: none; }
 }
 
 :root, body, #root {

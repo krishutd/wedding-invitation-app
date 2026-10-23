@@ -37,8 +37,8 @@ export default function EnvelopeOpening({
   const [stage, setStage] = useState("sealed");
   const [thread, setThread] = useState("");
   const names = side === "bride"
-    ? { ml: "ആർച്ച & കൃഷ്ണാനന്ദ്", en: "Archa & Krishnanand" }
-    : { ml: "കൃഷ്ണാനന്ദ് & ആർച്ച", en: "Krishnanand & Archa" };
+    ? "ആർച്ച & കൃഷ്ണാനന്ദ്"
+    : "കൃഷ്ണാനന്ദ് & ആർച്ച";
 
   function animate(node, frames, duration, extra = {}) {
     const animation = node.animate(frames, {
@@ -247,10 +247,7 @@ export default function EnvelopeOpening({
       aria-busy={!ready}
     >
       <div className="envelope-heading">
-        <span className="envelope-couple-names envelope-names-cycle" role="img" aria-label={names.en}>
-          <span className="envelope-name-language envelope-name-malayalam" lang="ml" aria-hidden="true">{names.ml}</span>
-          <span className="envelope-name-language envelope-name-english" lang="en" aria-hidden="true">{names.en}</span>
-        </span>
+        <span className="envelope-couple-names envelope-name-malayalam" lang="ml">{names}</span>
       </div>
       <div
         className="date-motif"
