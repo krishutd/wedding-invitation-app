@@ -15,29 +15,33 @@
   position: absolute;
   pointer-events: none;
   opacity: 0;
-  inset: 4% -5%;
-  z-index: -1;
-  animation: envelope-name-aura 6s ease-in-out 3.6s infinite;
+  inset: 0;
+  z-index: 1;
 }
 .envelope-names-cycle::before {
-  background: radial-gradient(ellipse, #e5c58655 0%, #e5c58618 42%, transparent 70%);
+  background: radial-gradient(ellipse, #e5c58635 0%, transparent 68%);
+  animation: envelope-name-aura 7s ease-in-out infinite;
 }
 .envelope-names-cycle::after {
+  /* A small luminous head and trailing grains travel across the new lettering. */
   background:
-    radial-gradient(circle at 12% 60%, #c8a96a 0 1px, transparent 2px),
-    radial-gradient(circle at 29% 23%, #fff6d5 0 1px, transparent 2px),
-    radial-gradient(circle at 51% 77%, #c8a96a 0 1px, transparent 2px),
-    radial-gradient(circle at 73% 28%, #fff6d5 0 1px, transparent 2px),
-    radial-gradient(circle at 89% 55%, #c8a96a 0 1px, transparent 2px);
-  animation-name: envelope-name-stardust;
+    radial-gradient(ellipse 2px 8px at 50% 50%, #fff9dc 10%, #d8b46990 42%, transparent 100%),
+    radial-gradient(ellipse 17px 23px at 50% 50%, #e5c58650, transparent),
+    radial-gradient(circle at 47% 29%, #d5ae66 0 1px, transparent 1.7px),
+    radial-gradient(circle at 44% 64%, #d5ae6690 0 .8px, transparent 1.5px),
+    radial-gradient(circle at 49% 76%, #fff4c9 0 1px, transparent 1.8px),
+    radial-gradient(circle at 42% 42%, #c8a96a65 0 .6px, transparent 1.3px);
+  will-change: transform, opacity;
+  animation: envelope-name-light 7s linear infinite;
 }
 .envelope-names-cycle .envelope-name-language {
   grid-area: 1 / 1;
   white-space: nowrap;
   line-height: inherit;
-  /* Both scripts stay stationary throughout the crossfade. */
+  /* Dissolve completely before the next script is written by the light.
+     Only opacity and a simple clip change; the glyphs never move or rescale. */
   will-change: opacity;
-  animation: envelope-name-language 12s ease-in-out infinite;
+  animation: envelope-name-inscription 14s linear infinite;
 }
 .envelope-names-cycle .envelope-name-malayalam {
   font-family: 'RIT Rachana', 'Nirmala UI', serif;
@@ -51,23 +55,34 @@
 }
 .envelope-names-cycle .envelope-name-english {
   opacity: 0;
-  animation-delay: -6s;
+  animation-delay: -7s;
 }
-@keyframes envelope-name-language {
-  0%, 35%, 100% { opacity: 1; }
-  50%, 85% { opacity: 0; }
+@keyframes envelope-name-inscription {
+  0%, 30% { opacity: 1; clip-path: inset(-20% -5%); animation-timing-function: ease-in-out; }
+  36% { opacity: 0; clip-path: inset(-20% -5%); }
+  37%, 86% { opacity: 0; clip-path: inset(-20% 100% -20% -5%); }
+  87% { opacity: 1; clip-path: inset(-20% 100% -20% -5%); }
+  100% { opacity: 1; clip-path: inset(-20% -5%); }
 }
 @keyframes envelope-name-aura {
-  0%, 50%, 100% { opacity: 0; }
-  25% { opacity: .45; }
+  0%, 60%, 100% { opacity: 0; }
+  75% { opacity: .65; }
+  90% { opacity: .3; }
 }
-@keyframes envelope-name-stardust {
-  0%, 50%, 100% { opacity: 0; }
-  25% { opacity: .45; }
+@keyframes envelope-name-light {
+  0%, 72% { opacity: 0; transform: translate3d(-50%, 0, 0); }
+  74% { opacity: .85; transform: translate3d(-50%, 0, 0); }
+  96% { opacity: .85; }
+  100% { opacity: 0; transform: translate3d(55%, 0, 0); }
+}
+.opening-composition:not([data-stage="sealed"]) .envelope-name-language,
+.opening-composition:not([data-stage="sealed"]) .envelope-names-cycle::before,
+.opening-composition:not([data-stage="sealed"]) .envelope-names-cycle::after {
+  animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
   .envelope-names-cycle::before, .envelope-names-cycle::after { display: none; }
-  .envelope-names-cycle .envelope-name-language { animation: none; transform: none; filter: none; text-shadow: none; }
+  .envelope-names-cycle .envelope-name-language { animation: none; clip-path: none; opacity: 1; will-change: auto; }
   .envelope-names-cycle .envelope-name-english { display: none; }
 }
 
@@ -105,6 +120,32 @@ button { font: inherit; }
 .site-shell.is-loading .intro-screen { visibility: hidden; }
 .paper-section, .intro-screen { position: relative; background-color: var(--color-paper); background-image: radial-gradient(ellipse at 50% 38%, #fffdf8c0 0%, #f7f0e790 48%, transparent 83%), linear-gradient(90deg, #a47a3020 0%, #c8a96a2a 3%, #f4ebdd 10%, transparent 24%, transparent 76%, #f4ebdd 90%, #c8a96a2e 97%, #a47a3020 100%), radial-gradient(ellipse at 12% 88%, #c8a96a24 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #c8a96a20 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .intro-screen { min-height: 100svh; display: grid; place-items: center; padding: 42px 24px; background-image: linear-gradient(rgba(244, 235, 221, .22), rgba(244, 235, 221, .22)), var(--intro-botanical-background); background-size: cover; background-position: center; background-repeat: no-repeat; }
+/* The artwork is sized to one viewport, independent of the scrollable page.
+   Keep an identical canvas behind the portal so the handoff never changes crop. */
+.site-shell { isolation: isolate; }
+.site-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  max-width: 760px;
+  margin-inline: auto;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-shell .intro-screen,
+.reveal-section.paper-section,
+.invitation-section.paper-section {
+  background: transparent;
+}
+.site-shell::before,
+.handoff-paper.paper-section {
+  background-color: var(--color-paper);
+  background-image: linear-gradient(rgba(244, 235, 221, .22), rgba(244, 235, 221, .22)), var(--intro-botanical-background);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.handoff-paper.paper-section { max-width: 760px; margin-inline: auto; }
 .invitation-section .outer-frame { border-top: 0; outline: none; }
 .invitation-section .outer-frame::before { top: 8px; right: 8px; bottom: 8px; left: 8px; height: auto; border: 1px solid #a47a3055; border-top: 0; background: linear-gradient(90deg, #a47a3055 0, #a47a3055 calc(50% - 25px), transparent calc(50% - 25px), transparent calc(50% + 25px), #a47a3055 calc(50% + 25px), #a47a3055 100%) left top / 100% 1px no-repeat; }
 .invitation-section .outer-frame::after { content: none; }
@@ -321,6 +362,14 @@ button { font: inherit; }
 /* Original invitation frame fades with the surrounding wording. */
 .invitation-border-host { position: absolute; inset: 22px 18px; pointer-events: none; z-index: 0; }
 .invitation-border-host > .outer-frame { inset: 0; }
+/* Burgundy outer rule and stepped corners, paired with the fine gold inner rule. */
+.invitation-border-host > .outer-frame { border-color: #702d367a; }
+.invitation-border-host .outer-frame-top {
+  background: linear-gradient(90deg, #702d367a 0, #702d367a calc(50% - 24px), transparent calc(50% - 24px), transparent calc(50% + 24px), #702d367a calc(50% + 24px), #702d367a 100%);
+}
+.invitation-border-host .frame-corner {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cpath d='M1 31V10H10V1H31' fill='none' stroke='%23702D36' stroke-width='1' opacity='.9'/%3E%3Cpath d='M5 35V14H14V5H35' fill='none' stroke='%23A47A30' stroke-width='.8' opacity='.82'/%3E%3C/svg%3E");
+}
 /* A single enhanced opening scene prepares the invitation in its real layout. */
 .invitation-prepared { position: fixed; inset: 0; overflow: hidden; visibility: hidden; pointer-events: none; }
 .artwork-handoff { position: fixed; inset: 0; z-index: 100; pointer-events: none; }

@@ -183,7 +183,9 @@ export default function ArtworkHandoff({ bounds, onDone }) {
   }, [reduced]);
   const src = assetUrl('radha-krishna-silhouette.png');
   return createPortal(<div className="artwork-handoff" ref={sceneRef} aria-hidden="true" data-phase="seam">
-    <div className="handoff-paper paper-section" />
+    <div className="handoff-paper paper-section" style={{
+      '--intro-botanical-background': `url("${assetUrl('envelope-botanical-background.png')}")`,
+    }} />
     <span className="living-seam" />
     <div className="handoff-art stationery-art">
       <img className="divine-art" src={src} width="1150" height="1367" alt="" />
