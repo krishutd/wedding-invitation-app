@@ -279,3 +279,4 @@ html { scrollbar-gutter: stable; }
 .portal-ring { stroke-width: .8; stroke-dasharray: 1 1; }
 .portal-orbit { stroke: #dab56c; stroke-width: 1.8; stroke-dasharray: .19 .81; filter: drop-shadow(0 0 2px #e8c36a80); }
 .portal-dust { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #c49a50; opacity: 0; pointer-events: none; }
+.portal-glitter { position: absolute; inset: 0; pointer-events: none; }

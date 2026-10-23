@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useReducedMotion } from 'framer-motion';
 import { createGoldenFormation } from './goldenFormation';
 import { assetUrl } from './assets';
+import { createPortalGlitter } from './portalGlitter';
 
 /** One timeline, measured from the opening seam to the real invitation artwork. */
 export default function ArtworkHandoff({ bounds, onDone }) {
@@ -20,7 +21,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     const intro = document.querySelector('.intro-screen');
     const border = page?.querySelector('.invitation-border-host');
     const animations = [];
-    let disposed = false, completed = false, readinessTimer, glitterFrame = 0, formation;
+    let disposed = false, completed = false, readinessTimer, glitterFrame = 0, formation, portalGlitter;
     const run = (node, frames, duration, extra = {}) => {
       if (disposed || completed) throw Error('Transition finished');
       const animation = node.animate(frames, { duration, fill: 'both', easing: 'cubic-bezier(.42,0,.22,1)', ...extra });
@@ -88,6 +89,8 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         ring.setAttribute('d',circle);orbit.setAttribute('d',circle);
         const ringMotion=run(ring,[{strokeDashoffset:1,opacity:0},{strokeDashoffset:0,opacity:.65,offset:.45},{strokeDashoffset:0,opacity:.5}],3200,{easing:'linear'});
         const orbitMotion=run(orbit,[{strokeDashoffset:0,opacity:0},{opacity:1,offset:.08},{strokeDashoffset:-2,opacity:1}],3200,{easing:'linear'});
+        const orbitClock=animations[animations.length-1];
+        portalGlitter=createPortalGlitter(scene.querySelector('.portal-glitter'),mx,my,radius);
         for(let i=0;i<80;i++){
           const angle=Math.PI/2+i/80*Math.PI*4;
           const dust=document.createElement('span');dust.className='portal-dust';
@@ -106,12 +109,14 @@ export default function ArtworkHandoff({ bounds, onDone }) {
           if (disposed || completed) return;
           try {
             formation.draw(Math.min(1, Number(clock.currentTime || 0)/clock.effect.getTiming().duration));
-            if (clock.playState !== 'finished') glitterFrame = requestAnimationFrame(draw);
+            portalGlitter.draw(Math.min(1, Number(orbitClock.currentTime || 0)/orbitClock.effect.getTiming().duration));
+            if (orbitClock.playState !== 'finished') glitterFrame = requestAnimationFrame(draw);
           } catch { finish(); }
         };
         draw();
         await Promise.all([clock.finished, ringMotion, orbitMotion]);
         cancelAnimationFrame(glitterFrame);
+        portalGlitter.dispose();
         image.style.visibility = 'visible';
         formation.dispose();
         canvas.style.visibility = 'hidden';
@@ -162,7 +167,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
     play();
     return () => {
       disposed = true;
-      cancelAnimationFrame(glitterFrame); formation?.dispose();
+      cancelAnimationFrame(glitterFrame); formation?.dispose(); portalGlitter?.dispose();
       clearTimeout(watchdog); clearTimeout(readinessTimer);
       animations.forEach(animation => animation.cancel());
       events.forEach(name => window.removeEventListener(name, finish));
@@ -188,6 +193,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
       <path className="portal-orbit" pathLength="1" />
       {[0,1,2].map(i => <path key={i} className="story-thread" pathLength="1" />)}
     </svg>
+    <canvas className="portal-glitter" aria-hidden="true" />
 
   </div>, document.body);
 }
