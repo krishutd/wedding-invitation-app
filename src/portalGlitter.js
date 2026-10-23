@@ -8,8 +8,9 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
   canvas.style.width = innerWidth + 'px';
   canvas.style.height = innerHeight + 'px';
   context.scale(ratio, ratio);
-  const particles = Array.from({ length: 400 }, (_, i) => ({
-    age: (i + .5) / 400,
+  const particles = Array.from({ length: 800 }, (_, i) => ({
+    outer: i >= 400,
+    age: ((i % 400) + .5) / 400,
     spread: Math.sin(i * 127.1) * Math.cos(i * 31.7),
     size: .55 + (Math.sin(i * 17.3) + 1) * .5,
     phase: i * 2.39996,
@@ -32,12 +33,18 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
       for (const particle of particles) {
         const age = (particle.age + progress * 3) % 1;
         const angle = head - age * .228 * Math.PI * 2;
-        const drift = particle.spread * (4 + age * 16);
+        // Magenta sits beyond the gold layer's outer edge at every point in the tail.
+        const goldWidth = 4 + age * 16;
+        const drift = particle.outer
+          ? goldWidth + 6 + Math.abs(particle.spread) * 12
+          : particle.spread * goldWidth;
         const px = cx + Math.cos(angle) * (radius + drift);
         const py = cy + Math.sin(angle) * (radius + drift) + age * age * 6;
         const twinkle = .55 + .45 * Math.sin(progress * 48 + particle.phase) ** 2;
         context.globalAlpha = fade * (1 - age) ** 1.7 * twinkle;
-        context.fillStyle = particle.age < .3 ? '#fff0bf' : '#c99b43';
+        context.fillStyle = particle.outer
+          ? (particle.age < .3 ? '#d44cab' : '#9b167e')
+          : (particle.age < .3 ? '#fff0bf' : '#c99b43');
         context.beginPath();
         context.arc(px, py, particle.size, 0, Math.PI * 2);
         context.fill();

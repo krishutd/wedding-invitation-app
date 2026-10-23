@@ -276,6 +276,6 @@ html { scrollbar-gutter: stable; }
 .thread-tip { position: absolute; left: 0; top: 0; width: 3px; height: 3px; border-radius: 50%; opacity: 0; background: #fff6d4; box-shadow: 0 0 4px 1px #cba454, 0 0 10px 3px #e8c36a70; pointer-events: none; }
 /* One circular light reveals the artwork and resolves into the frame. */
 .portal-orbit { fill: none; stroke: #c49a50; stroke-linecap: round; opacity: 0; }
-.portal-orbit { stroke: #dab56c; stroke-width: 2.25; stroke-dasharray: .228 .772; filter: drop-shadow(0 0 2px #e8c36a80); }
+.portal-orbit { stroke: #dab56c; stroke-width: 4.5; stroke-dasharray: .228 .772; filter: drop-shadow(0 0 2px #e8c36a80); }
 .portal-dust { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #c49a50; opacity: 0; pointer-events: none; }
 .portal-glitter { position: absolute; inset: 0; pointer-events: none; }
