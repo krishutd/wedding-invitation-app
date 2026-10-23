@@ -33,7 +33,7 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
       for (const particle of particles) {
         const age = (particle.age + progress * 3) % 1;
         const angle = head - age * .228 * Math.PI * 2;
-        // Magenta sits beyond the gold layer's outer edge at every point in the tail.
+        // Seal-burgundy glitter sits beyond the gold layer's outer edge at every point in the tail.
         const goldWidth = 4 + age * 16;
         const drift = particle.outer
           ? goldWidth + 6 + Math.abs(particle.spread) * 12
@@ -43,7 +43,7 @@ export function createPortalGlitter(canvas, cx, cy, radius) {
         const twinkle = .55 + .45 * Math.sin(progress * 48 + particle.phase) ** 2;
         context.globalAlpha = fade * (1 - age) ** 1.7 * twinkle;
         context.fillStyle = particle.outer
-          ? (particle.age < .3 ? '#d44cab' : '#9b167e')
+          ? '#762d3a'
           : (particle.age < .3 ? '#fff0bf' : '#c99b43');
         context.beginPath();
         context.arc(px, py, particle.size, 0, Math.PI * 2);
