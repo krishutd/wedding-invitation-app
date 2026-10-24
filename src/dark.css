@@ -1,4 +1,8 @@
 /* Loaded after either opening variant, only with ?theme=dark. */
+html[data-theme="dark"] .divine-art-stage::after {
+  -webkit-mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
+  mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
+}
 html[data-theme="dark"] {
   --royal-burgundy: #511C25;
   --dark-surface: #632631;

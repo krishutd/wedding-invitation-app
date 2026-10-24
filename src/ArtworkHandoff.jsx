@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useReducedMotion } from 'framer-motion';
 import { createGoldenFormation } from './goldenFormation';
-import { assetUrl } from './assets';
+import { assetUrl, radhaKrishnaAsset } from './assets';
 import { createPortalGlitter } from './portalGlitter';
 
 /** One timeline, measured from the opening seam to the real invitation artwork. */
@@ -179,7 +179,7 @@ export default function ArtworkHandoff({ bounds, onDone }) {
       if (page) {page.style.visibility='';page.style.opacity='';page.inert=false;}
     };
   }, [reduced]);
-  const src = assetUrl('radha-krishna-silhouette.png');
+  const src = assetUrl(radhaKrishnaAsset());
   return createPortal(<div className="artwork-handoff" ref={sceneRef} aria-hidden="true" data-phase="seam">
     <div className="handoff-paper paper-section" style={{
       '--intro-botanical-background': `url("${assetUrl('envelope-botanical-background.png')}")`,

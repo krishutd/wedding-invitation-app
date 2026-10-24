@@ -11,7 +11,7 @@ import {
   VolumeX,
 } from "lucide-react";
 
-import { assetUrl } from "./assets.js";
+import { assetUrl, radhaKrishnaAsset } from "./assets.js";
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_MAX_VOLUME = 0.6;
 
@@ -453,7 +453,7 @@ function App() {
             <Reveal delay={0.08} amount={0.28}>
               <div className="art-section">
                 <GlitterReveal
-                  src={assetUrl("radha-krishna-silhouette.png")}
+                  src={assetUrl(radhaKrishnaAsset())}
                   alt="Krishna and Radha beneath a leafy arch and golden moon"
                   start={artworkReady}
                 />
