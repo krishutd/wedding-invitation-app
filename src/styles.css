@@ -63,6 +63,11 @@ button { font: inherit; }
   content: '';
   position: fixed;
   inset: 0;
+  /* Mobile browser chrome changes the visible viewport during scrolling.
+     Keep the cover image on a stable canvas so its scale and crop stay put. */
+  bottom: auto;
+  height: 100vh;
+  height: 100lvh;
   max-width: 760px;
   margin-inline: auto;
   z-index: -1;
