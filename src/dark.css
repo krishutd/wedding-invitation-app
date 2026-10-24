@@ -1,0 +1,111 @@
+/* Loaded after either opening variant, only with ?theme=dark. */
+html[data-theme="dark"] {
+  --royal-burgundy: #511C25;
+  --dark-surface: #632631;
+  --dark-ivory: #F4EBDD;
+  --dark-muted: #DDC9B6;
+  --dark-gold: #E4C58B;
+  --paper: var(--royal-burgundy);
+  --paper-deep: #38131B;
+  --gold: var(--dark-gold);
+  --gold-dark: var(--dark-gold);
+  --ink: var(--dark-ivory);
+  --muted: var(--dark-muted);
+  --color-paper: var(--royal-burgundy);
+  --color-paper-edge: #38131B;
+  --color-sand: var(--dark-surface);
+  --color-ink: var(--dark-ivory);
+  --color-burgundy: var(--dark-gold);
+  --color-burgundy-dark: #FFF0CE;
+  --color-burgundy-mid: var(--dark-gold);
+  --color-name-burgundy: var(--dark-gold);
+  --color-pale-burgundy: #753541;
+  --color-antique-gold: var(--dark-gold);
+  --color-soft-gold: #C8A96A;
+  --color-gold-line: #C8A96AB8;
+  --color-gold-faint: #C8A96A40;
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root {
+  color-scheme: dark;
+  background: var(--royal-burgundy);
+  color: var(--dark-ivory);
+}
+
+html[data-theme="dark"] .site-shell,
+html[data-theme="dark"] .site-shell.is-loading {
+  background: var(--royal-burgundy);
+  box-shadow: 0 0 70px #19080D55;
+}
+
+/* Match the fixed backdrop, opening, and portal to avoid a pale transition. */
+html[data-theme="dark"] .site-shell::before,
+html[data-theme="dark"] .paper-section,
+html[data-theme="dark"] .intro-screen {
+  background-color: var(--royal-burgundy);
+  background-image: linear-gradient(#511C2520, #511C2520), var(--dark-botanical-background);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Enhanced pages share one viewport-sized image with the opening portal. */
+html[data-theme="dark"][data-opening="enhanced"] .site-shell .intro-screen,
+html[data-theme="dark"][data-opening="enhanced"] .reveal-section.paper-section,
+html[data-theme="dark"][data-opening="enhanced"] .invitation-section.paper-section {
+  background: transparent;
+}
+
+html[data-theme="dark"] :is(.envelope-back, .envelope-letter, .envelope-flap-face, .envelope-fold),
+html[data-theme="dark"][data-opening="classic"] .envelope-flap,
+html[data-theme="dark"] .opening-composition .envelope-front {
+  background-color: var(--dark-surface);
+  background-image: linear-gradient(145deg, #E4C58B12, #220B1540);
+  border-color: #C8A96A80;
+}
+
+html[data-theme="dark"] :is(.family-names, .family-address, .venue-name, .event-month-year, .event-time, .presence-note) {
+  color: var(--dark-ivory);
+}
+
+html[data-theme="dark"] :is(.family-label, .event-weekday, .event-time-label, .event-time span, .other-event-note, .envelope-wedding-date, .date-month, .date-neighbour, .opening-hint) {
+  color: var(--dark-muted);
+}
+
+html[data-theme="dark"] :is(.envelope-couple-names, .letter-message, .section-kicker, .event-day, .map-link, .and-line, .announcement h1) {
+  color: var(--dark-gold);
+}
+
+html[data-theme="dark"] .couple-names h2 {
+  color: var(--dark-gold);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+html[data-theme="dark"] :is(.ceremony-card, .music-toggle, .page-next-button, .photo-placeholder, .photo-placeholder-inner) {
+  background: var(--dark-surface);
+  color: var(--dark-ivory);
+  border-color: #C8A96A80;
+}
+
+html[data-theme="dark"] :is(.music-toggle, .page-next-button):hover {
+  background: #753541;
+}
+
+html[data-theme="dark"] .map-link:hover { color: #FFF0CE; }
+html[data-theme="dark"] :is(button, a):focus-visible {
+  outline: 2px solid var(--dark-gold);
+  outline-offset: 4px;
+}
+
+html[data-theme="dark"] .invitation-border-host > .outer-frame {
+  border-color: var(--color-gold-line);
+}
+html[data-theme="dark"] .invitation-border-host .outer-frame-top {
+  background: linear-gradient(90deg, var(--color-gold-line) 0, var(--color-gold-line) calc(50% - 24px), transparent calc(50% - 24px), transparent calc(50% + 24px), var(--color-gold-line) calc(50% + 24px));
+}
+html[data-theme="dark"] :is(.top-ganesha, .frame-corner) {
+  filter: brightness(1.65);
+}

@@ -31,6 +31,18 @@ npm run preview
 ```
 The production website is generated in `dist/`.
 
+## Dark mode feature flag
+
+Add `?theme=dark` to opt into royal burgundy backgrounds with ivory text and gold accents.
+It works with either opening experience and all existing invitation parameters:
+
+- `?theme=dark`
+- `?opening=enhanced&theme=dark&side=bride&invite=wedding`
+- `?thread=choose-date&theme=dark&invite=reception`
+
+Omit the flag or use `theme=light` to retain the original light theme. Only `dark`
+(case-insensitive) enables it; device appearance settings do not enable the flag.
+
 ## Personalize the invitation
 Edit the `WEDDING` object near the top of `src/App.jsx`:
 - Couple and parents' names and addresses

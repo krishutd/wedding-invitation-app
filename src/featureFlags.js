@@ -9,3 +9,9 @@ export function resolveOpening(search) {
 export function isThreadDateEnabled(search) {
   return new URLSearchParams(search).get('thread')?.toLowerCase() === 'choose-date';
 }
+
+export function resolveTheme(search) {
+  return new URLSearchParams(search).get('theme')?.toLowerCase() === 'dark'
+    ? 'dark'
+    : 'light';
+}
