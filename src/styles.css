@@ -412,3 +412,21 @@ html .invitation-section .couple-names .and-line i {
   html .invitation-section .couple-names h2,
   html .invitation-section .couple-names .and-line i { animation: none; background-position: 100% 0, 0 0, 0 0; }
 }
+
+/* Small lettering needs crisp edges rather than stacked, expanding shadows. */
+@media (max-width: 600px) {
+  html .invitation-section .couple-names h2 {
+    -webkit-text-stroke: 0;
+    filter: drop-shadow(0 .6px 0 var(--name-shadow));
+    background-image: linear-gradient(110deg, transparent 40%, #fff4d94d 44%, #ffffff 48%, #ffffff 52%, #fff4d94d 56%, transparent 60%), linear-gradient(transparent, transparent), var(--name-foil);
+  }
+  html[data-theme="dark"] .invitation-section .couple-names {
+    --name-foil: linear-gradient(165deg, #f5e3c4 0%, #d6bc94 30%, #b79770 52%, #e0c7a2 70%, #c4a47d 100%);
+  }
+}
+
+/* Use the font's drawn semibold strokes for a stronger, clean focal point. */
+html .invitation-section .couple-names h2 {
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
