@@ -430,3 +430,11 @@ html .invitation-section .couple-names h2 {
   font-weight: 600;
   letter-spacing: -.035em;
 }
+
+/* Render masked artwork colors as image paints so automatic darkening does
+   not reinterpret their light foreground as a background to darken. */
+.couple-calligraphy, html[data-theme="dark"] .couple-calligraphy,
+.wax-seal-ganesha {
+  background-image: linear-gradient(var(--intro-text-tone), var(--intro-text-tone));
+}
+.top-ganesha { background-image: linear-gradient(var(--color-ink), var(--color-ink)); }

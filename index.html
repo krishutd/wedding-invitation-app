@@ -8,7 +8,11 @@
     <meta name="description" content="A wedding invitation for Krishnanand and Archa." />
     <title>Krishnanand & Archa — Wedding Invitation</title>
     <script>
-      document.documentElement.dataset.theme = new URLSearchParams(location.search).get('theme')?.toLowerCase() === 'dark' ? 'dark' : 'light';
+      const invitationDark = new URLSearchParams(location.search).get('theme')?.toLowerCase() === 'dark';
+      document.documentElement.dataset.theme = invitationDark ? 'dark' : 'light';
+      document.documentElement.style.colorScheme = invitationDark ? 'only dark' : 'only light';
+      document.querySelector('meta[name="color-scheme"]').content = invitationDark ? 'dark light' : 'only light';
+      document.querySelector('meta[name="theme-color"]').content = invitationDark ? '#511C25' : '#F4EBDD';
     </script>
     <!-- The loading screen needs no JavaScript bundle, images, or web fonts. -->
     <style>
