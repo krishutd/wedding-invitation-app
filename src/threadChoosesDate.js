@@ -53,19 +53,14 @@ export async function chooseDate({ root, strand, loop, seal, animate, setStage }
   await animate(pulse, [
     { strokeDashoffset: -1, opacity: 0 },
     { strokeDashoffset: -.85, opacity: 1, offset: .12 },
-    { strokeDashoffset: 0, opacity: 1, offset: .92 },
-    { strokeDashoffset: .08, opacity: 0 },
+    { strokeDashoffset: 0, opacity: 1 },
   ], 650, { easing: 'ease-in-out' }).finished;
-  setStage('release');
-  await animate(seal, [
-    { transform: 'translateY(0) rotate(0deg)' },
-    { transform: 'translateY(-5px) rotate(-5deg)', offset: .55 },
-    { transform: 'translateY(0) rotate(0deg)' },
-  ], 260).finished;
-  // Erase from the date toward the seal, following the direction of the tug.
+  // Return at impact so EnvelopeOpening starts its seal release immediately.
+  // The connector and heart dissolve alongside it, without a separate seal bounce.
   strand.style.strokeDasharray = '1 1';
-  await Promise.all([
-    animate(strand, [{ strokeDashoffset: 0, opacity: 1 }, { strokeDashoffset: 1, opacity: 0 }], 260).finished,
-    animate(loop, [{ opacity: 1 }, { opacity: 0 }], 260).finished,
-  ]);
+  for (const animation of [
+    animate(pulse, [{ opacity: 1 }, { opacity: 0 }], 150),
+    animate(strand, [{ strokeDashoffset: 0, opacity: 1 }, { strokeDashoffset: 1, opacity: 0 }], 260),
+    animate(loop, [{ opacity: 1 }, { opacity: 0 }], 260),
+  ]) animation.finished.catch(() => {});
 }

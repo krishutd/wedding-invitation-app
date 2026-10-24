@@ -28,6 +28,15 @@ try {
         await page.waitForFunction(stage => document.querySelector('.opening-composition')?.dataset.stage === stage, stage);
         const after = await date.boundingBox();
         assert.ok(Math.abs(before.x-after.x) < .1 && Math.abs(before.y-after.y) < .1, `Stationary date: ${stage}`);
+        if (stage === 'release') {
+          const release = await page.locator('.wax-seal').evaluate(el => el.getAnimations().map(animation => ({
+            duration: animation.effect.getTiming().duration,
+            frames: animation.effect.getKeyframes(),
+          })));
+          assert.equal(release.length, 1, 'One continuous seal release, with no preliminary bounce');
+          assert.equal(release[0].frames.at(-1).opacity, '0', 'Seal opens at pulse impact');
+          assert.ok(await page.locator('.thread-tug').evaluate(el => el.getAnimations().some(a => a.playState === 'running')), 'Pulse fades concurrently with seal release');
+        }
         if (stage === 'looping') assert.equal(await page.locator('.date-neighbour').first().evaluate(el => getComputedStyle(el).opacity), '1');
         if (stage === 'holding') assert.equal(await page.locator('.date-thread > path').first().evaluate(el => getComputedStyle(el).opacity), '0', 'No connector during heart hold');
         if (stage === 'tugging') {

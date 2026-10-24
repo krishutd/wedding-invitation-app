@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import StationeryArtwork from "./StationeryArtwork.jsx";
+import InvitationPageReveal from "./InvitationPageReveal.jsx";
 import {
   InkReveal,
   EventDay,
@@ -409,6 +410,7 @@ function App() {
               {musicEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
               <span>Music {musicEnabled ? "on" : "off"}</span>
             </button>
+            <InvitationPageReveal active={page === "invitation"} />
             <InvitationBorder>
               <span className="outer-frame-top" />
               <span className="frame-corner frame-corner--top-left" />
