@@ -7,7 +7,7 @@ import { preloadIntroAssets } from './introAssets.js'
 const theme = resolveTheme(window.location.search)
 document.documentElement.dataset.theme = theme
 document.querySelector('meta[name="color-scheme"]')?.setAttribute(
-  'content', theme === 'dark' ? 'dark' : 'only light',
+  'content', theme === 'dark' ? 'dark light' : 'only light',
 )
 if (theme === 'dark') document.documentElement.style.backgroundColor = '#511C25'
 document.querySelector('meta[name="theme-color"]')?.setAttribute(
