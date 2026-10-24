@@ -7,7 +7,7 @@ const until=async fn=>{for(let n=0;n<700;n++){if(fn())return;await wait(20);}thr
 const check=(ok,label)=>{if(!ok)throw Error(label);out.textContent+='PASS '+label+'\n';};
 async function load(query,mode='normal',width=320,height=480){
  frame.style.width=width+'px';frame.style.height=height+'px';
- frame.src=(mode==='reduced'?'/tests/reduced.html':'/')+'?opening=enhanced&'+query;
+ frame.src=(mode==='reduced'?'/tests/reduced.html':'/')+'?'+query;
  await new Promise(r=>frame.onload=r);
  const w=frame.contentWindow,d=w.document;
  await until(()=>d.querySelector('.envelope-stage')); await d.fonts.ready;await until(()=>d.querySelector('.opening-composition').getAttribute('aria-busy')==='false');await wait(1000);

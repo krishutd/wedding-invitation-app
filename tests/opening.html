@@ -10,7 +10,7 @@ document.querySelector('button').onclick = async () => {
  const check = (value, message) => { if (!value) throw Error(message); output.textContent += `PASS ${message}\n`; };
  try {
  for (const [query, day, count, mode] of [['wedding',19,1,'normal'],['reception',21,1,'early'],['',19,2,'normal'],['invalid',19,2,'resize'],['reception',21,1,'failure'],['reception',21,1,'reduced']]) {
-  frame.src = (mode === 'reduced' ? '/tests/reduced.html' : '/') + '?opening=enhanced&invite=' + query;
+  frame.src = (mode === 'reduced' ? '/tests/reduced.html' : '/') + '?invite=' + query;
   await new Promise(resolve => frame.onload = resolve);
   await until(() => frame.contentDocument.querySelector('.envelope-stage'));
   const doc = frame.contentDocument;
@@ -49,7 +49,7 @@ document.querySelector('button').onclick = async () => {
     const pocketRect = pocket.getBoundingClientRect();
     const textRect = doc.querySelector('.letter-message').getBoundingClientRect();
     check(textRect.top > pocketRect.top + pocketRect.height * .3, 'Unraised insert wording is fully below the pocket mouth');
-    check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-selected')).opacity) === 0, 'Merged date stays invisible through flap opening');
+    check(parseFloat(frame.contentWindow.getComputedStyle(doc.querySelector('.date-selected')).opacity) === 1, 'Selected date stays visible through flap opening');
     const flap = doc.querySelector('.envelope-flap');
     check(flap.querySelectorAll('.envelope-flap-face').length === 2, 'Flap has separate front and inner paper faces');
     await wait(40);

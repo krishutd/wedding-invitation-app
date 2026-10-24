@@ -2,14 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { eventDate, formatEvent } from "./events";
 
-import { HEART as heart } from "./StationeryReveal.jsx";
 import { chooseDate, ORGANIC_LOOP } from "./threadChoosesDate.js";
 const TRAIL_SEGMENTS = 24;
-const DATE_RETURN_MS = 1000;
 const SEAL_RELEASE_MS = 700;
 const FLAP_OPEN_MS = 1000;
-const THREAD_TRAVEL_MS = 1350;
-const DATE_HEART_MS = 1050;
 const FLOW_EASING = "ease-in-out";
 import { assetUrl as asset } from "./assets.js";
 
@@ -20,7 +16,6 @@ export default function EnvelopeOpening({
   onActivate,
   onFinish,
   onPaper,
-  threadChoosesDate = false,
 }) {
   const root = useRef(null);
   const selected = useRef(null);
@@ -107,7 +102,7 @@ export default function EnvelopeOpening({
     if (!ready || active.current) return;
     active.current = true;
     onActivate(); // Keep audio.play() in the native user-activation call stack.
-    watchdog.current = setTimeout(finish, threadChoosesDate ? 22000 : 17000);
+    watchdog.current = setTimeout(finish, 22000);
     setStage("drawing");
     try {
       if (reduced || !ready) {
@@ -116,84 +111,10 @@ export default function EnvelopeOpening({
         finish();
         return;
       }
-      if (threadChoosesDate) {
-        await chooseDate({ root: root.current, strand: strand.current,
-          loop: heartPath.current, seal: seal.current, animate, setStage });
-      } else {
-      // A short dash train follows the path; its total length is the heart perimeter.
-      // Opacity falls toward the tail, rather than leaving the entire route painted.
-      const tailLength = Math.min(
-        heartPath.current.getTotalLength() / strand.current.getTotalLength(),
-        1,
-      );
-      const segmentLength = tailLength / TRAIL_SEGMENTS;
-      const segments = [...trail.current.querySelectorAll(".thread-trail")];
-      await Promise.all(
-        segments.map((segment, index) => {
-          segment.style.strokeDasharray = `${segmentLength} ${2 + tailLength}`;
-          const offset = (index + 1) * segmentLength;
-          return animate(
-            segment,
-            [
-              {
-                strokeDashoffset: offset,
-                opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4,
-              },
-              {
-                strokeDashoffset: offset - 1,
-                opacity: (1 - index / TRAIL_SEGMENTS) ** 1.4,
-              },
-            ],
-            THREAD_TRAVEL_MS,
-            { easing: "linear" },
-          ).finished;
-        }),
-      );
-      // As the heart fills, pull the remaining tail into it until no connector remains.
-      await Promise.all([
-        animate(
-          heartPath.current,
-          [
-            { strokeDashoffset: 1, stroke: "#A47A30" },
-            { strokeDashoffset: 0, stroke: "#A47A30", offset: 0.85 },
-            { strokeDashoffset: 0, stroke: "#702D36" },
-          ],
-          DATE_HEART_MS,
-          { easing: "ease-in-out" },
-        ).finished,
-        ...segments.map((segment, index) => {
-          const offset = (index + 1) * segmentLength - 1;
-          return animate(
-            segment,
-            [
-              { strokeDashoffset: offset },
-              { strokeDashoffset: offset - tailLength },
-            ],
-            DATE_HEART_MS * 0.85,
-            { easing: "ease-in-out" },
-          ).finished;
-        }),
-      ]);
-      setStage("gathering");
-      await animate(trail.current, [{ opacity: 1 }, { opacity: 0 }], 120, {
-        easing: FLOW_EASING,
-      }).finished;
-      setStage("travelling");
-      const d = selected.current.getBoundingClientRect();
-      const s = seal.current.getBoundingClientRect();
-      const dx = s.left + s.width / 2 - d.left - d.width / 2;
-      const dy = s.top + s.height / 2 - d.top - d.height / 2;
-      await animate(
-        selected.current,
-        [
-          { transform: "translate(0,0) scale(1)", opacity: 1 },
-          { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: 0.8 },
-        ],
-        DATE_RETURN_MS,
-        { easing: FLOW_EASING },
-      ).finished;
-      animate(selected.current, [{ opacity: 0.8 }, { opacity: 0 }], 300);
-      }
+      await chooseDate({
+        root: root.current, strand: strand.current,
+        loop: heartPath.current, seal: seal.current, animate, setStage,
+      });
       setStage("release");
       animate(
         root.current.querySelector(".seal-ripple"),
@@ -251,7 +172,6 @@ export default function EnvelopeOpening({
       className="opening-composition"
       ref={root}
       data-stage={stage}
-      data-thread-date={threadChoosesDate || undefined}
       aria-busy={!ready}
     >
       <div className="envelope-heading">
@@ -280,7 +200,7 @@ export default function EnvelopeOpening({
                 <svg viewBox="0 0 48 46">
                   <path
                     ref={heartPath}
-                    d={threadChoosesDate ? ORGANIC_LOOP : heart}
+                    d={ORGANIC_LOOP}
                     pathLength="1"
                     style={{ strokeDashoffset: reduced ? 0 : 1 }}
                   />
@@ -301,7 +221,7 @@ export default function EnvelopeOpening({
             pathLength="1"
           />
         ))}
-        {threadChoosesDate && <path className="thread-tug" pathLength="1" />}
+        <path className="thread-tug" pathLength="1" />
       </svg>
       <button
         type="button"

@@ -5,14 +5,14 @@ const check=(ok,label)=>{if(!ok)throw Error(label);output.textContent+=`PASS ${l
 document.querySelector('button').onclick=async()=>{
  output.textContent='';
  try {
- for(const mode of ['classic','enhanced','enhancement']) {
- frame.src='/wedding-invitation-app/?side=bride&opening='+mode;
+ for(const mode of ['light','dark']) {
+ frame.src='/wedding-invitation-app/?side=bride&theme='+mode;
  await new Promise(r=>frame.onload=r);
  const start=Date.now(); while(!frame.contentDocument.querySelector('.envelope-stage')) {if(Date.now()-start>10000)throw Error('Mount timeout');await wait(30);}
  const doc=frame.contentDocument, win=frame.contentWindow;
- check(doc.documentElement.dataset.opening===(mode==='classic'?'classic':'enhanced'),`${mode}: correct experience`);
- const samples=[win.getComputedStyle(doc.querySelector('.intro-screen')).backgroundImage,win.getComputedStyle(doc.querySelector('.envelope-back')).backgroundImage];
- if(mode!=='classic')samples.push(win.getComputedStyle(doc.querySelector('.envelope-front'),'::before').backgroundImage);
+ check(Boolean(doc.querySelector('.thread-tug')),`${mode}: correct experience`);
+ const samples=[win.getComputedStyle(doc.querySelector('.site-shell'),'::before').backgroundImage];
+ if(mode==='light')samples.push(win.getComputedStyle(doc.querySelector('.envelope-back')).backgroundImage,win.getComputedStyle(doc.querySelector('.envelope-front'),'::before').backgroundImage);
  for(const css of samples) {
   const matches=[...css.matchAll(/url\("?([^"\)]+)"?\)/g)];check(matches.length>0,'Artwork URL is present');
   for(const [,url]of matches){check(new URL(url).pathname.startsWith('/wedding-invitation-app/assets/')&&!url.includes('/assets/assets/'),`${mode}: correct project asset path`);const img=new Image();img.src=url;await img.decode();check(img.naturalWidth>0,`${mode}: artwork decodes successfully`);}

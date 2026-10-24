@@ -1,4 +1,4 @@
-/* Loaded after either opening variant, only with ?theme=dark. */
+/* Loaded after the invitation styles, only with ?theme=dark. */
 html[data-theme="dark"] .divine-art-stage::after {
   -webkit-mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
   mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
@@ -56,14 +56,13 @@ html[data-theme="dark"] .intro-screen {
 }
 
 /* Enhanced pages share one viewport-sized image with the opening portal. */
-html[data-theme="dark"][data-opening="enhanced"] .site-shell .intro-screen,
-html[data-theme="dark"][data-opening="enhanced"] .reveal-section.paper-section,
-html[data-theme="dark"][data-opening="enhanced"] .invitation-section.paper-section {
+html[data-theme="dark"] .site-shell .intro-screen,
+html[data-theme="dark"] .reveal-section.paper-section,
+html[data-theme="dark"] .invitation-section.paper-section {
   background: transparent;
 }
 
 html[data-theme="dark"] :is(.envelope-back, .envelope-letter, .envelope-flap-face, .envelope-fold),
-html[data-theme="dark"][data-opening="classic"] .envelope-flap,
 html[data-theme="dark"] .opening-composition .envelope-front {
   background-color: var(--dark-surface);
   background-image: linear-gradient(145deg, #E4C58B12, #220B1540);

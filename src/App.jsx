@@ -11,7 +11,6 @@ import {
 import ArtworkHandoff from "./ArtworkHandoff.jsx";
 import InvitationBorder from "./ThreadBorder.jsx";
 import EnvelopeOpening from "./EnvelopeOpening.jsx";
-import { isThreadDateEnabled } from "./featureFlags.js";
 import { EVENTS, formatEvent } from "./events.js";
 import {
   MapPin,
@@ -279,11 +278,7 @@ function App() {
     }}>
       <audio
         ref={audioRef}
-        src={assetUrl(
-          params.get("opening") === "enhanced"
-            ? "wedding-music-2.mp3"
-            : "wedding-music.mp3",
-        )}
+        src={assetUrl("wedding-music-2.mp3")}
         loop
         autoPlay={false}
         preload="none"
@@ -318,7 +313,6 @@ function App() {
           <div className="outer-frame" aria-hidden="true"></div>
           <div className="intro-content">
             <EnvelopeOpening
-              threadChoosesDate={isThreadDateEnabled(window.location.search)}
               side={invitationSide}
               event={selectedEvent}
               onPaper={(bounds) =>

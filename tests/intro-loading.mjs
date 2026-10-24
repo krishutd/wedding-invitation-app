@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
 const browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || undefined });
 const check = (value, message) => { if (!value) throw Error(message); };
 try {
-  for (const mode of ['classic', 'enhanced']) {
+  for (const mode of ['enhanced']) {
     const context = await browser.newContext({ viewport: { width: 375, height: 667 } });
     const page = await context.newPage();
     page.on('pageerror', error => console.error(error.message));
@@ -32,7 +32,7 @@ try {
         }
       };
     });
-    await page.goto(`http://127.0.0.1:4174/wedding-invitation-app/?opening=${mode}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`http://127.0.0.1:4174/wedding-invitation-app/`, { waitUntil: 'domcontentloaded' });
     const shell = page.locator('.site-shell');
     await shell.waitFor({ state: 'attached' });
     const hidden = () => page.locator('.intro-screen').evaluate(el => getComputedStyle(el).visibility === 'hidden');
