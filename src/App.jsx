@@ -36,7 +36,7 @@ const WEDDING = {
   muhurthamTime: ["12:10 PM", "12:30 PM"],
   muhurthamVenue: "AL-SAJ Convention Centre, Kazhakkottam, Trivandrum",
   receptionTime: ["6:00 PM", "9:00 PM"],
-  receptionVenue: "ARV Convention Centre, Kodungallur",
+  receptionVenue: "ARV Convention Centre, Kodungallur, Thrissur",
   mapsUrl: "https://maps.app.goo.gl/E2NiULxt7Lig8HKz7",
   receptionMapsUrl: "https://maps.app.goo.gl/ENAWgVa9UkHYyZqG7",
 };
@@ -106,6 +106,33 @@ function FamilyDetails({ side, showRelationship = true }) {
         ))}
       </p>
     </div>
+  );
+}
+
+function InvitationScrollCue({ active }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!active) { setVisible(false); return; }
+    const update = () => {
+      const remaining = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+      setVisible(remaining > 70);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const observer = new ResizeObserver(update);
+    observer.observe(document.body);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      observer.disconnect();
+    };
+  }, [active]);
+  if (!active || !visible) return null;
+  return (
+    <button className="invitation-scroll-cue" onClick={() => window.scrollBy({ top: window.innerHeight * .7, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" })} aria-label="Scroll down to see the rest of the invitation">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+    </button>
   );
 }
 
@@ -373,10 +400,10 @@ function App() {
               <span className="frame-corner frame-corner--top-right" />
               <span className="frame-corner frame-corner--bottom-left" />
               <span className="frame-corner frame-corner--bottom-right" />
-              <img
+              <span
                 className="top-ganesha"
-                src={assetUrl("ganesha-seal-engraving.webp")}
-                alt=""
+                style={{ "--ganesha-art": `url("${assetUrl("ganesha-seal-engraving.webp")}")` }}
+                aria-hidden="true"
               />
             </InvitationBorder>
             <Reveal immediate>
@@ -401,7 +428,7 @@ function App() {
                 </InkReveal>
                 <InkReveal delay={0.24}>
                   <div className="and-line">
-                    <span /> <i>and</i> <span />
+                    <span /> <i>&amp;</i> <span />
                   </div>
                 </InkReveal>
                 <InkReveal delay={0.36}>
@@ -578,6 +605,7 @@ function App() {
           </section>
         </motion.div>
       )}
+      <InvitationScrollCue active={page === "invitation"} />
     </main>
   );
 }

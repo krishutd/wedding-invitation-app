@@ -34,8 +34,8 @@ export default function EnvelopeOpening({
   const [stage, setStage] = useState("sealed");
   const [thread, setThread] = useState("");
   const names = side === "bride"
-    ? "ആർച്ച & കൃഷ്ണാനന്ദ്"
-    : "കൃഷ്ണാനന്ദ് & ആർച്ച";
+    ? ["ആർച്ച", "കൃഷ്ണാനന്ദ്"]
+    : ["കൃഷ്ണാനന്ദ്", "ആർച്ച"];
 
   function animate(node, frames, duration, extra = {}) {
     const animation = node.animate(frames, {
@@ -175,7 +175,9 @@ export default function EnvelopeOpening({
       aria-busy={!ready}
     >
       <div className="envelope-heading">
-        <span className="envelope-couple-names envelope-name-malayalam" lang="ml">{names}</span>
+        <h1 className="envelope-couple-names envelope-name-malayalam" lang="ml" aria-label={names.join(" & ")}>
+          <span className="couple-calligraphy" style={{ "--calligraphy-art": `url("${asset(`couple-calligraphy-${side}-final.png`)}")` }} aria-hidden="true" />
+        </h1>
       </div>
       <div
         className="date-motif"
@@ -255,11 +257,10 @@ export default function EnvelopeOpening({
               alt=""
               draggable="false"
             />
-            <img
+            <span
               className="wax-seal-ganesha"
-              src={asset("ganesha-seal-engraving.webp")}
-              alt=""
-              draggable="false"
+              style={{ "--ganesha-art": `url("${asset("ganesha-seal-engraving.webp")}")` }}
+              aria-hidden="true"
             />
           </div>
         </div>
