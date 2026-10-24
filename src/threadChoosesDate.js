@@ -24,7 +24,13 @@ export async function chooseDate({ root, strand, loop, seal, animate, setStage }
   }));
   setStage('looping');
   await Promise.all([
-    animate(loop, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 1050, { easing: 'ease-in-out' }).finished,
+    // A fully offset rounded dash can leave a painted endpoint on mobile SVG
+    // renderers. Reveal it only once the stroke has actually started growing.
+    animate(loop, [
+      { strokeDashoffset: 1, opacity: 0 },
+      { strokeDashoffset: .98, opacity: 1, offset: .02 },
+      { strokeDashoffset: 0, opacity: 1 },
+    ], 1050, { easing: 'ease-in-out' }).finished,
     ...segments.map((segment, index) => {
       const offset = (index + 1) * segmentLength - 1;
       return animate(segment, [
@@ -34,6 +40,26 @@ export async function chooseDate({ root, strand, loop, seal, animate, setStage }
     }),
   ]);
   setStage('holding');
+  // Measure before starting any motion; transform only, so the date and thread
+  // anchors stay fixed and the rest of the sequence keeps its original timing.
+  const dateBounds = root.querySelector('.date-selected').getBoundingClientRect();
+  const labels = ['.date-month-name', '.date-year'].map(selector => root.querySelector(selector));
+  const labelMoves = labels.map((node, index) => {
+    const rect = node.getBoundingClientRect();
+    const x = index === 0
+      ? dateBounds.left - 3 - rect.right
+      : dateBounds.right + 3 - rect.left;
+    const y = dateBounds.top + dateBounds.height / 2 - 1.5 - (rect.top + rect.height / 2);
+    return { node, transform: `translate(${x}px, ${y}px)` };
+  });
+  // Run alongside the thread story without adding a wait to its timeline.
+  // Cancellation on unmount/resize is expected and handled by the owner.
+  for (const { node, transform } of labelMoves) {
+    animate(node, [
+      { transform: 'translate(0px, 0px)' },
+      { transform },
+    ], 2000, { easing: 'cubic-bezier(.42,0,.58,1)' }).finished.catch(() => {});
+  }
   await Promise.all([...root.querySelectorAll('.date-neighbour')].map(node =>
     animate(node, [{ opacity: 1 }, { opacity: 0 }], 650).finished));
   await animate(loop, [{ opacity: 1 }, { opacity: 1 }], 700).finished;
