@@ -1,7 +1,7 @@
 /* Loaded after the invitation styles, only with ?theme=dark. */
 html[data-theme="dark"] .divine-art-stage::after {
-  -webkit-mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
-  mask-image: url('/assets/radha-krishna-golden-moon-dark.png');
+  -webkit-mask-image: url('/assets/radha-krishna-golden-moon-dark.webp');
+  mask-image: url('/assets/radha-krishna-golden-moon-dark.webp');
 }
 html[data-theme="dark"] {
   --royal-burgundy: #511C25;

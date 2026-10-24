@@ -25,7 +25,7 @@ try {
       const backdrop = () => page.evaluate(() => {
         return getComputedStyle(document.querySelector('.site-shell'), '::before').backgroundImage;
       });
-      assert.match(await backdrop(), /envelope-botanical-background-dark\.png/);
+      assert.match(await backdrop(), /envelope-botanical-background-dark\.webp/);
       assert.equal(await page.evaluate(async () => {
         const image = new Image();
         image.src = document.querySelector('link[rel="preload"][href*="background-dark"]').href;
@@ -39,7 +39,7 @@ try {
       await page.screenshot({ path: resolve(process.env.TEMP, `dark-intro-${'enhanced'}-${width}.png`) });
       await page.locator('.envelope-stage').click();
       await page.waitForFunction(() => document.querySelector('#invitation') && !document.querySelector('.intro-screen'), null, { timeout: 25000 });
-      assert.match(await page.locator('.site-shell').evaluate(el => getComputedStyle(el, '::before').backgroundImage), /envelope-botanical-background-dark\.png/);
+      assert.match(await page.locator('.site-shell').evaluate(el => getComputedStyle(el, '::before').backgroundImage), /envelope-botanical-background-dark\.webp/);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.screenshot({ path: resolve(process.env.TEMP, `dark-invite-enhanced-${width}.png`), fullPage: true });
       assert.deepEqual(errors, []);

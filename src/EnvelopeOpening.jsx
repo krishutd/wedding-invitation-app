@@ -251,13 +251,13 @@ export default function EnvelopeOpening({
           <div className="wax-seal" ref={seal}>
             <img
               className="wax-seal-texture"
-              src={asset("wax-seal-texture.png")}
+              src={asset("wax-seal-texture.webp")}
               alt=""
               draggable="false"
             />
             <img
               className="wax-seal-ganesha"
-              src={asset("ganesha-seal-engraving.png")}
+              src={asset("ganesha-seal-engraving.webp")}
               alt=""
               draggable="false"
             />
