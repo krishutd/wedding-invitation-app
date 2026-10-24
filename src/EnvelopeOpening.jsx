@@ -187,7 +187,8 @@ export default function EnvelopeOpening({
         })}
       >
         <div className="date-month" aria-hidden="true">
-          {formatEvent(event, { month: "long", year: "numeric" })}
+          <span className="date-month-name">{formatEvent(event, { month: "long" })}</span>
+          <span className="date-year">{formatEvent(event, { year: "numeric" })}</span>
         </div>
         <div className="date-row" aria-hidden="true">
           {[-2, -1, 0, 1, 2].map((offset) =>
@@ -202,7 +203,7 @@ export default function EnvelopeOpening({
                     ref={heartPath}
                     d={ORGANIC_LOOP}
                     pathLength="1"
-                    style={{ strokeDashoffset: reduced ? 0 : 1 }}
+                    style={{ strokeDashoffset: reduced ? 0 : 1, opacity: reduced ? 1 : 0 }}
                   />
                 </svg>
                 <span>{event.day}</span>

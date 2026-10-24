@@ -247,7 +247,8 @@ button { font: inherit; }
 .opening-composition { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; isolation: isolate; }
 .opening-composition .envelope-heading { margin-bottom: 18px; transition: opacity .45s ease .15s; }
 .date-motif { margin-bottom: 32px; }
-.date-month { color: #655344; font: 9px 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: .19em; transition: opacity .35s ease .15s; }
+.date-month { display: flex; justify-content: center; gap: .5em; color: #655344; font: 9px 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: .19em; transition: opacity .35s ease .15s; }
+.date-month > span { display: inline-block; white-space: nowrap; }
 .date-row { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 7px; height: 46px; }
 .date-neighbour { width: 24px; color: #796652; font-size: 17px; transition: opacity .2s ease; }
 .date-selected { position: relative; width: 48px; height: 46px; display: grid; place-items: center; color: var(--color-burgundy); font-size: 21px; z-index: 8; transform-origin: center; }
@@ -267,7 +268,7 @@ button { font: inherit; }
 .opening-hint { margin-top: 25px; color: #655344; font: 10px 'DM Sans', sans-serif; letter-spacing: .14em; transition: opacity .2s ease; }
 .opening-composition:not([data-stage="sealed"]) .opening-hint { opacity: 0; }
 .seal-ripple { position: absolute; z-index: 6; left: calc(50% - 33px); top: calc(50% - 33px); width: 66px; height: 66px; border: 1px solid var(--color-antique-gold); border-radius: 50%; opacity: 0; pointer-events: none; }
-/* Thread story owns its fades; keep the date and month anchored. */
+/* Thread story owns its fades and month/year movement. */
 .opening-composition .date-neighbour,
 .opening-composition .date-month,
 .opening-composition .envelope-heading { opacity: 1; }
@@ -284,7 +285,6 @@ button { font: inherit; }
 
 .envelope-letter.paper-section { position: absolute; background-color: var(--color-paper); background-image: radial-gradient(ellipse at 50% 38%, #fffdf8c0 0%, #f7f0e790 48%, transparent 83%), linear-gradient(90deg, #a47a3020 0%, #c8a96a2a 3%, #f4ebdd 10%, transparent 24%, transparent 76%, #f4ebdd 90%, #c8a96a2e 97%, #a47a3020 100%), radial-gradient(ellipse at 12% 88%, #c8a96a24 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #c8a96a20 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .event-day { position: relative; }
-.event-heart { position: absolute; inset: -24% -30%; width: 160%; height: 148%; overflow: visible; opacity: 0; fill: none; stroke: var(--color-antique-gold); stroke-width: .9; stroke-dasharray: 1; pointer-events: none; }
 .ceremony-card > .ceremony-frame-reveal { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .couple-names h2 { animation: none; }
 .stationery-art .divine-art { opacity: 1; transition: none; }

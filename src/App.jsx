@@ -484,7 +484,6 @@ function App() {
                     >
                       <EventDay
                         event={EVENTS.wedding}
-                        selected={selectedEvent === EVENTS.wedding}
                       />
                       <span className="event-date-copy">
                         <span className="event-weekday">
@@ -533,7 +532,6 @@ function App() {
                     >
                       <EventDay
                         event={EVENTS.reception}
-                        selected={selectedEvent === EVENTS.reception}
                       />
                       <span className="event-date-copy">
                         <span className="event-weekday">

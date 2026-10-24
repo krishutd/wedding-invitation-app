@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { useReducedMotion } from 'framer-motion';
 
-export const HEART = 'M24 41 C20 36 3 25 3 15 C3 3 18 1 24 11 C30 1 45 3 45 15 C45 25 28 36 24 41Z';
-
 // The DOM is visible by default. Only a successfully created animation can hide it.
 export function useOnceReveal(ref, frames, options = {}) {
   const reduced = useReducedMotion();
@@ -38,15 +36,8 @@ export function InkReveal({ children, className = '', delay = 0 }) {
   return <div ref={ref} className={className} data-diary-text-group>{children}</div>;
 }
 
-export function EventDay({ event, selected }) {
-  const ref = useRef(null);
-  useOnceReveal(ref, [
-    { strokeDashoffset: 1, opacity: 0 },
-    { strokeDashoffset: 0, opacity: .85, offset: .45 },
-    { strokeDashoffset: 0, opacity: .85, offset: .7 },
-    { strokeDashoffset: 0, opacity: 0 },
-  ], { duration: 1700 });
-  return <span className="event-day">{event.day}{selected && <svg ref={ref} className="event-heart" viewBox="0 0 48 46" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} pathLength="1" /></svg>}</span>;
+export function EventDay({ event }) {
+  return <span className="event-day">{event.day}</span>;
 }
 
 export function BorderReveal({ children, className }) {
