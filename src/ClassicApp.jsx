@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlitterReveal from "./GlitterReveal.jsx";
 import InvitationPageReveal from "./InvitationPageReveal.jsx";
@@ -76,15 +76,17 @@ function Reveal({ children, className = "", delay = 0, amount = 0.22 }) {
   const ref = useRef(null);
   const visible = useInView(ref, { once: true, amount });
   const reduced = useReducedMotion();
+  const [isInvitation, setIsInvitation] = useState(false);
+  useLayoutEffect(() => { setIsInvitation(Boolean(ref.current?.closest(".invitation-section"))); }, []);
   return (
     <motion.div
       ref={ref}
       className={className}
       initial={reduced ? false : { opacity: 0, y: 24 }}
-      animate={visible ? { opacity: 1, y: 0 } : {}}
+      animate={isInvitation || visible ? { opacity: 1, y: 0 } : {}}
       transition={{
-        duration: reduced ? 0 : 1.15,
-        delay,
+        duration: reduced || isInvitation ? 0 : 1.15,
+        delay: isInvitation ? 0 : delay,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
@@ -404,7 +406,6 @@ function App() {
               <span>Music {musicEnabled ? "on" : "off"}</span>
             </button>
             <InvitationPageReveal
-              artworkTriggerRef={artworkTriggerRef}
               onArtworkStart={() => setArtworkReady(true)}
             />
             <div className="outer-frame" aria-hidden="true">

@@ -155,8 +155,6 @@ export default function ArtworkHandoff({ bounds, onDone }) {
         // The original double-line frame then takes over without a moving mask jump.
         border.style.clipPath='';
         flourishes.push(run(border,[{opacity:0},{opacity:0,offset:.90},{opacity:1}],duration,{easing:'linear'}));
-        const text=[...page.querySelectorAll('.couple-names, .invite-header')];
-        text.forEach((node,i)=>flourishes.push(run(node,[{opacity:0},{opacity:1}],700,{delay:500+i*100})));
         await Promise.all([...flourishes,
           run(page,[{opacity:0},{opacity:1}],700,{delay:400}),
           run(paper,[{opacity:1},{opacity:0}],850,{delay:400}),

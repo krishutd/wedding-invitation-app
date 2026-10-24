@@ -10,6 +10,7 @@ export function useOnceReveal(ref, frames, options = {}) {
   useEffect(() => {
     const node = ref.current;
     if (!node || reduced || !node.animate) return;
+    if (node.closest(".invitation-section") && node.hasAttribute("data-diary-text-group")) return;
     let animation;
     let observer;
     const settle = () => animation?.cancel();
@@ -34,7 +35,7 @@ export function useOnceReveal(ref, frames, options = {}) {
 export function InkReveal({ children, className = '', delay = 0 }) {
   const ref = useRef(null);
   useOnceReveal(ref, [{ opacity: .18 }, { opacity: 1 }], { duration: 650 + delay * 1000 });
-  return <div ref={ref} className={className}>{children}</div>;
+  return <div ref={ref} className={className} data-diary-text-group>{children}</div>;
 }
 
 export function EventDay({ event, selected }) {
