@@ -21,43 +21,10 @@ import {
   VolumeX,
 } from "lucide-react";
 
-import { assetUrl, radhaKrishnaAsset } from "./assets.js";
+import { assetUrl, botanicalAsset, radhaKrishnaAsset } from "./assets.js";
+import { preloadIntroAssets } from "./introAssets.js";
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_MAX_VOLUME = 0.6;
-
-function preloadImage(src) {
-  return new Promise((resolve) => {
-    const image = new Image();
-    let finished = false;
-    let decoding = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      resolve();
-    };
-    const decodeImage = () => {
-      if (decoding) return;
-      decoding = true;
-      if (typeof image.decode === "function") {
-        image
-          .decode()
-          .catch(() => {})
-          .then(finish);
-      } else {
-        finish();
-      }
-    };
-
-    image.onload = decodeImage;
-    image.onerror = finish;
-    image.src = src;
-
-    if (image.complete) {
-      if (image.naturalWidth > 0) decodeImage();
-      else finish();
-    }
-  });
-}
 
 const WEDDING = {
   groom: "Krishnanand",
@@ -166,20 +133,15 @@ function App() {
   const secondName = invitationSide === "bride" ? WEDDING.groom : WEDDING.bride;
   const secondFamilySide = invitationSide === "bride" ? "groom" : "bride";
 
+  // Remove the bootstrap indicator only after React commits the complete intro.
+  useEffect(() => {
+    if (introReady) document.getElementById("invitation-loading")?.remove();
+  }, [introReady]);
+
   useEffect(() => {
     let cancelled = false;
-    const introAssets = [
-      radhaKrishnaAsset(),
-      "envelope-botanical-background.png",
-      "envelope-botanical-overlay.png",
-      "envelope-paper-texture.png",
-      "ivory-paper-texture.png",
-      "wax-seal-texture.png",
-      "ganesha-seal-engraving.png",
-    ];
-
     Promise.all([
-      Promise.all(introAssets.map((asset) => preloadImage(assetUrl(asset)))),
+      preloadIntroAssets(),
       document.fonts?.ready ?? Promise.resolve(),
     ]).then(() => {
       if (!cancelled) setIntroReady(true);
@@ -274,7 +236,7 @@ function App() {
 
   return (
     <main className={`site-shell${page === "intro" && !introReady ? " is-loading" : ""}`} aria-busy={page === "intro" && !introReady} style={{
-      "--intro-botanical-background": `url("${assetUrl("envelope-botanical-background.png")}")`,
+      "--intro-botanical-background": `url("${assetUrl(botanicalAsset())}")`,
     }}>
       <audio
         ref={audioRef}
@@ -304,9 +266,9 @@ function App() {
         <section
           className="intro-screen"
           style={{
-            "--intro-botanical-background": `url("${assetUrl("envelope-botanical-background.png")}")`,
-            "--envelope-botanical-overlay": `url("${assetUrl("envelope-botanical-overlay.png")}")`,
-            "--envelope-paper-texture": `url("${assetUrl("envelope-paper-texture.png")}")`,
+            "--intro-botanical-background": `url("${assetUrl(botanicalAsset())}")`,
+            "--envelope-botanical-overlay": `url("${assetUrl("envelope-botanical-overlay.webp")}")`,
+            "--envelope-paper-texture": `url("${assetUrl("envelope-paper-texture.webp")}")`,
           }}
         >
           <div className="paper-grain" />
@@ -413,7 +375,7 @@ function App() {
               <span className="frame-corner frame-corner--bottom-right" />
               <img
                 className="top-ganesha"
-                src={assetUrl("ganesha-seal-engraving.png")}
+                src={assetUrl("ganesha-seal-engraving.webp")}
                 alt=""
               />
             </InvitationBorder>

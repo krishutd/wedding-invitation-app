@@ -18,3 +18,7 @@ The moving date thread remains limited to the measured heart perimeter, with dec
 The production build and browser lifecycle checks were run after this redesign. The fixture explicitly finishes native animations at their declared deadlines; it checks lifecycle and geometry rather than compositor smoothness. Physical Safari/WhatsApp rendering, orientation and audible music output also require a device check.
 
 Diary ink reveal: run `node tests/diary-ink.mjs` with Vite on port 5177 (override with TEST_URL). Pass a Playwright node_modules directory as the first argument if needed. Checks cover StrictMode cleanup, below-fold waiting, scroll reveal, no replay, keyboard-focus visibility and reduced motion. The invitation waits until the artwork handoff completes.
+
+Loading performance: the intro check covers both themes, delayed theme background completion, real local font downloads, no external font requests, and no unused light background request in dark mode. See public/assets/LOADING.md for measured transfer savings and asset provenance.
+
+The loading indicator checks cover both theme palettes, visibility throughout delayed assets, removal on readiness, and reduced motion. The inline HTML/SVG indicator has no image or web font dependencies and is visible before the application JavaScript loads.

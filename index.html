@@ -7,6 +7,31 @@
     <meta name="theme-color" content="#eee4cc" />
     <meta name="description" content="A wedding invitation for Krishnanand and Archa." />
     <title>Krishnanand & Archa — Wedding Invitation</title>
+    <script>
+      document.documentElement.dataset.theme = new URLSearchParams(location.search).get('theme')?.toLowerCase() === 'dark' ? 'dark' : 'light';
+    </script>
+    <!-- The loading screen needs no JavaScript bundle, images, or web fonts. -->
+    <style>
+      .invitation-loading {
+        --loading-paper: #F4EBDD;
+        --loading-ink: #702D36;
+        --loading-gold: #A47A30;
+        position: fixed; inset: 0; z-index: 100;
+        display: grid; place-content: center; justify-items: center;
+        gap: 22px; padding: 28px; text-align: center;
+        background: var(--loading-paper); color: var(--loading-ink);
+      }
+      html[data-theme="dark"] .invitation-loading {
+        --loading-paper: #511C25;
+        --loading-ink: #F4EBDD;
+        --loading-gold: #E4C58B;
+      }
+      .invitation-loading-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; }
+      .invitation-loading-mark svg { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--loading-gold); }
+      .invitation-loading-orbit { transform-origin: 38px 38px; animation: invitation-loading-turn 3s linear infinite; }
+      @keyframes invitation-loading-turn { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) { .invitation-loading-orbit { animation: none; } }
+    </style>
     <!-- Static metadata lets messaging crawlers discover the preview without JavaScript. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Krishnanand &amp; Archa" />
@@ -23,11 +48,22 @@
     <meta name="twitter:description" content="With love and joy, we invite you to celebrate the wedding of Krishnanand and Archa." />
     <meta name="twitter:image" content="https://krishutd.github.io/wedding-invitation-app/assets/invitation-preview.jpg" />
     <meta name="twitter:image:alt" content="The invitation envelope with Malayalam names, burgundy wax seal, and soft botanical background" />
-    <link rel="preload" as="image" href="./assets/envelope-paper-texture.png" />
-    <link rel="preload" as="image" href="./assets/wax-seal-texture.png" />
-    <link rel="preload" as="image" href="./assets/ganesha-seal-engraving.png" />
+    <link rel="preload" as="image" href="./assets/envelope-paper-texture.webp" />
+    <link rel="preload" as="image" href="./assets/wax-seal-texture.webp" />
+    <link rel="preload" as="image" href="./assets/ganesha-seal-engraving.webp" />
   </head>
   <body>
+    <div id="invitation-loading" class="invitation-loading" role="status" aria-label="Loading invitation" aria-live="polite" aria-atomic="true">
+      <div class="invitation-loading-mark" aria-hidden="true">
+        <svg viewBox="0 0 76 76" fill="none">
+          <circle cx="38" cy="38" r="33" stroke="currentColor" stroke-opacity=".25" stroke-width=".8" />
+          <g class="invitation-loading-orbit">
+            <circle cx="38" cy="38" r="33" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="42 166" transform="rotate(-90 38 38)" />
+            <path d="m38 2 3 3-3 3-3-3Z" fill="currentColor" />
+          </g>
+        </svg>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
