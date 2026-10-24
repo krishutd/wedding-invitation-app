@@ -43,5 +43,6 @@ export function preloadIntroAssets() {
     'envelope-botanical-overlay.webp', 'envelope-paper-texture.webp',
     'ivory-paper-texture.webp', 'wax-seal-texture.webp',
     'ganesha-seal-engraving.webp',
+    'couple-calligraphy-groom-final.png', 'couple-calligraphy-bride-final.png',
   ].map(asset => preloadImage(assetUrl(asset))));
 }

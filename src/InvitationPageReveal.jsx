@@ -40,12 +40,21 @@ export default function InvitationPageReveal({ active = true, onArtworkStart }) 
       }, { threshold: 0, rootMargin: "0px 0px -16px 0px" });
       for (const node of section.querySelectorAll(TEXT)) {
         if (!node.animate) continue;
+        // Keep the names' embossed filter intact while their mask and opacity reveal.
+        const isName = node.matches(".couple-names h2");
         const animation = node.animate([
           { maskPosition: "100% 0", opacity: 0, filter: "blur(2px)", offset: 0 },
           { maskPosition: "72% 0", opacity: .65, filter: "blur(1px)", offset: .3 },
           { maskPosition: "0% 0", opacity: 1, filter: "blur(0px)", offset: 1 },
-        ].map(frame => ({ ...frame, maskImage: MASK, maskSize: "300% 100%", maskRepeat: "no-repeat" })), {
-          duration: node.matches("h2") ? 2400 : 1800,
+         ].map(frame => {
+          const { filter, ...revealFrame } = frame;
+          return {
+            ...revealFrame,
+            ...(isName ? {} : { filter }),
+            maskImage: MASK, maskSize: "300% 100%", maskRepeat: "no-repeat",
+          };
+        }), {
+          duration: 1800,
           easing: "cubic-bezier(.22,.61,.36,1)", fill: "both",
         });
         animation.pause();

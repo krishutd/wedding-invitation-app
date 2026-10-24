@@ -1,23 +1,27 @@
 @import url('../public/assets/invitation-fonts.css');
 
-@font-face {
-  font-family: 'RIT Rachana';
-  src: url('../public/assets/fonts/RIT-Rachana-Italic.woff2') format('woff2');
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-}
-
+/* The displayed artwork is the bespoke calligraphy design. */
+.opening-composition .envelope-heading { width: 100%; }
 .envelope-couple-names.envelope-name-malayalam {
-  font-family: 'RIT Rachana', 'Nirmala UI', serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0;
-  font-size: clamp(27px, 6.4vw, 36px);
-  line-height: clamp(47.85px, 11.55vw, 62.7px);
-  white-space: nowrap;
+  width: min(100%, 380px);
+  margin: 0;
+  line-height: 0;
   position: relative;
-  top: .09em;
+}
+.couple-calligraphy {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  background: var(--color-name-burgundy);
+  -webkit-mask: var(--calligraphy-art) center / contain no-repeat;
+  mask: var(--calligraphy-art) center / contain no-repeat;
+}
+html[data-theme="dark"] .couple-calligraphy { background: var(--intro-text-tone); }
+:root { --intro-text-tone: var(--color-name-burgundy); }
+html[data-theme="dark"] { --intro-text-tone: #cdb38b; }
+.top-ganesha, .wax-seal-ganesha {
+  -webkit-mask: var(--ganesha-art) center / contain no-repeat;
+  mask: var(--ganesha-art) center / contain no-repeat;
 }
 
 :root, body, #root {
@@ -96,7 +100,7 @@ button { font: inherit; }
 .frame-corner--top-right { top: -1px; right: -1px; transform: scaleX(-1); }
 .frame-corner--bottom-left { bottom: -1px; left: -1px; transform: scaleY(-1); }
 .frame-corner--bottom-right { bottom: -1px; right: -1px; transform: scale(-1); }
-.top-ganesha { position: absolute; z-index: 2; top: -17px; left: 50%; width: 34px; height: 34px; transform: translateX(-50%); object-fit: contain; filter: brightness(.82) sepia(.18) saturate(.9) contrast(1.05); }
+.top-ganesha { position: absolute; z-index: 2; top: -17px; left: 50%; width: 34px; height: 34px; transform: translateX(-50%); object-fit: contain; background: var(--color-ink); }
 .outer-frame { pointer-events: none; position: absolute; inset: 22px 18px; border: 1px solid var(--color-gold-line); outline: 1px solid var(--color-gold-faint); outline-offset: 5px; z-index: 0; }
 .outer-frame::before, .outer-frame::after { content: ''; position: absolute; left: 8px; right: 8px; height: 1px; }
 .outer-frame::before { top: 8px; background: linear-gradient(90deg, #a47a3070 0, #a47a3070 calc(50% - 24px), transparent calc(50% - 24px), transparent calc(50% + 24px), #a47a3070 calc(50% + 24px), #a47a3070 100%); }
@@ -130,7 +134,7 @@ button { font: inherit; }
 .envelope-front::after { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L52 50 L0 100 M100 0 L48 50 L100 100 M0 100 L50 45 L100 100' fill='none' stroke='%23A47A30' stroke-opacity='.42' stroke-width='.42'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
 .wax-seal { position: absolute; z-index: 5; left: 50%; top: 50%; margin-left: -33px; margin-top: -33px; width: 66px; height: 66px; transition: opacity .18s ease; }
 .wax-seal-texture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; filter: sepia(1) saturate(3) hue-rotate(300deg) brightness(.62) contrast(1.1) drop-shadow(0 2px 3px #40352c3d); pointer-events: none; user-select: none; }
-.wax-seal-ganesha { position: absolute; z-index: 1; left: 50%; top: 50%; display: block; width: 40px; height: 40px; transform: translate(-50%, -50%); object-fit: contain; object-position: center; filter: brightness(1.12) sepia(.16) saturate(.86) contrast(1.04); mix-blend-mode: screen; opacity: .9; pointer-events: none; user-select: none; }
+.wax-seal-ganesha { position: absolute; z-index: 1; left: 50%; top: 50%; display: block; width: 40px; height: 40px; transform: translate(-50%, -50%); object-fit: contain; object-position: center; background: var(--intro-text-tone); pointer-events: none; user-select: none; }
 
 .reveal-section { min-height: 100svh; padding: 84px 32px 70px; text-align: center; display: flex; align-items: center; flex-direction: column; justify-content: center; }
 .compact-frame { inset: 18px 16px; }
@@ -342,3 +346,69 @@ html { scrollbar-gutter: stable; }
 .portal-orbit { stroke: #ebca83; stroke-width: 2.6; stroke-dasharray: .539448 .460552; filter: drop-shadow(0 0 3px #e8c36aa0); }
 .portal-dust { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #c49a50; opacity: 0; pointer-events: none; }
 .portal-glitter { position: absolute; inset: 0; pointer-events: none; }
+
+/* Embossed foil lettering, with the paper grain contained inside live text. */
+.invitation-section .couple-names {
+  --name-foil: linear-gradient(165deg, #c78a78 0%, #943c45 21%, #e0ad92 29%, #7a2632 42%, #4d1520 53%, #b96964 66%, #70232e 82%, #43131d 100%);
+  --name-edge: #5c1b28;
+  --name-highlight: #f6d8bc99;
+  --name-shadow: #3d0f194d;
+}
+html[data-theme="dark"] .invitation-section .couple-names {
+  --name-foil: linear-gradient(165deg, #fff0d2 0%, #ceb18a 20%, #f5dfb8 29%, #ad8a5e 43%, #755237 53%, #ddc49b 65%, #b18e65 83%, #765138 100%);
+  --name-edge: #a88761;
+  --name-highlight: #fff1d9b3;
+  --name-shadow: #220b1499;
+}
+html .invitation-section .couple-names h2 {
+  background-image: url('/assets/ivory-paper-texture.webp'), var(--name-foil);
+  background-size: 150px 150px, 100% 100%;
+  background-blend-mode: soft-light, normal;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: .35px var(--name-edge);
+  filter: drop-shadow(-.864px -1.296px .216px var(--name-highlight)) drop-shadow(.756px .972px 0 var(--name-edge)) drop-shadow(.756px .972px 0 var(--name-edge)) drop-shadow(1.296px 2.592px 1.512px var(--name-shadow));
+  animation: none;
+}
+
+.invitation-scroll-cue { position: fixed; z-index: 30; bottom: max(18px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 9px; padding: 9px 16px; border: 1px solid var(--color-gold-line); border-radius: 30px; background: var(--color-paper); color: var(--color-ink); box-shadow: 0 3px 18px #220b1426; cursor: pointer; font: 13px 'Cormorant Garamond', Georgia, serif; letter-spacing: .06em; }
+.invitation-scroll-cue svg { animation: scroll-cue-drift 2s ease-in-out infinite; }
+.invitation-scroll-cue:focus-visible { outline: 2px solid var(--color-soft-gold); outline-offset: 4px; }
+@keyframes scroll-cue-drift { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
+@media (prefers-reduced-motion: reduce) { .invitation-scroll-cue svg { animation: none; } }
+
+.invitation-scroll-cue { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 50%; }
+
+/* Sequential foil highlight: first name, ampersand, then second name. */
+html .invitation-section .couple-names h2 {
+  background-image: linear-gradient(110deg, transparent 40%, #fff4d94d 44%, #ffffff 48%, #ffffff 52%, #fff4d94d 56%, transparent 60%), url('/assets/ivory-paper-texture.webp'), var(--name-foil);
+  background-size: 280% 100%, 150px 150px, 100% 100%;
+  background-position: 100% 0, 0 0, 0 0;
+  background-blend-mode: screen, soft-light, normal;
+  animation: embossed-name-shimmer 12s linear infinite;
+}
+html .invitation-section .couple-names > :nth-child(3) h2 { animation-delay: 8s; }
+html .invitation-section .couple-names .and-line i {
+  background-image: linear-gradient(110deg, transparent 40%, #fff8e3 50%, transparent 60%), linear-gradient(currentColor, currentColor);
+  background-size: 280% 100%, 100% 100%;
+  background-position: 100% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ampersand-shimmer 12s linear infinite;
+}
+@keyframes embossed-name-shimmer {
+  0% { background-position: 100% 0, 0 0, 0 0; }
+  30%, 99.99% { background-position: 0% 0, 0 0, 0 0; }
+  100% { background-position: 100% 0, 0 0, 0 0; }
+}
+@keyframes ampersand-shimmer {
+  0%, 33% { background-position: 100% 0, 0 0; }
+  63%, 99.99% { background-position: 0% 0, 0 0; }
+  100% { background-position: 100% 0, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html .invitation-section .couple-names h2,
+  html .invitation-section .couple-names .and-line i { animation: none; background-position: 100% 0, 0 0, 0 0; }
+}

@@ -109,6 +109,6 @@ html[data-theme="dark"] .invitation-border-host > .outer-frame {
 html[data-theme="dark"] .invitation-border-host .outer-frame-top {
   background: linear-gradient(90deg, var(--color-gold-line) 0, var(--color-gold-line) calc(50% - 24px), transparent calc(50% - 24px), transparent calc(50% + 24px), var(--color-gold-line) calc(50% + 24px));
 }
-html[data-theme="dark"] :is(.top-ganesha, .frame-corner) {
+html[data-theme="dark"] .frame-corner {
   filter: brightness(1.65);
 }
