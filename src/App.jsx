@@ -459,7 +459,7 @@ function App() {
                         </span>
                       </span>
                     </div>
-                    <span className="event-time-label">TIME</span>
+                    <span className="event-time-label">Muhurtham</span>
                     <p className="event-time">
                       {WEDDING.muhurthamTime[0]} <span>to</span>{" "}
                       {WEDDING.muhurthamTime[1]}
