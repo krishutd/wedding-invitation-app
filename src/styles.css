@@ -379,3 +379,19 @@ html .invitation-section .couple-names h2 {
 @media (prefers-reduced-motion: reduce) { .invitation-scroll-cue svg { animation: none; } }
 
 .invitation-scroll-cue { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 50%; }
+
+/* A narrow, quiet highlight passes over the embossed names. */
+html .invitation-section .couple-names h2 {
+  background-image: linear-gradient(110deg, transparent 43%, #fff4d900 46%, #fff4d95c 50%, #fff4d900 54%, transparent 57%), url('/assets/ivory-paper-texture.webp'), var(--name-foil);
+  background-size: 280% 100%, 150px 150px, 100% 100%;
+  background-position: 100% 0, 0 0, 0 0;
+  background-blend-mode: screen, soft-light, normal;
+  animation: embossed-name-shimmer 8s ease-in-out infinite;
+}
+@keyframes embossed-name-shimmer {
+  0%, 30% { background-position: 100% 0, 0 0, 0 0; }
+  65%, 100% { background-position: 0% 0, 0 0, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html .invitation-section .couple-names h2 { animation: none; background-position: 100% 0, 0 0, 0 0; }
+}
