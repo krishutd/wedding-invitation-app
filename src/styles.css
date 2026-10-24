@@ -266,16 +266,13 @@ button { font: inherit; }
 
 .opening-hint { margin-top: 25px; color: #655344; font: 10px 'DM Sans', sans-serif; letter-spacing: .14em; transition: opacity .2s ease; }
 .opening-composition:not([data-stage="sealed"]) .opening-hint { opacity: 0; }
-.opening-composition:not([data-thread-date]):not([data-stage="sealed"]):not([data-stage="drawing"]) .date-neighbour { opacity: 0; transition-duration: 1.7s; transition-timing-function: ease-in-out; }
-.opening-composition:not([data-thread-date]):not([data-stage="sealed"]):not([data-stage="drawing"]):not([data-stage="gathering"]) .date-month,
-.opening-composition:not([data-thread-date]):not([data-stage="sealed"]):not([data-stage="drawing"]):not([data-stage="gathering"]) .envelope-heading { opacity: 0; }
 .seal-ripple { position: absolute; z-index: 6; left: calc(50% - 33px); top: calc(50% - 33px); width: 66px; height: 66px; border: 1px solid var(--color-antique-gold); border-radius: 50%; opacity: 0; pointer-events: none; }
-/* Opt-in thread story owns its fades; keep the date and month anchored. */
-.opening-composition[data-thread-date] .date-neighbour,
-.opening-composition[data-thread-date] .date-month,
-.opening-composition[data-thread-date] .envelope-heading { opacity: 1; }
-.opening-composition[data-thread-date] .date-selected path { stroke: var(--color-antique-gold); stroke-width: 1.5; }
-.opening-composition[data-thread-date] .thread-tug { stroke: #f4d49a; stroke-width: 3; stroke-dasharray: .075 1; filter: drop-shadow(0 0 2px #c49a50); }
+/* Thread story owns its fades; keep the date and month anchored. */
+.opening-composition .date-neighbour,
+.opening-composition .date-month,
+.opening-composition .envelope-heading { opacity: 1; }
+.opening-composition .date-selected path { stroke: var(--color-antique-gold); stroke-width: 1.5; }
+.opening-composition .thread-tug { stroke: #f4d49a; stroke-width: 3; stroke-dasharray: .075 1; filter: drop-shadow(0 0 2px #c49a50); }
 .invitation-section:focus { outline: none; }
 @media (max-height: 600px) {
   .intro-screen { padding-top: max(30px, env(safe-area-inset-top)); padding-bottom: max(30px, env(safe-area-inset-bottom)); }
@@ -284,7 +281,6 @@ button { font: inherit; }
   .opening-hint { margin-top: 16px; }
 }
 
-/* Enhanced-only stylesheet: all enhancements leave the classic entry untouched. */
 
 .envelope-letter.paper-section { position: absolute; background-color: var(--color-paper); background-image: radial-gradient(ellipse at 50% 38%, #fffdf8c0 0%, #f7f0e790 48%, transparent 83%), linear-gradient(90deg, #a47a3020 0%, #c8a96a2a 3%, #f4ebdd 10%, transparent 24%, transparent 76%, #f4ebdd 90%, #c8a96a2e 97%, #a47a3020 100%), radial-gradient(ellipse at 12% 88%, #c8a96a24 0%, transparent 47%), radial-gradient(ellipse at 90% 9%, #c8a96a20 0%, transparent 44%), url('/assets/ivory-paper-texture.png'); background-size: auto, auto, auto, auto, 640px 640px; }
 .event-day { position: relative; }

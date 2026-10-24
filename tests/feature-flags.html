@@ -1,52 +1,34 @@
-<!doctype html><html><head><title>Opening feature flag checks</title></head><body>
-<button id="run">Run feature flag checks</button><pre id="results">Ready</pre><iframe id="preview" style="width:375px;height:667px;border:1px solid #aaa" title="Invitation feature flag preview"></iframe>
+<!doctype html><html><head><title>Invitation parameter checks</title></head><body>
+<button>Run parameter checks</button><pre>Ready</pre><iframe style="width:375px;height:667px" title="Invitation preview"></iframe>
 <script type="module">
-import { resolveOpening } from '/src/featureFlags.js';
-const frame = document.querySelector('iframe');
-const output = document.querySelector('pre');
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-const until = async predicate => { const start = performance.now(); while (!predicate()) { if (performance.now() - start > 10000) throw Error('Timed out'); await wait(25); } };
-document.querySelector('button').onclick = async () => {
- output.textContent = '';
- const check = (value, message) => { if (!value) throw Error(message); output.textContent += `PASS ${message}\n`; };
+const frame=document.querySelector('iframe'), output=document.querySelector('pre');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const until=async predicate=>{const start=Date.now();while(!predicate()){if(Date.now()-start>15000)throw Error('Timeout');await wait(25);}};
+const check=(ok,label)=>{if(!ok)throw Error(label);output.textContent+='PASS '+label+'\n';};
+document.querySelector('button').onclick=async()=>{
+ output.textContent='';
  try {
- const cases = [
-  ['', 'classic', 2],
-  ['?side=bride&invite=reception', 'classic', 1],
-  ['?opening=classic&side=groom&invite=wedding', 'classic', 1],
-  ['?opening=invalid&invite=invalid', 'classic', 2],
-  ['?opening=&invite=reception', 'classic', 1],
-  ['?opening=enhanced&side=bride&invite=wedding', 'enhanced', 1],
-  ['?opening=ENHANCED&side=groom&invite=reception', 'enhanced', 1],
-  ['?opening=enhancement&side=bride&invite=reception', 'enhanced', 1],
- ];
- for (const [query, mode, count] of cases) {
-  check(resolveOpening(query) === mode, `Flag resolution: ${query || 'missing'}`);
-  frame.src = '/' + query;
-  await new Promise(resolve => frame.onload = resolve);
-  await until(() => frame.contentDocument.querySelector('.envelope-stage'));
-  const doc = frame.contentDocument;
-  await until(() => frame.contentWindow.getComputedStyle(doc.querySelector('.intro-screen')).visibility !== 'hidden');
-  const enhanced = mode === 'enhanced';
-  check(doc.documentElement.dataset.opening === mode, 'Correct mode selected before mount');
-  check(Boolean(doc.querySelector('.opening-composition')) === enhanced, 'Correct opening implementation');
-  const styles = frame.contentWindow.getComputedStyle(doc.documentElement);
-  check(Boolean(styles.getPropertyValue('--color-paper').trim()) === enhanced, 'Enhanced styles isolated');
-  check(Boolean(styles.getPropertyValue('--paper').trim()) === !enhanced, 'Classic styles isolated');
-  check(doc.querySelector('meta[name="theme-color"]').content === (enhanced ? '#F4EBDD' : '#eee4cc'), 'Matching browser theme');
-  if (enhanced) {
-   const day = query.includes('reception') ? '21' : '19';
-   check(doc.querySelector('.date-selected').textContent.trim() === day, 'Correct enhanced event date on first render');
-  } else {
-   doc.querySelector('.envelope-stage').click();
-   await until(() => doc.querySelector('#invitation'));
-   check(doc.querySelectorAll('.ceremony-card').length === count, 'Classic event selection preserved');
-   check(doc.querySelector('.couple-names h2').textContent === (query.includes('side=bride') ? 'Archa' : 'Krishnanand'), 'Classic family-side ordering preserved');
-   check(Boolean(doc.querySelector('.music-toggle')), 'Classic music control preserved');
-  }
+ for(const [query,count,first,day] of [
+ ['',2,'Krishnanand','19'],
+ ['?side=bride&invite=reception',1,'Archa','21'],
+ ['?opening=classic&thread=invalid&side=groom&invite=wedding',1,'Krishnanand','19'],
+ ['?side=BRIDE&invite=WEDDING',1,'Archa','19'],
+ ['?side=invalid&invite=invalid',2,'Krishnanand','19'],
+ ['?side=bride&side=groom&invite=reception&invite=wedding',1,'Archa','21']]) {
+ frame.src='/'+query;
+ await new Promise(r=>frame.onload=r);
+ const doc=frame.contentDocument;
+ await until(()=>doc.querySelector('.envelope-stage')?.disabled===false);
+ check(Boolean(doc.querySelector('.thread-tug')),'Permanent thread opening');
+ check(doc.querySelector('.date-selected').textContent.trim()===day,'Selected event date');
+ check(doc.querySelector('audio').src.endsWith('/wedding-music-2.mp3'),'Enhanced music');
+ frame.contentWindow.Element.prototype.animate=()=>{throw Error('Skip animation');};
+ doc.querySelector('.envelope-stage').click();
+ await until(()=>doc.querySelector('#invitation')&&!doc.querySelector('.intro-screen'));
+ check(doc.querySelectorAll('.ceremony-card').length===count,'Event selection '+query);
+ check(doc.querySelector('.couple-names h2').textContent===first,'Family ordering '+query);
  }
- check(resolveOpening('?opening=classic&opening=enhanced') === 'classic', 'First duplicate value wins');
- output.textContent += 'DONE\n';
- } catch(error) { output.textContent += `FAIL ${error.message}\n`; }
+ output.textContent+='DONE';
+ }catch(e){output.textContent+='FAIL '+e.message;}
 };
 </script></body></html>

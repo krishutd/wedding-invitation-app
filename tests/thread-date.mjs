@@ -2,20 +2,15 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import assert from 'node:assert/strict';
-import { resolveOpening, isThreadDateEnabled } from '../src/featureFlags.js';
 const require = createRequire(resolve(process.argv[2] || '.', 'package.json'));
 const { chromium } = require('playwright');
 const browser = await chromium.launch({ headless: true, channel: 'msedge' });
 const base = process.env.TEST_URL || 'http://127.0.0.1:5176';
 try {
-  for (const [query, mode, enabled] of [ ['', 'classic', false], ['?opening=enhanced', 'enhanced', false], ['?opening=enhancement', 'enhanced', false], ['?thread=invalid', 'classic', false], ['?thread=choose-date', 'enhanced', true], ['?thread=CHOOSE-DATE', 'enhanced', true], ['?thread=&thread=choose-date', 'classic', false] ]) {
-    assert.equal(resolveOpening(query), mode);
-    assert.equal(isThreadDateEnabled(query), enabled);
-  }
   for (const [width, height, mode] of [[320,480,'normal'], [390,844,'normal'], [375,667,'reduced'], [375,667,'resize'], [375,667,'failure']]) {
     const page = await browser.newPage({ viewport: { width, height }, reducedMotion: mode === 'reduced' ? 'reduce' : 'no-preference' });
     await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ contentType:'text/css', body:'' }));
-    await page.goto(`${base}/?thread=choose-date&invite=wedding`);
+    await page.goto(`${base}/?invite=wedding`);
     await page.waitForFunction(() => document.querySelector('.envelope-stage')?.disabled === false);
     const date = page.locator('.date-selected');
     const before = await date.boundingBox();
@@ -51,12 +46,12 @@ try {
     console.log(`PASS ${width}x${height} ${mode}`);
     await page.close();
   }
-  for (const query of ['', '?opening=enhanced', '?opening=enhancement', '?thread=invalid']) {
+  for (const query of ['', '?opening=classic&thread=invalid', '?opening=enhancement', '?thread=choose-date']) {
     const page = await browser.newPage();
     await page.goto(base + '/' + query);
     await page.locator('.envelope-stage').waitFor();
-    assert.equal(await page.locator('[data-thread-date]').count(), 0);
-    console.log(`PASS existing experience ${query || '(default)'}`);
+    assert.equal(await page.locator('.thread-tug').count(), 1);
+    console.log(`PASS permanent experience ${query || '(default)'}`);
     await page.close();
   }
 } finally { await browser.close(); }

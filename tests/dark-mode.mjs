@@ -12,7 +12,7 @@ for (const [query, theme] of [['', 'light'], ['?theme=dark', 'dark'], ['?theme=D
 }
 const browser = await chromium.launch({ headless: true, channel: 'msedge' });
 try {
-  for (const opening of ['', '&opening=enhanced', '&thread=choose-date']) {
+  for (const opening of ['']) {
     for (const width of [375, 1280]) {
       const page = await browser.newPage({ viewport: { width, height: 844 }, reducedMotion: width === 375 ? 'reduce' : 'no-preference', colorScheme: 'dark' });
       const errors = [];
@@ -23,8 +23,7 @@ try {
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
       assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'), '#511C25');
       const backdrop = () => page.evaluate(() => {
-        const enhanced = document.documentElement.dataset.opening === 'enhanced';
-        return getComputedStyle(document.querySelector(enhanced ? '.site-shell' : '.intro-screen'), enhanced ? '::before' : null).backgroundImage;
+        return getComputedStyle(document.querySelector('.site-shell'), '::before').backgroundImage;
       });
       assert.match(await backdrop(), /envelope-botanical-background-dark\.png/);
       assert.equal(await page.evaluate(async () => {
@@ -37,15 +36,15 @@ try {
         const el = document.querySelector(selector);
         return !el || Number(getComputedStyle(el).opacity) >= 0.99;
       }));
-      await page.screenshot({ path: resolve(process.env.TEMP, `dark-intro-${opening ? 'enhanced' : 'classic'}-${width}.png`) });
+      await page.screenshot({ path: resolve(process.env.TEMP, `dark-intro-${'enhanced'}-${width}.png`) });
       await page.locator('.envelope-stage').click();
       await page.waitForFunction(() => document.querySelector('#invitation') && !document.querySelector('.intro-screen'), null, { timeout: 25000 });
-      assert.match(await page.locator(opening ? '.site-shell' : '#invitation').evaluate((el, enhanced) => getComputedStyle(el, enhanced ? '::before' : null).backgroundImage, Boolean(opening)), /envelope-botanical-background-dark\.png/);
+      assert.match(await page.locator('.site-shell').evaluate(el => getComputedStyle(el, '::before').backgroundImage), /envelope-botanical-background-dark\.png/);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-      await page.screenshot({ path: resolve(process.env.TEMP, `dark-invite-${opening ? 'enhanced' : 'classic'}-${width}.png`), fullPage: true });
+      await page.screenshot({ path: resolve(process.env.TEMP, `dark-invite-enhanced-${width}.png`), fullPage: true });
       assert.deepEqual(errors, []);
       await page.close();
-      console.log(`PASS dark ${opening || 'classic'} ${width}px`);
+      console.log(`PASS dark ${opening || 'enhanced'} ${width}px`);
     }
   }
   for (const query of ['', '?theme=invalid', '?opening=enhanced']) {

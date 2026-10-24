@@ -37,8 +37,8 @@ Add `?theme=dark` to opt into royal burgundy backgrounds with ivory text and gol
 It works with either opening experience and all existing invitation parameters:
 
 - `?theme=dark`
-- `?opening=enhanced&theme=dark&side=bride&invite=wedding`
-- `?thread=choose-date&theme=dark&invite=reception`
+- `?theme=dark&side=bride&invite=wedding`
+- `?theme=dark&invite=reception`
 
 Omit the flag or use `theme=light` to retain the original light theme. Only `dark`
 (case-insensitive) enables it; device appearance settings do not enable the flag.
@@ -91,40 +91,19 @@ This project deploys to GitHub Pages using the workflow in `.github/workflows/pa
 - The Radha–Krishna artwork is stored as a transparent PNG at `public/assets/radha-krishna-silhouette.png` and reveals with an animation when it enters view.
 - The default Google Maps searches are based on the venue names from the supplied reference. Verify the exact pins before sharing the final invitation.
 
-## Classic and enhanced experience
+## Opening experience
 
-### The Thread Chooses the Date (experimental)
+The enhanced invitation and connected thread opening are permanent. The thread forms a heart around the selected date, holds, and sends a tug back to release the seal. The date remains stationary. Wedding links select January 19; reception links select January 21. Enhanced music plays after the opening tap.
 
-Use `?thread=choose-date&invite=wedding` to preview the connected thread opening.
-This flag selects the enhanced layout, sends the original fading thread directly
-to January 19, forms the heart, holds without a connector, then draws a taut thread
-back to the seal and sends a tug to release
-the flap. The date never moves toward the envelope. Reception links keep their
-correct selected date (January 21). Values are case-insensitive; the first value wins.
-Omitting this flag or using an unknown value preserves existing URL behavior,
-including the existing `opening=enhanced` and `opening=enhancement` variants.
+The obsolete `opening` and `thread` parameters are ignored, including in previously shared links. `side`, `invite`, and `theme` retain their existing behavior.
 
-Run `node tests/thread-date.mjs [directory-containing-playwright]` against Vite
-(`TEST_URL` defaults to `http://127.0.0.1:5176`). Checks cover stationary date geometry,
-sequence stages, date fades, mobile overflow, reduced motion, resize, animation
-failure, repeated taps, and feature isolation. The test uses installed Edge.
+- `?side=bride&invite=wedding`
+- `?side=groom&invite=reception&theme=dark`
 
-The default experience is the original app from the base of PR #15. Both the PR's visual redesign and the enhanced date/seal animation are opt-in:
+Run `node tests/thread-date.mjs [directory-containing-playwright]` against Vite (`TEST_URL` defaults to `http://127.0.0.1:5176`). Checks cover the stationary date, sequence stages, mobile overflow, reduced motion, resize, animation failure, repeated taps, and obsolete parameter handling.
 
-- `?opening=enhanced`: redesigned opening and invitation, including the date-unlock animation. `?opening=enhancement` is also accepted as an alias for shared links.
-- `?opening=classic`, no `opening`, or an invalid value: original opening and invitation.
-- Values are case-insensitive. The first value wins if the parameter is repeated.
-
-Existing `side` and `invite` selection and their fallback behavior are unchanged. For example:
-
-- `?side=bride&invite=wedding&opening=enhanced`
-- `?side=groom&invite=reception&opening=enhanced`
-- `?side=bride&invite=reception` (classic)
-
-Selection happens before mounting React and loads only that experience's stylesheet. `src/ClassicApp.jsx` and `src/classic.css` preserve the original design from base commit e1ac1e1, with the shared deployment-safe asset URL helper; `src/App.jsx` and `src/styles.css` contain the enhanced version. When changing shared invitation content in future, update both implementations while this flag exists. Shared artwork and reveal components remain reused.
-
-Run the enhanced animation checks at `/tests/opening.html` and the flag checks at `/tests/feature-flags.html` using the Vite development server. These test pages are not part of the production build.
+Run the opening checks at `/tests/opening.html` and parameter checks at `/tests/feature-flags.html`.
 
 ### Verify deployed artwork locally
 
-After building, run `node tests/serve-production.mjs`, then open `http://127.0.0.1:4174/tests/production-assets.html`. This serves the compiled app under `/wedding-invitation-app/`, matching GitHub Pages, and verifies decoded background, paper, and overlay images for classic, enhanced, and enhancement-alias links. Runtime asset URLs are made absolute in `src/assets.js` before being passed to CSS custom properties; this prevents built stylesheets from requesting `assets/assets/` paths.
+After building, run `node tests/serve-production.mjs`, then open `http://127.0.0.1:4174/tests/production-assets.html`. This serves the compiled app under `/wedding-invitation-app/`, matching GitHub Pages, and verifies decoded background, paper, and overlay images for light and dark themes. Runtime asset URLs are made absolute in `src/assets.js` before being passed to CSS custom properties; this prevents built stylesheets from requesting `assets/assets/` paths.
