@@ -1,4 +1,4 @@
-/* Loaded after the invitation styles, only with ?theme=dark. */
+/* Loaded after the invitation styles for the permanent dark palette. */
 html[data-theme="dark"] .divine-art-stage::after {
   -webkit-mask-image: url('/assets/radha-krishna-golden-moon-dark.webp');
   mask-image: url('/assets/radha-krishna-golden-moon-dark.webp');

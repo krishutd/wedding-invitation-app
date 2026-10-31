@@ -10,7 +10,7 @@ document.querySelector('button').onclick = async () => {
  const check = (value, message) => { if (!value) throw Error(message); output.textContent += `PASS ${message}\n`; };
  try {
  for (const [query, day, count, mode] of [['wedding',19,1,'normal'],['reception',21,1,'early'],['',19,2,'normal'],['invalid',19,2,'resize'],['reception',21,1,'failure'],['reception',21,1,'reduced']]) {
-  frame.src = (mode === 'reduced' ? '/tests/reduced.html' : '/') + '?invite=' + query;
+  frame.src = (mode === 'reduced' ? '/tests/reduced.html' : '/') + '?i=' + ({wedding:'4f6a2ae57f7d',reception:'e7713c25d1c8'}[query] || '4083fa314b9e');
   await new Promise(resolve => frame.onload = resolve);
   await until(() => frame.contentDocument.querySelector('.envelope-stage'));
   const doc = frame.contentDocument;

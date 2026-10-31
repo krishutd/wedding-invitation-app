@@ -10,7 +10,7 @@ try {
   for (const [width, height, mode] of [[320,480,'normal'], [390,844,'normal'], [375,667,'reduced'], [375,667,'resize'], [375,667,'failure']]) {
     const page = await browser.newPage({ viewport: { width, height }, reducedMotion: mode === 'reduced' ? 'reduce' : 'no-preference' });
     await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ contentType:'text/css', body:'' }));
-    await page.goto(`${base}/?invite=wedding`);
+    await page.goto(`${base}/?i=4f6a2ae57f7d`);
     await page.waitForFunction(() => document.querySelector('.envelope-stage')?.disabled === false);
     const date = page.locator('.date-selected');
     const before = await date.boundingBox();

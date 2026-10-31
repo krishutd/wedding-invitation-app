@@ -9,12 +9,12 @@ document.querySelector('button').onclick=async()=>{
  output.textContent='';
  try {
  for(const [query,count,first,day] of [
- ['',2,'Krishnanand','19'],
- ['?side=bride&invite=reception',1,'Archa','21'],
- ['?opening=classic&thread=invalid&side=groom&invite=wedding',1,'Krishnanand','19'],
- ['?side=BRIDE&invite=WEDDING',1,'Archa','19'],
- ['?side=invalid&invite=invalid',2,'Krishnanand','19'],
- ['?side=bride&side=groom&invite=reception&invite=wedding',1,'Archa','21']]) {
+ ['?i=4083fa314b9e',2,'Krishnanand','19'],
+ ['?i=c12fbfce202e',1,'Archa','21'],
+ ['?i=4f6a2ae57f7d&opening=classic&thread=invalid',1,'Krishnanand','19'],
+ ['?i=41c745e64ec8',1,'Archa','19'],
+ ['?i=b03f8bce7920',2,'Archa','19'],
+ ['?i=e7713c25d1c8&side=bride&invite=wedding',1,'Krishnanand','21']]) {
  frame.src='/'+query;
  await new Promise(r=>frame.onload=r);
  const doc=frame.contentDocument;

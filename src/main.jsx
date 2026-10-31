@@ -7,11 +7,11 @@ import { preloadIntroAssets } from './introAssets.js'
 const theme = resolveTheme(window.location.search)
 document.documentElement.dataset.theme = theme
 document.querySelector('meta[name="color-scheme"]')?.setAttribute(
-  'content', theme === 'dark' ? 'dark light' : 'only light',
+  'content', 'dark',
 )
 if (theme === 'dark') document.documentElement.style.backgroundColor = '#511C25'
 document.querySelector('meta[name="theme-color"]')?.setAttribute(
-  'content', theme === 'dark' ? '#511C25' : '#F4EBDD',
+  'content', '#511C25',
 )
 const background = document.createElement('link')
 background.rel = 'preload'
@@ -28,7 +28,7 @@ preloadIntroAssets()
 async function mountInvitation() {
   const [{ default: App }] = await Promise.all([
     import('./App.jsx'), import('./styles.css'),
-    theme === 'dark' ? import('./dark.css') : Promise.resolve(),
+    import('./dark.css'),
   ])
   createRoot(document.getElementById('root')).render(
     <React.StrictMode><App /></React.StrictMode>,
