@@ -101,7 +101,12 @@ document.querySelector('#run').onclick=async()=>{
   check(!d.querySelector('[inert]'),'Focus restriction released');
   check(w.scrollY===0,'No automatic scrolling');
   check(d.documentElement.scrollWidth<=d.documentElement.clientWidth,'No horizontal overflow');
-  check([...d.querySelectorAll('.map-link')].every(a=>a.href.startsWith('https://maps.app.goo.gl/')),'Map destinations preserved');
+  const expectedMapPins = ['8.5753299,76.8698969', '10.2609394,76.1790993'];
+  check([...d.querySelectorAll('.map-link')].every(a=>{
+    const url = new URL(a.href);
+    const pin = a.closest('.ceremony-card').querySelector('.venue-name').textContent.startsWith('AL-SAJ') ? expectedMapPins[0] : expectedMapPins[1];
+    return url.origin === 'https://www.google.com' && url.pathname === '/maps/search/' && url.searchParams.get('api') === '1' && url.searchParams.get('query') === pin;
+  }),'Cross-platform Maps URLs preserve exact venue pins');
   d.querySelector('.music-toggle').click();await wait(50);
   check(d.querySelector('.music-toggle').getAttribute('aria-pressed')==='false','Music toggle works');
   w.scrollTo({top:d.body.scrollHeight,behavior:'instant'});await wait(180);

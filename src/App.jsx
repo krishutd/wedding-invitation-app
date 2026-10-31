@@ -38,8 +38,10 @@ const WEDDING = {
   muhurthamVenue: "AL-SAJ Convention Centre, Kazhakkottam, Trivandrum",
   receptionTime: ["6:00 PM", "9:00 PM"],
   receptionVenue: "ARV Convention Centre, Kodungallur, Thrissur",
-  mapsUrl: "https://maps.app.goo.gl/E2NiULxt7Lig8HKz7",
-  receptionMapsUrl: "https://maps.app.goo.gl/ENAWgVa9UkHYyZqG7",
+  // Direct Maps URLs avoid the short-link redirect during the iOS app handoff.
+  // Use the destination pins from the original links, not their map viewport centers.
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=8.5753299%2C76.8698969",
+  receptionMapsUrl: "https://www.google.com/maps/search/?api=1&query=10.2609394%2C76.1790993",
 };
 
 const LOVE_MESSAGES = {
