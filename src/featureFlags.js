@@ -1,5 +1,4 @@
-export function resolveTheme(search) {
-  return new URLSearchParams(search).get('theme')?.toLowerCase() === 'dark'
-    ? 'dark'
-    : 'light';
+// One authored palette, independent of legacy URL parameters and OS preference.
+export function resolveTheme() {
+  return 'dark';
 }

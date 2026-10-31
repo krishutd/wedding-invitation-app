@@ -25,7 +25,7 @@ html[data-theme="dark"] { --intro-text-tone: #cdb38b; }
 }
 
 :root, body, #root {
-  color-scheme: only light;
+  color-scheme: only dark;
 }
 :root {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -49,6 +49,9 @@ html[data-theme="dark"] { --intro-text-tone: #cdb38b; }
   --color-gold-faint: #A47A302F;
 }
 * { box-sizing: border-box; }
+.invitation-link-notice { min-height: 100svh; max-width: 560px; margin: 0 auto; padding: 48px 28px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.invitation-link-notice h1 { color: var(--color-name-burgundy); font-weight: 500; font-size: clamp(32px, 8vw, 46px); line-height: 1.15; }
+.invitation-link-notice p { font-size: 20px; line-height: 1.5; }
 html { scroll-behavior: smooth; background: var(--color-paper); }
 body { margin: 0; min-width: 0; background-color: var(--color-sand); color: var(--color-ink); }
 button, a { -webkit-tap-highlight-color: transparent; }
@@ -240,17 +243,6 @@ button { font: inherit; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
-/* Keep forced dark-mode browsers from inverting the warm ivory invitation. */
-@media (prefers-color-scheme: dark) {
-  :root, body, #root { color-scheme: only light; }
-  :root, html, body { background-color: var(--color-paper); color: var(--color-ink); }
-  .site-shell { background: linear-gradient(145deg, #fbf6ef 0%, var(--color-paper) 48%, var(--color-paper-edge) 100%); }
-  .paper-section, .intro-screen { background-color: var(--color-paper); }
-  .ceremony-card { background-color: #F4EBDD; }
-  .page-next-button, .music-toggle { background-color: var(--color-paper); }
-  .music-toggle:hover, .page-next-button:hover { background-color: var(--color-pale-burgundy); }
-}
-
 /* The opening sequence owns transforms; geometry is measured in viewport pixels. */
 .intro-screen { padding: max(42px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(42px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); }
 .opening-composition { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; isolation: isolate; }
@@ -347,31 +339,19 @@ html { scrollbar-gutter: stable; }
 .portal-dust { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #c49a50; opacity: 0; pointer-events: none; }
 .portal-glitter { position: absolute; inset: 0; pointer-events: none; }
 
-/* Embossed foil lettering, with the paper grain contained inside live text. */
-.invitation-section .couple-names {
-  --name-foil: linear-gradient(165deg, #c78a78 0%, #943c45 21%, #e0ad92 29%, #7a2632 42%, #4d1520 53%, #b96964 66%, #70232e 82%, #43131d 100%);
-  --name-edge: #5c1b28;
-  --name-highlight: #f6d8bc99;
-  --name-shadow: #3d0f194d;
-}
-html[data-theme="dark"] .invitation-section .couple-names {
-  --name-foil: linear-gradient(165deg, #fff0d2 0%, #ceb18a 20%, #f5dfb8 29%, #ad8a5e 43%, #755237 53%, #ddc49b 65%, #b18e65 83%, #765138 100%);
-  --name-edge: #a88761;
-  --name-highlight: #fff1d9b3;
-  --name-shadow: #220b1499;
-}
+/* Flat gold lettering keeps the names prominent without obscuring fine strokes. */
 html .invitation-section .couple-names h2 {
-  background-image: url('/assets/ivory-paper-texture.webp'), var(--name-foil);
-  background-size: 150px 150px, 100% 100%;
-  background-blend-mode: soft-light, normal;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .35px var(--name-edge);
-  filter: drop-shadow(-.864px -1.296px .216px var(--name-highlight)) drop-shadow(.756px .972px 0 var(--name-edge)) drop-shadow(.756px .972px 0 var(--name-edge)) drop-shadow(1.296px 2.592px 1.512px var(--name-shadow));
+  color: var(--color-name-burgundy);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  filter: none;
   animation: none;
+  font-weight: 500;
+  letter-spacing: -.02em;
+  line-height: 1.08;
 }
-
 .invitation-scroll-cue { position: fixed; z-index: 30; bottom: max(18px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 9px; padding: 9px 16px; border: 1px solid var(--color-gold-line); border-radius: 30px; background: var(--color-paper); color: var(--color-ink); box-shadow: 0 3px 18px #220b1426; cursor: pointer; font: 13px 'Cormorant Garamond', Georgia, serif; letter-spacing: .06em; }
 .invitation-scroll-cue svg { animation: scroll-cue-drift 2s ease-in-out infinite; }
 .invitation-scroll-cue:focus-visible { outline: 2px solid var(--color-soft-gold); outline-offset: 4px; }
@@ -380,57 +360,12 @@ html .invitation-section .couple-names h2 {
 
 .invitation-scroll-cue { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 50%; }
 
-/* Sequential foil highlight: first name, ampersand, then second name. */
-html .invitation-section .couple-names h2 {
-  background-image: linear-gradient(110deg, transparent 40%, #fff4d94d 44%, #ffffff 48%, #ffffff 52%, #fff4d94d 56%, transparent 60%), url('/assets/ivory-paper-texture.webp'), var(--name-foil);
-  background-size: 280% 100%, 150px 150px, 100% 100%;
-  background-position: 100% 0, 0 0, 0 0;
-  background-blend-mode: screen, soft-light, normal;
-  animation: embossed-name-shimmer 12s linear infinite;
-}
-html .invitation-section .couple-names > :nth-child(3) h2 { animation-delay: 8s; }
+/* A quiet ampersand complements the clean, untextured names. */
 html .invitation-section .couple-names .and-line i {
-  background-image: linear-gradient(110deg, transparent 40%, #fff8e3 50%, transparent 60%), linear-gradient(currentColor, currentColor);
-  background-size: 280% 100%, 100% 100%;
-  background-position: 100% 0, 0 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ampersand-shimmer 12s linear infinite;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  animation: none;
 }
-@keyframes embossed-name-shimmer {
-  0% { background-position: 100% 0, 0 0, 0 0; }
-  30%, 99.99% { background-position: 0% 0, 0 0, 0 0; }
-  100% { background-position: 100% 0, 0 0, 0 0; }
-}
-@keyframes ampersand-shimmer {
-  0%, 33% { background-position: 100% 0, 0 0; }
-  63%, 99.99% { background-position: 0% 0, 0 0; }
-  100% { background-position: 100% 0, 0 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html .invitation-section .couple-names h2,
-  html .invitation-section .couple-names .and-line i { animation: none; background-position: 100% 0, 0 0, 0 0; }
-}
-
-/* Small lettering needs crisp edges rather than stacked, expanding shadows. */
-@media (max-width: 600px) {
-  html .invitation-section .couple-names h2 {
-    -webkit-text-stroke: 0;
-    filter: drop-shadow(0 .6px 0 var(--name-shadow));
-    background-image: linear-gradient(110deg, transparent 40%, #fff4d94d 44%, #ffffff 48%, #ffffff 52%, #fff4d94d 56%, transparent 60%), linear-gradient(transparent, transparent), var(--name-foil);
-  }
-  html[data-theme="dark"] .invitation-section .couple-names {
-    --name-foil: linear-gradient(165deg, #f5e3c4 0%, #d6bc94 30%, #b79770 52%, #e0c7a2 70%, #c4a47d 100%);
-  }
-}
-
-/* Use the font's drawn semibold strokes for a stronger, clean focal point. */
-html .invitation-section .couple-names h2 {
-  font-weight: 600;
-  letter-spacing: -.035em;
-}
-
 /* Render masked artwork colors as image paints so automatic darkening does
    not reinterpret their light foreground as a background to darken. */
 .couple-calligraphy, html[data-theme="dark"] .couple-calligraphy,

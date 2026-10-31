@@ -23,6 +23,7 @@ import {
 
 import { assetUrl, botanicalAsset, radhaKrishnaAsset } from "./assets.js";
 import { preloadIntroAssets } from "./introAssets.js";
+import { resolveInvitation } from "./invitationLinks.js";
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_MAX_VOLUME = 0.6;
 
@@ -136,7 +137,7 @@ function InvitationScrollCue({ active }) {
   );
 }
 
-function App() {
+function App({ invitationSide, inviteType }) {
   const [handoff, setHandoff] = useState(null);
   const paperResolve = useRef(null);
   const [page, setPage] = useState("intro");
@@ -146,14 +147,6 @@ function App() {
   const musicStartedByUserRef = useRef(false);
   const musicEnabledRef = useRef(true);
   const resumeMusicOnForegroundRef = useRef(false);
-  const params = new URLSearchParams(window.location.search);
-  const invitationSide =
-    params.get("side")?.toLowerCase() === "bride" ? "bride" : "groom";
-  const requestedInvite = params.get("invite")?.toLowerCase();
-  const inviteType =
-    requestedInvite === "wedding" || requestedInvite === "reception"
-      ? requestedInvite
-      : "both";
   const selectedEvent =
     EVENTS[inviteType === "reception" ? "reception" : "wedding"];
   const firstName = invitationSide === "bride" ? WEDDING.bride : WEDDING.groom;
@@ -610,4 +603,19 @@ function App() {
   );
 }
 
-export default App;
+export default function InvitationLink() {
+  const invitation = resolveInvitation(window.location.search);
+  useEffect(() => {
+    if (!invitation) document.getElementById("invitation-loading")?.remove();
+  }, [invitation]);
+  if (!invitation) {
+    return (
+      <main className="invitation-link-notice">
+        <p className="section-kicker">Krishnanand &amp; Archa</p>
+        <h1>Please use your invitation link</h1>
+        <p>Open the complete link shared with you. If it isn’t working, please ask the family to resend it.</p>
+      </main>
+    );
+  }
+  return <App invitationSide={invitation.side} inviteType={invitation.invite} />;
+}

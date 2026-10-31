@@ -7,7 +7,7 @@ const browser = await chromium.launch({ headless: true, channel: process.env.BRO
 const check = (value, message) => { if (!value) throw Error(message); };
 try {
   for (const mode of ['light', 'dark']) {
-    const context = await browser.newContext({ viewport: { width: 375, height: 667 }, reducedMotion: mode === 'dark' ? 'reduce' : 'no-preference' });
+    const context = await browser.newContext({ viewport: { width: 375, height: 667 }, colorScheme: mode, reducedMotion: mode === 'dark' ? 'reduce' : 'no-preference' });
     const page = await context.newPage();
     const requests = [];
     page.on('request', request => requests.push(request.url()));
@@ -20,7 +20,7 @@ try {
     });
     let releaseBackground;
     const backgroundGate = new Promise(resolve => { releaseBackground = resolve; });
-    await page.route(`**/envelope-botanical-background${mode === 'dark' ? '-dark' : ''}.webp`, async route => {
+    await page.route('**/envelope-botanical-background-dark.webp', async route => {
       await backgroundGate;
       await route.continue();
     });
@@ -38,13 +38,13 @@ try {
         }
       };
     });
-    await page.goto(`http://127.0.0.1:4174/wedding-invitation-app/?theme=${mode}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`http://127.0.0.1:4174/wedding-invitation-app/?i=4083fa314b9e&theme=${mode}`, { waitUntil: 'domcontentloaded' });
     const shell = page.locator('.site-shell');
     await shell.waitFor({ state: 'attached' });
     const indicator = page.getByRole('status');
     check(await indicator.isVisible(), `${mode}: loading indicator missing`);
     check(await indicator.getAttribute('aria-label') === 'Loading invitation', `${mode}: accessible loading label missing`);
-    check(await indicator.evaluate(el => getComputedStyle(el).backgroundColor) === (mode === 'dark' ? 'rgb(81, 28, 37)' : 'rgb(244, 235, 221)'), `${mode}: wrong loading palette`);
+    check(await indicator.evaluate(el => getComputedStyle(el).backgroundColor) === 'rgb(81, 28, 37)', `${mode}: wrong loading palette`);
     check(await page.locator('.invitation-loading-orbit').evaluate(el => getComputedStyle(el).animationName) === (mode === 'dark' ? 'none' : 'invitation-loading-turn'), `${mode}: motion preference ignored`);
     const hidden = () => page.locator('.intro-screen').evaluate(el => getComputedStyle(el).visibility === 'hidden');
     check(await hidden(), `${mode}: partial envelope visible during image download`);
@@ -70,7 +70,7 @@ try {
     }
     check(!(await page.locator('.envelope-stage').isDisabled()), 'Envelope still disabled');
     check(!requests.some(url => /fonts\.(googleapis|gstatic)\.com/.test(url)), 'External font dependency');
-    if (mode === 'dark') check(!requests.some(url => url.endsWith('/envelope-botanical-background.webp')), 'Unused light background downloaded');
+    check(!requests.some(url => url.endsWith('/envelope-botanical-background.webp')), 'Unused light background downloaded');
     console.log(`PASS ${mode}: delayed download, decoding and fonts; complete reveal`);
     await context.close();
   }
@@ -84,7 +84,7 @@ try {
     await fontsGate;
     await route.continue();
   });
-  await page.goto('http://127.0.0.1:4174/wedding-invitation-app/', { waitUntil: 'domcontentloaded' });
+  await page.goto('http://127.0.0.1:4174/wedding-invitation-app/?i=4083fa314b9e', { waitUntil: 'domcontentloaded' });
   await fontRequested;
   await page.evaluate(async () => {
     await Promise.all(performance.getEntriesByType('resource')

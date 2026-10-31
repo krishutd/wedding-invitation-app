@@ -1,21 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="only light" />
-    <meta name="theme-color" content="#eee4cc" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#511C25" />
     <meta name="description" content="A wedding invitation for Krishnanand and Archa." />
     <title>Krishnanand & Archa — Wedding Invitation</title>
-    <script>
-      const invitationDark = new URLSearchParams(location.search).get('theme')?.toLowerCase() === 'dark';
-      document.documentElement.dataset.theme = invitationDark ? 'dark' : 'light';
-      document.documentElement.style.colorScheme = invitationDark ? 'only dark' : 'only light';
-      document.querySelector('meta[name="color-scheme"]').content = invitationDark ? 'dark light' : 'only light';
-      document.querySelector('meta[name="theme-color"]').content = invitationDark ? '#511C25' : '#F4EBDD';
-    </script>
     <!-- The loading screen needs no JavaScript bundle, images, or web fonts. -->
     <style>
+      /* Advertise the authored palette before external CSS or JavaScript loads. */
+      :root { color-scheme: only dark; background: #511C25; color: #F4EBDD; }
       .invitation-loading {
         --loading-paper: #F4EBDD;
         --loading-ink: #702D36;

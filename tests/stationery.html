@@ -26,22 +26,22 @@ async function load(query,mode='normal',width=320,height=480){
  d.querySelector('.envelope-stage').click();d.querySelector('.envelope-stage').click();
  return {w,d,started};
 }
-document.querySelector('#inspect').onclick=()=>load('side=bride','slow',375,700);
-document.querySelector('#still').onclick=async()=>{const {d}=await load('side=bride','slow',375,700);await until(()=>d.querySelector('.formation-glitter')?.getAnimations().length);const animation=d.querySelector('.formation-glitter').getAnimations()[0];await until(()=>Number(animation.currentTime)/animation.effect.getTiming().duration>.45);d.querySelectorAll('.artwork-handoff *').forEach(n=>n.getAnimations().forEach(a=>a.pause()));out.textContent='Paused at the forming-artwork moment. Reload to reset.';};
+document.querySelector('#inspect').onclick=()=>load('i=b03f8bce7920','slow',375,700);
+document.querySelector('#still').onclick=async()=>{const {d}=await load('i=b03f8bce7920','slow',375,700);await until(()=>d.querySelector('.formation-glitter')?.getAnimations().length);const animation=d.querySelector('.formation-glitter').getAnimations()[0];await until(()=>Number(animation.currentTime)/animation.effect.getTiming().duration>.45);d.querySelectorAll('.artwork-handoff *').forEach(n=>n.getAnimations().forEach(a=>a.pause()));out.textContent='Paused at the forming-artwork moment. Reload to reset.';};
 document.querySelector('#run').onclick=async()=>{
  out.textContent='';
  try{
  const cases=[
- ['invite=wedding',19,1,'normal',320,480,'below'],
- ['invite=reception&side=bride',21,1,'normal',390,1000,'near'],
- ['',19,2,'normal',375,667,'below'],
- ['invite=invalid',19,2,'skip',320,480],
- ['invite=wedding',19,1,'resize',375,700],
- ['invite=reception',21,1,'reduced',320,480],
- ['invite=wedding',19,1,'failure',320,480],
- ['invite=wedding',19,1,'key',320,480],
- ['invite=wedding',19,1,'asset',320,480],
- ['invite=wedding',19,1,'canvas',320,480],
+ ['i=4f6a2ae57f7d',19,1,'normal',320,480,'below'],
+ ['i=c12fbfce202e',21,1,'normal',390,1000,'near'],
+ ['i=4083fa314b9e',19,2,'normal',375,667,'below'],
+ ['i=4083fa314b9e',19,2,'skip',320,480],
+ ['i=4f6a2ae57f7d',19,1,'resize',375,700],
+ ['i=e7713c25d1c8',21,1,'reduced',320,480],
+ ['i=4f6a2ae57f7d',19,1,'failure',320,480],
+ ['i=4f6a2ae57f7d',19,1,'key',320,480],
+ ['i=4f6a2ae57f7d',19,1,'asset',320,480],
+ ['i=4f6a2ae57f7d',19,1,'canvas',320,480],
  ];
  for(const [query,day,count,mode,width,height,route] of cases){
   const {w,d,started}=await load(query,mode,width,height);
