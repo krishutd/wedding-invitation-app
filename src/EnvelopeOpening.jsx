@@ -176,7 +176,7 @@ export default function EnvelopeOpening({
     >
       <div className="envelope-heading">
         <h1 className="envelope-couple-names envelope-name-malayalam" lang="ml" aria-label={names.join(" & ")}>
-          <span className="couple-calligraphy" style={{ "--calligraphy-art": `url("${asset(`couple-calligraphy-${side}-final.png`)}")` }} aria-hidden="true" />
+          <img className="couple-calligraphy" src={asset(`couple-calligraphy-${side}-gold.svg`)} alt="" draggable="false" aria-hidden="true" />
         </h1>
       </div>
       <div
@@ -257,9 +257,11 @@ export default function EnvelopeOpening({
               alt=""
               draggable="false"
             />
-            <span
+            <img
               className="wax-seal-ganesha"
-              style={{ "--ganesha-art": `url("${asset("ganesha-seal-engraving.webp")}")` }}
+              src={asset("ganesha-seal-gold.svg")}
+              alt=""
+              draggable="false"
               aria-hidden="true"
             />
           </div>

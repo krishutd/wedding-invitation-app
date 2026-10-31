@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 const require = createRequire(resolve(process.argv[2] || '.', 'package.json'));
 const { chromium } = require('playwright');
+const base = process.env.TEST_URL || 'http://127.0.0.1:4174/wedding-invitation-app/';
 const browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || undefined });
 const check = (value, message) => { if (!value) throw Error(message); };
 try {
@@ -14,7 +15,7 @@ try {
     page.on('pageerror', error => console.error(error.message));
     let releaseImage;
     const imageGate = new Promise(resolve => { releaseImage = resolve; });
-    await page.route('**/ganesha-seal-engraving.webp', async route => {
+    await page.route('**/ganesha-seal-gold.svg', async route => {
       await imageGate;
       await route.continue();
     });
@@ -32,13 +33,13 @@ try {
       const decodeGate = new Promise(resolve => { window.releaseDecode = resolve; });
       Image.prototype.decode = async function () {
         await decode.call(this);
-        if (this.src.includes('ganesha-seal-engraving')) {
+        if (this.src.includes('ganesha-seal-gold')) {
           window.sealDecoded = true;
           await decodeGate;
         }
       };
     });
-    await page.goto(`http://127.0.0.1:4174/wedding-invitation-app/?i=4083fa314b9e&theme=${mode}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${base}?i=4083fa314b9e&theme=${mode}`, { waitUntil: 'domcontentloaded' });
     const shell = page.locator('.site-shell');
     await shell.waitFor({ state: 'attached' });
     const indicator = page.getByRole('status');
@@ -84,7 +85,7 @@ try {
     await fontsGate;
     await route.continue();
   });
-  await page.goto('http://127.0.0.1:4174/wedding-invitation-app/?i=4083fa314b9e', { waitUntil: 'domcontentloaded' });
+  await page.goto(`${base}?i=4083fa314b9e`, { waitUntil: 'domcontentloaded' });
   await fontRequested;
   await page.evaluate(async () => {
     await Promise.all(performance.getEntriesByType('resource')

@@ -65,7 +65,9 @@ html[data-theme="dark"] .invitation-section.paper-section {
 html[data-theme="dark"] :is(.envelope-back, .envelope-letter, .envelope-flap-face, .envelope-fold),
 html[data-theme="dark"] .opening-composition .envelope-front {
   background-color: var(--dark-surface);
-  background-image: linear-gradient(145deg, #E4C58B12, #220B1540);
+  /* Keep the authored surface in an image, outside CSS color recoloring. */
+  background-image: url('/assets/envelope-dark-surface.svg');
+  background-size: 100% 100%;
   border-color: #C8A96A80;
 }
 
