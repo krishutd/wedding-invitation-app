@@ -49,6 +49,20 @@ const LOVE_MESSAGES = {
   bride: "With lots of love - Aswathy and Arjun",
 };
 
+const BRIDE_COMBINED_RECEPTION = {
+  event: { year: 2027, month: 1, day: 18, label: "reception" },
+  time: ["5:00 PM", "8:30 PM"],
+  venue: "Diya Gardens Convention Centre, Keezhattingal",
+  mapsUrl: "https://maps.app.goo.gl/ScovBJMZ1XyoobYeA",
+};
+
+const DEFAULT_RECEPTION = {
+  event: EVENTS.reception,
+  time: WEDDING.receptionTime,
+  venue: WEDDING.receptionVenue,
+  mapsUrl: WEDDING.receptionMapsUrl,
+};
+
 function CeremonyFrame() {
   return (
     <svg
@@ -151,6 +165,9 @@ function App({ invitationSide, inviteType }) {
   const resumeMusicOnForegroundRef = useRef(false);
   const selectedEvent =
     EVENTS[inviteType === "reception" ? "reception" : "wedding"];
+  const reception = invitationSide === "bride" && inviteType === "both"
+    ? BRIDE_COMBINED_RECEPTION
+    : DEFAULT_RECEPTION;
   const firstName = invitationSide === "bride" ? WEDDING.bride : WEDDING.groom;
   const secondName = invitationSide === "bride" ? WEDDING.groom : WEDDING.bride;
   const secondFamilySide = invitationSide === "bride" ? "groom" : "bride";
@@ -507,7 +524,7 @@ function App({ invitationSide, inviteType }) {
                     <span className="family-label">RECEPTION</span>
                     <div
                       className="event-date"
-                      aria-label={formatEvent(EVENTS.reception, {
+                      aria-label={formatEvent(reception.event, {
                         weekday: "long",
                         day: "numeric",
                         month: "long",
@@ -515,14 +532,14 @@ function App({ invitationSide, inviteType }) {
                       })}
                     >
                       <EventDay
-                        event={EVENTS.reception}
+                        event={reception.event}
                       />
                       <span className="event-date-copy">
                         <span className="event-weekday">
-                          {formatEvent(EVENTS.reception, { weekday: "long" })}
+                          {formatEvent(reception.event, { weekday: "long" })}
                         </span>
                         <span className="event-month-year">
-                          {formatEvent(EVENTS.reception, {
+                          {formatEvent(reception.event, {
                             month: "long",
                             year: "numeric",
                           })}
@@ -531,14 +548,14 @@ function App({ invitationSide, inviteType }) {
                     </div>
                     <span className="event-time-label">TIME</span>
                     <p className="event-time">
-                      {WEDDING.receptionTime[0]} <span>to</span>{" "}
-                      {WEDDING.receptionTime[1]}
+                      {reception.time[0]} <span>to</span>{" "}
+                      {reception.time[1]}
                     </p>
                     <span className="family-label venue-label">VENUE</span>
-                    <p className="venue-name">{WEDDING.receptionVenue}</p>
+                    <p className="venue-name">{reception.venue}</p>
                     <a
                       className="map-link"
-                      href={WEDDING.receptionMapsUrl}
+                      href={reception.mapsUrl}
                       target="_blank"
                       rel="noreferrer"
                     >
